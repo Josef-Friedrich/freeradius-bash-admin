@@ -24,6 +24,15 @@ function user_add {
   "
 }
 
+function user_show {
+  $MYSQL "
+    SELECT username, value as password
+      FROM radcheck
+      WHERE attribute = 'Cleartext-Password'
+        AND username <> '';
+  "
+}
+
 #  _   _           _____
 # | \ | |   /\    / ____|
 # |  \| |  /  \  | (___
@@ -40,6 +49,13 @@ function nas_add {
     INSERT
       INTO nas (nasname,shortname,secret)
       VALUES ('$NASNAME','$SHORTNAME','$SECRET');
+  "
+}
+
+function nas_show {
+  $MYSQL "
+    SELECT shortname, secret, nasname AS ip
+      FROM nas;
   "
 }
 
@@ -386,6 +402,9 @@ case "$1" in
       add)
         user_add "$3" "$4"
       ;;
+      show)
+        user_show
+      ;;
 
     esac
     ;;
@@ -398,6 +417,10 @@ case "$1" in
 
       delete)
         nas_delete "$3"
+      ;;
+
+      show)
+        nas_show
       ;;
     esac
     ;;
