@@ -1,0 +1,449 @@
+#! /bin/bash
+
+MYSQL_PROD="mysql --user=root --password=root radius --silent --skip-column-names -e"
+
+MYSQL_DEV="mysql --user=root --password=root radius -e"
+
+MYSQL=$MYSQL_DEV
+
+#  _____  ____
+# |  __ \|  _ \
+# | |  | | |_) |
+# | |  | |  _ <
+# | |__| | |_) |
+# |_____/|____/
+#
+
+#  _           _        _ _
+# (_)         | |      | | |
+#  _ _ __  ___| |_ __ _| | |
+# | | '_ \/ __| __/ _` | | |
+# | | | | \__ \ || (_| | | |
+# |_|_| |_|___/\__\__,_|_|_|
+
+function db_install_schema {
+  $MYSQL "
+
+    #
+    # Table structure for table 'radacct'
+    #
+
+    CREATE TABLE radacct (
+      radacctid bigint(21) NOT NULL auto_increment,
+      acctsessionid varchar(64) NOT NULL default '',
+      acctuniqueid varchar(32) NOT NULL default '',
+      username varchar(64) NOT NULL default '',
+      groupname varchar(64) NOT NULL default '',
+      realm varchar(64) default '',
+      nasipaddress varchar(15) NOT NULL default '',
+      nasportid varchar(15) default NULL,
+      nasporttype varchar(32) default NULL,
+      acctstarttime datetime NULL default NULL,
+      acctstoptime datetime NULL default NULL,
+      acctsessiontime int(12) default NULL,
+      acctauthentic varchar(32) default NULL,
+      connectinfo_start varchar(50) default NULL,
+      connectinfo_stop varchar(50) default NULL,
+      acctinputoctets bigint(20) default NULL,
+      acctoutputoctets bigint(20) default NULL,
+      calledstationid varchar(50) NOT NULL default '',
+      callingstationid varchar(50) NOT NULL default '',
+      acctterminatecause varchar(32) NOT NULL default '',
+      servicetype varchar(32) default NULL,
+      framedprotocol varchar(32) default NULL,
+      framedipaddress varchar(15) NOT NULL default '',
+      acctstartdelay int(12) default NULL,
+      acctstopdelay int(12) default NULL,
+      xascendsessionsvrkey varchar(10) default NULL,
+      PRIMARY KEY  (radacctid),
+      KEY username (username),
+      KEY framedipaddress (framedipaddress),
+      KEY acctsessionid (acctsessionid),
+      KEY acctsessiontime (acctsessiontime),
+      KEY acctuniqueid (acctuniqueid),
+      KEY acctstarttime (acctstarttime),
+      KEY acctstoptime (acctstoptime),
+      KEY nasipaddress (nasipaddress)
+    ) ;
+
+    #
+    # Table structure for table 'radcheck'
+    #
+
+    CREATE TABLE radcheck (
+      id int(11) unsigned NOT NULL auto_increment,
+      username varchar(64) NOT NULL default '',
+      attribute varchar(64)  NOT NULL default '',
+      op char(2) NOT NULL DEFAULT '==',
+      value varchar(253) NOT NULL default '',
+      PRIMARY KEY  (id),
+      KEY username (username(32))
+    ) ;
+
+    #
+    # Table structure for table 'radgroupcheck'
+    #
+
+    CREATE TABLE radgroupcheck (
+      id int(11) unsigned NOT NULL auto_increment,
+      groupname varchar(64) NOT NULL default '',
+      attribute varchar(64)  NOT NULL default '',
+      op char(2) NOT NULL DEFAULT '==',
+      value varchar(253)  NOT NULL default '',
+      PRIMARY KEY  (id),
+      KEY groupname (groupname(32))
+    ) ;
+
+    #
+    # Table structure for table 'radgroupreply'
+    #
+
+    CREATE TABLE radgroupreply (
+      id int(11) unsigned NOT NULL auto_increment,
+      groupname varchar(64) NOT NULL default '',
+      attribute varchar(64)  NOT NULL default '',
+      op char(2) NOT NULL DEFAULT '=',
+      value varchar(253)  NOT NULL default '',
+      PRIMARY KEY  (id),
+      KEY groupname (groupname(32))
+    ) ;
+
+    #
+    # Table structure for table 'radreply'
+    #
+
+    CREATE TABLE radreply (
+      id int(11) unsigned NOT NULL auto_increment,
+      username varchar(64) NOT NULL default '',
+      attribute varchar(64) NOT NULL default '',
+      op char(2) NOT NULL DEFAULT '=',
+      value varchar(253) NOT NULL default '',
+      PRIMARY KEY  (id),
+      KEY username (username(32))
+    ) ;
+
+
+    #
+    # Table structure for table 'radusergroup'
+    #
+
+    CREATE TABLE radusergroup (
+      username varchar(64) NOT NULL default '',
+      groupname varchar(64) NOT NULL default '',
+      priority int(11) NOT NULL default '1',
+      KEY username (username(32))
+    ) ;
+
+    #
+    # Table structure for table 'radpostauth'
+    #
+
+    CREATE TABLE radpostauth (
+      id int(11) NOT NULL auto_increment,
+      username varchar(64) NOT NULL default '',
+      pass varchar(64) NOT NULL default '',
+      reply varchar(32) NOT NULL default '',
+      authdate timestamp NOT NULL,
+      PRIMARY KEY  (id)
+    ) ;
+
+  "
+}
+
+function db_install_nas {
+  $MYSQL "
+
+    #
+    # Table structure for table 'nas'
+    #
+
+    CREATE TABLE nas (
+      id int(10) NOT NULL auto_increment,
+      nasname varchar(128) NOT NULL,
+      shortname varchar(32),
+      type varchar(30) DEFAULT 'other',
+      ports int(5),
+      secret varchar(60) DEFAULT 'secret' NOT NULL,
+      server varchar(64),
+      community varchar(50),
+      description varchar(200) DEFAULT 'RADIUS Client',
+      PRIMARY KEY (id),
+      KEY nasname (nasname)
+    );
+
+  "
+}
+
+function db_install_cui {
+  $MYSQL "
+
+    #
+    # Table structure for table 'cui'
+    #
+
+    CREATE TABLE cui (
+      clientipaddress varchar(15) NOT NULL default '',
+      callingstationid varchar(50) NOT NULL default '',
+      username varchar(64) NOT NULL default '',
+      cui varchar(32) NOT NULL default '',
+      creationdate timestamp NOT NULL default CURRENT_TIMESTAMP,
+      lastaccounting timestamp NOT NULL default '0000-00-00 00:00:00',
+      PRIMARY KEY  (username,clientipaddress,callingstationid)
+    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  "
+}
+
+function db_install_ippool {
+  $MYSQL "
+
+    #
+    # Table structure for table 'radippool'
+    #
+
+    CREATE TABLE radippool (
+      id                    int(11) unsigned NOT NULL auto_increment,
+      pool_name             varchar(30) NOT NULL,
+      framedipaddress       varchar(15) NOT NULL default '',
+      nasipaddress          varchar(15) NOT NULL default '',
+      calledstationid       VARCHAR(30) NOT NULL,
+      callingstationid      VARCHAR(30) NOT NULL,
+      expiry_time           DATETIME NULL default NULL,
+      username              varchar(64) NOT NULL default '',
+      pool_key              varchar(30) NOT NULL,
+      PRIMARY KEY (id),
+      KEY radippool_poolname_expire (pool_name, expiry_time),
+      KEY framedipaddress (framedipaddress),
+      KEY radippool_nasip_poolkey_ipaddress (nasipaddress, pool_key, framedipaddress)
+    ) ENGINE=InnoDB;
+  "
+}
+
+function db_install_wimax {
+  $MYSQL "
+
+    #
+    # WiMAX Table structure for table 'wimax',
+    # which replaces the 'radpostauth' table.
+    #
+
+    CREATE TABLE wimax (
+      id int(11) NOT NULL auto_increment,
+      username varchar(64) NOT NULL default '',
+      authdate timestamp NOT NULL,
+      spi varchar(16) NOT NULL default '',
+      mipkey varchar(400) NOT NULL default '',
+      lifetime int(12) default NULL,
+      PRIMARY KEY  (id),
+      KEY username (username),
+      KEY spi (spi)
+    ) ;
+  "
+}
+
+#              _           _        _ _
+#             (_)         | |      | | |
+#  _   _ _ __  _ _ __  ___| |_ __ _| | |
+# | | | | '_ \| | '_ \/ __| __/ _` | | |
+# | |_| | | | | | | | \__ \ || (_| | | |
+#  \__,_|_| |_|_|_| |_|___/\__\__,_|_|_|
+
+function db_uninstall_schema {
+  $MYSQL "
+    DROP TABLE IF EXISTS
+      radacct,
+      radcheck,
+      radgroupcheck,
+      radgroupreply,
+      radreply,
+      radusergroup,
+      radpostauth;
+  "
+}
+
+function db_uninstall_nas {
+  $MYSQL "
+    DROP TABLE IF EXISTS
+      nas;
+  "
+}
+
+function db_uninstall_cui {
+  $MYSQL "
+    DROP TABLE IF EXISTS
+      cui;
+  "
+}
+
+function db_uninstall_ippool {
+  $MYSQL "
+    DROP TABLE IF EXISTS
+      ippool;
+  "
+}
+
+function db_uninstall_wimax {
+  $MYSQL "
+    DROP TABLE IF EXISTS
+      wimax;
+  "
+}
+
+#   _____ _______    _______
+#  / ____|__   __|/\|__   __|
+# | (___    | |  /  \  | |
+#  \___ \   | | / /\ \ | |
+#  ____) |  | |/ ____ \| |
+# |_____/   |_/_/    \_\_|
+
+function last_logins {
+  $MYSQL "
+    SELECT username, authdate, nasip FROM radpostauth
+    WHERE reply = 'Access-Accept'
+      AND nasip <> ''
+    ORDER BY authdate
+    DESC LIMIT 10;
+  "
+}
+
+function logins_per_nas {
+  $MYSQL "SELECT nas.shortname, COUNT(nas.id) AS logincount
+  FROM nas
+  LEFT JOIN radpostauth
+  ON radpostauth.nasip = nas.nasname
+  GROUP BY nas.id;"
+}
+
+function logins_per_user {
+  $MYSQL "SELECT username, COUNT(username) AS logincount
+  FROM radpostauth
+  WHERE reply = 'Access-Accept'
+    AND nasip <> ''
+  GROUP BY username
+  ORDER BY logincount DESC;"
+}
+
+function logins_per_user_last_day {
+  $MYSQL "SELECT username, COUNT(username) AS logincount
+  FROM radpostauth
+  WHERE reply = 'Access-Accept'
+    AND nasip <> ''
+    AND UNIX_TIMESTAMP('2013-07-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400
+  GROUP BY username
+  ORDER BY logincount DESC;"
+}
+
+case "$1" in
+
+  stat)
+
+    case "$2" in
+      last-logins)
+        last_logins
+      ;;
+
+      logins-per-nas)
+        logins_per_nas
+      ;;
+
+      logins-per-user)
+        logins_per_user
+      ;;
+
+      logins-per-user-day)
+        logins_per_user_last_day
+      ;;
+
+    esac
+    ;;
+
+    db)
+
+    case "$2" in
+      install)
+
+      case "$3" in
+        schema)
+          db_install_schema
+        ;;
+
+        nas)
+          db_install_nas
+        ;;
+
+        cui)
+          db_install_cui
+        ;;
+
+        ippool)
+          db_install_ippool
+        ;;
+
+        wimax)
+          db_install_wimax
+        ;;
+
+        all)
+          db_install_schema
+          db_install_nas
+          db_install_cui
+          db_install_ippool
+          db_install_wimax
+        ;;
+
+        *)
+          db_install_schema
+        ;;
+
+      esac
+      ;;
+
+      uninstall)
+
+      case "$3" in
+        schema)
+          db_uninstall_schema
+        ;;
+
+        nas)
+          db_uninstall_nas
+        ;;
+
+        cui)
+          db_uninstall_cui
+        ;;
+
+        ippool)
+          db_uninstall_ippool
+        ;;
+
+        wimax)
+          db_uninstall_wimax
+        ;;
+
+        all)
+          db_uninstall_schema
+          db_uninstall_nas
+          db_uninstall_cui
+          db_uninstall_ippool
+          db_uninstall_wimax
+        ;;
+
+        *)
+          db_uninstall_schema
+        ;;
+
+      esac
+      ;;
+
+    esac
+    ;;
+
+  *)
+
+    help
+    ;;
+
+esac
+
+
+
