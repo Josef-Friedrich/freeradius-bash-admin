@@ -1,16 +1,24 @@
 
 # commands
+## user
 
-rad add
+rad user add
 
-rad upd
+rad user update
 
-rad del
+rad user delete
+
+## nas
+
+rad nas add
+
+rad nas update
+
+rad nas delete
+
+## stat
 
 rad stat
-
-rad init
-
 
 ## db
 

@@ -6,6 +6,97 @@ MYSQL_DEV="mysql --user=root --password=root radius -e"
 
 MYSQL=$MYSQL_DEV
 
+#  _    _  _____ ______ _____
+# | |  | |/ ____|  ____|  __ \
+# | |  | | (___ | |__  | |__) |
+# | |  | |\___ \|  __| |  _  /
+# | |__| |____) | |____| | \ \
+#  \____/|_____/|______|_|  \_\
+
+function user_add {
+  USERNAME="$1"
+  VALUE="$2"
+
+  $MYSQL "
+    INSERT
+      INTO radcheck (username,attribute,op,value)
+      VALUES ('$USERNAME','Cleartext-Password',':=','$VALUE');
+  "
+}
+
+#  _   _           _____
+# | \ | |   /\    / ____|
+# |  \| |  /  \  | (___
+# | . ` | / /\ \  \___ \
+# | |\  |/ ____ \ ____) |
+# |_| \_/_/    \_\_____/
+
+function nas_add {
+  NASNAME="$1"
+  SHORTNAME="$2"
+  SECRET="$3"
+
+  $MYSQL "
+    INSERT
+      INTO nas (nasname,shortname,secret)
+      VALUES ('$NASNAME','$SHORTNAME','$SECRET');
+  "
+}
+
+function nas_delete {
+  SHORTNAME="$1"
+
+  $MYSQL "
+    DELETE
+      FROM nas
+      WHERE shortname = '$SHORTNAME';
+  "
+}
+
+#   _____ _______    _______
+#  / ____|__   __|/\|__   __|
+# | (___    | |  /  \  | |
+#  \___ \   | | / /\ \ | |
+#  ____) |  | |/ ____ \| |
+# |_____/   |_/_/    \_\_|
+
+function last_logins {
+  $MYSQL "
+    SELECT username, authdate, nasip FROM radpostauth
+    WHERE reply = 'Access-Accept'
+      AND nasip <> ''
+    ORDER BY authdate
+    DESC LIMIT 10;
+  "
+}
+
+function logins_per_nas {
+  $MYSQL "SELECT nas.shortname, COUNT(nas.id) AS logincount
+  FROM nas
+  LEFT JOIN radpostauth
+  ON radpostauth.nasip = nas.nasname
+  GROUP BY nas.id;"
+}
+
+function logins_per_user {
+  $MYSQL "SELECT username, COUNT(username) AS logincount
+  FROM radpostauth
+  WHERE reply = 'Access-Accept'
+    AND nasip <> ''
+  GROUP BY username
+  ORDER BY logincount DESC;"
+}
+
+function logins_per_user_last_day {
+  $MYSQL "SELECT username, COUNT(username) AS logincount
+  FROM radpostauth
+  WHERE reply = 'Access-Accept'
+    AND nasip <> ''
+    AND UNIX_TIMESTAMP('2013-07-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400
+  GROUP BY username
+  ORDER BY logincount DESC;"
+}
+
 #  _____  ____
 # |  __ \|  _ \
 # | |  | | |_) |
@@ -277,7 +368,7 @@ function db_uninstall_cui {
 function db_uninstall_ippool {
   $MYSQL "
     DROP TABLE IF EXISTS
-      ippool;
+      radippool;
   "
 }
 
@@ -288,51 +379,28 @@ function db_uninstall_wimax {
   "
 }
 
-#   _____ _______    _______
-#  / ____|__   __|/\|__   __|
-# | (___    | |  /  \  | |
-#  \___ \   | | / /\ \ | |
-#  ____) |  | |/ ____ \| |
-# |_____/   |_/_/    \_\_|
-
-function last_logins {
-  $MYSQL "
-    SELECT username, authdate, nasip FROM radpostauth
-    WHERE reply = 'Access-Accept'
-      AND nasip <> ''
-    ORDER BY authdate
-    DESC LIMIT 10;
-  "
-}
-
-function logins_per_nas {
-  $MYSQL "SELECT nas.shortname, COUNT(nas.id) AS logincount
-  FROM nas
-  LEFT JOIN radpostauth
-  ON radpostauth.nasip = nas.nasname
-  GROUP BY nas.id;"
-}
-
-function logins_per_user {
-  $MYSQL "SELECT username, COUNT(username) AS logincount
-  FROM radpostauth
-  WHERE reply = 'Access-Accept'
-    AND nasip <> ''
-  GROUP BY username
-  ORDER BY logincount DESC;"
-}
-
-function logins_per_user_last_day {
-  $MYSQL "SELECT username, COUNT(username) AS logincount
-  FROM radpostauth
-  WHERE reply = 'Access-Accept'
-    AND nasip <> ''
-    AND UNIX_TIMESTAMP('2013-07-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400
-  GROUP BY username
-  ORDER BY logincount DESC;"
-}
-
 case "$1" in
+
+  user)
+    case "$2" in
+      add)
+        user_add "$3" "$4"
+      ;;
+
+    esac
+    ;;
+
+  nas)
+    case "$2" in
+      add)
+        nas_add "$3" "$4" "$5"
+      ;;
+
+      delete)
+        nas_delete "$3"
+      ;;
+    esac
+    ;;
 
   stat)
 
