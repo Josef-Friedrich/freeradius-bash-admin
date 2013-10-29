@@ -16,7 +16,7 @@ MYSQL=$MYSQL_DEV
 function user_add {
   #USERNAME="$1"
   #VALUE="$2"
-  
+
   echo "Add a new user!"
   echo -n "username: "
   read USERNAME
@@ -155,32 +155,33 @@ function db_install_schema {
     #
 
     CREATE TABLE radacct (
-      radacctid            bigint(21) NOT NULL auto_increment,
-      acctsessionid        varchar(64) NOT NULL default '',
-      acctuniqueid         varchar(32) NOT NULL default '',
-      username             varchar(64) NOT NULL default '',
-      groupname            varchar(64) NOT NULL default '',
-      realm                varchar(64) default '',
-      nasipaddress         varchar(15) NOT NULL default '',
-      nasportid            varchar(15) default NULL,
-      nasporttype          varchar(32) default NULL,
-      acctstarttime        datetime NULL default NULL,
-      acctstoptime         datetime NULL default NULL,
-      acctsessiontime      int(12) default NULL,
-      acctauthentic        varchar(32) default NULL,
-      connectinfo_start    varchar(50) default NULL,
-      connectinfo_stop     varchar(50) default NULL,
-      acctinputoctets      bigint(20) default NULL,
-      acctoutputoctets     bigint(20) default NULL,
-      calledstationid      varchar(50) NOT NULL default '',
-      callingstationid     varchar(50) NOT NULL default '',
-      acctterminatecause   varchar(32) NOT NULL default '',
-      servicetype          varchar(32) default NULL,
-      framedprotocol       varchar(32) default NULL,
-      framedipaddress      varchar(15) NOT NULL default '',
-      acctstartdelay       int(12) default NULL,
-      acctstopdelay        int(12) default NULL,
-      xascendsessionsvrkey varchar(10) default NULL,
+
+      radacctid             bigint(21)              NOT NULL auto_increment,
+      acctsessionid         varchar(64)             NOT NULL default '',
+      acctuniqueid          varchar(32)             NOT NULL default '',
+      username              varchar(64)             NOT NULL default '',
+      groupname             varchar(64)             NOT NULL default '',
+      realm                 varchar(64)             default '',
+      nasipaddress          varchar(15)             NOT NULL default '',
+      nasportid             varchar(15)             default NULL,
+      nasporttype           varchar(32)             default NULL,
+      acctstarttime         datetime                NULL default NULL,
+      acctstoptime          datetime                NULL default NULL,
+      acctsessiontime       int(12)                 default NULL,
+      acctauthentic         varchar(32)             default NULL,
+      connectinfo_start     varchar(50)             default NULL,
+      connectinfo_stop      varchar(50)             default NULL,
+      acctinputoctets       bigint(20)              default NULL,
+      acctoutputoctets      bigint(20)              default NULL,
+      calledstationid       varchar(50)             NOT NULL default '',
+      callingstationid      varchar(50)             NOT NULL default '',
+      acctterminatecause    varchar(32)             NOT NULL default '',
+      servicetype           varchar(32)             default NULL,
+      framedprotocol        varchar(32)             default NULL,
+      framedipaddress       varchar(15)             NOT NULL default '',
+      acctstartdelay        int(12)                 default NULL,
+      acctstopdelay         int(12)                 default NULL,
+      xascendsessionsvrkey  varchar(10)             default NULL,
 
       PRIMARY KEY (radacctid),
       KEY username (username),
@@ -198,11 +199,12 @@ function db_install_schema {
     #
 
     CREATE TABLE radcheck (
-      id                   int(11) unsigned NOT NULL auto_increment,
-      username             varchar(64) NOT NULL default '',
-      attribute            varchar(64)  NOT NULL default '',
-      op                   char(2) NOT NULL DEFAULT '==',
-      value                varchar(253) NOT NULL default '',
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '==',
+      value                 varchar(253)            NOT NULL default '',
 
       PRIMARY KEY (id),
       KEY username (username(32))
@@ -213,11 +215,12 @@ function db_install_schema {
     #
 
     CREATE TABLE radgroupcheck (
-      id int(11) unsigned NOT NULL auto_increment,
-      groupname varchar(64) NOT NULL default '',
-      attribute varchar(64)  NOT NULL default '',
-      op char(2) NOT NULL DEFAULT '==',
-      value varchar(253)  NOT NULL default '',
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      groupname             varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '==',
+      value                 varchar(253)            NOT NULL default '',
 
       PRIMARY KEY  (id),
       KEY groupname (groupname(32))
@@ -228,11 +231,12 @@ function db_install_schema {
     #
 
     CREATE TABLE radgroupreply (
-      id int(11) unsigned NOT NULL auto_increment,
-      groupname varchar(64) NOT NULL default '',
-      attribute varchar(64)  NOT NULL default '',
-      op char(2) NOT NULL DEFAULT '=',
-      value varchar(253)  NOT NULL default '',
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      groupname             varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '=',
+      value                 varchar(253)            NOT NULL default '',
 
       PRIMARY KEY  (id),
       KEY groupname (groupname(32))
@@ -243,11 +247,12 @@ function db_install_schema {
     #
 
     CREATE TABLE radreply (
-      id int(11) unsigned NOT NULL auto_increment,
-      username varchar(64) NOT NULL default '',
-      attribute varchar(64) NOT NULL default '',
-      op char(2) NOT NULL DEFAULT '=',
-      value varchar(253) NOT NULL default '',
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '=',
+      value                 varchar(253)            NOT NULL default '',
 
       PRIMARY KEY (id),
       KEY username (username(32))
@@ -259,9 +264,10 @@ function db_install_schema {
     #
 
     CREATE TABLE radusergroup (
-      username varchar(64) NOT NULL default '',
-      groupname varchar(64) NOT NULL default '',
-      priority int(11) NOT NULL default '1',
+
+      username              varchar(64)             NOT NULL default '',
+      groupname             varchar(64)             NOT NULL default '',
+      priority              int(11)                 NOT NULL default '1',
 
       KEY username (username(32))
     ) ;
@@ -271,12 +277,13 @@ function db_install_schema {
     #
 
     CREATE TABLE radpostauth (
-      id int(11) NOT NULL auto_increment,
-      username varchar(64) NOT NULL default '',
-      pass varchar(64) NOT NULL default '',
-      nasip varchar(64) NOT NULL default '',
-      reply varchar(32) NOT NULL default '',
-      authdate timestamp NOT NULL,
+
+      id                    int(11)                 NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      pass                  varchar(64)             NOT NULL default '',
+      nasip                 varchar(64)             NOT NULL default '',
+      reply                 varchar(32)             NOT NULL default '',
+      authdate              timestamp               NOT NULL,
 
       PRIMARY KEY  (id)
     ) ;
@@ -292,15 +299,16 @@ function db_install_nas {
     #
 
     CREATE TABLE nas (
-      id int(10) NOT NULL auto_increment,
-      nasname varchar(128) NOT NULL,
-      shortname varchar(32),
-      type varchar(30) DEFAULT 'other',
-      ports int(5),
-      secret varchar(60) DEFAULT 'secret' NOT NULL,
-      server varchar(64),
-      community varchar(50),
-      description varchar(200) DEFAULT 'RADIUS Client',
+
+      id                    int(10)                 NOT NULL auto_increment,
+      nasname               varchar(128)            NOT NULL,
+      shortname             varchar(32),
+      type                  varchar(30)             DEFAULT 'other',
+      ports                 int(5),
+      secret                varchar(60)             DEFAULT 'secret' NOT NULL,
+      server                varchar(64),
+      community             varchar(50),
+      description           varchar(200)            DEFAULT 'RADIUS Client',
 
       PRIMARY KEY (id),
       KEY nasname (nasname)
@@ -317,12 +325,13 @@ function db_install_cui {
     #
 
     CREATE TABLE cui (
-      clientipaddress varchar(15) NOT NULL default '',
-      callingstationid varchar(50) NOT NULL default '',
-      username varchar(64) NOT NULL default '',
-      cui varchar(32) NOT NULL default '',
-      creationdate timestamp NOT NULL default CURRENT_TIMESTAMP,
-      lastaccounting timestamp NOT NULL default '0000-00-00 00:00:00',
+
+      clientipaddress       varchar(15)             NOT NULL default '',
+      callingstationid      varchar(50)             NOT NULL default '',
+      username              varchar(64)             NOT NULL default '',
+      cui                   varchar(32)             NOT NULL default '',
+      creationdate          timestamp               NOT NULL default CURRENT_TIMESTAMP,
+      lastaccounting        timestamp               NOT NULL default '0000-00-00 00:00:00',
 
       PRIMARY KEY  (username,clientipaddress,callingstationid)
     ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -337,15 +346,16 @@ function db_install_ippool {
     #
 
     CREATE TABLE radippool (
-      id                    int(11) unsigned NOT NULL auto_increment,
-      pool_name             varchar(30) NOT NULL,
-      framedipaddress       varchar(15) NOT NULL default '',
-      nasipaddress          varchar(15) NOT NULL default '',
-      calledstationid       VARCHAR(30) NOT NULL,
-      callingstationid      VARCHAR(30) NOT NULL,
-      expiry_time           DATETIME NULL default NULL,
-      username              varchar(64) NOT NULL default '',
-      pool_key              varchar(30) NOT NULL,
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      pool_name             varchar(30)             NOT NULL,
+      framedipaddress       varchar(15)             NOT NULL default '',
+      nasipaddress          varchar(15)             NOT NULL default '',
+      calledstationid       VARCHAR(30)             NOT NULL,
+      callingstationid      VARCHAR(30)             NOT NULL,
+      expiry_time           DATETIME                NULL default NULL,
+      username              varchar(64)             NOT NULL default '',
+      pool_key              varchar(30)             NOT NULL,
 
       PRIMARY KEY (id),
       KEY radippool_poolname_expire (pool_name, expiry_time),
@@ -364,12 +374,13 @@ function db_install_wimax {
     #
 
     CREATE TABLE wimax (
-      id int(11) NOT NULL auto_increment,
-      username varchar(64) NOT NULL default '',
-      authdate timestamp NOT NULL,
-      spi varchar(16) NOT NULL default '',
-      mipkey varchar(400) NOT NULL default '',
-      lifetime int(12) default NULL,
+
+      id                    int(11)                 NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      authdate              timestamp               NOT NULL,
+      spi                   varchar(16)             NOT NULL default '',
+      mipkey                varchar(400)            NOT NULL default '',
+      lifetime              int(12)                 default NULL,
 
       PRIMARY KEY  (id),
       KEY username (username),
