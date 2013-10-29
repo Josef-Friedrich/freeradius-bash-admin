@@ -18,7 +18,17 @@ rad nas delete
 
 ## stat
 
-rad stat
+### user
+
+rad stat user last
+
+rad stat user count
+
+rad stat user log
+
+### nas
+
+rad stat nas count
 
 ## db
 

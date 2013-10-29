@@ -76,41 +76,46 @@ function nas_delete {
 #  ____) |  | |/ ____ \| |
 # |_____/   |_/_/    \_\_|
 
-function last_logins {
+function stat_user_last {
   $MYSQL "
     SELECT username, authdate, nasip FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
-    ORDER BY authdate
-    DESC LIMIT 10;
+    ORDER BY authdate DESC
+    LIMIT 10;
   "
 }
 
-function logins_per_nas {
-  $MYSQL "SELECT nas.shortname, COUNT(nas.id) AS logincount
-  FROM nas
-  LEFT JOIN radpostauth
-  ON radpostauth.nasip = nas.nasname
-  GROUP BY nas.id;"
+function stat_user_count {
+  LAST_DAY="AND UNIX_TIMESTAMP('2013-07-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400"
+
+  $MYSQL "
+    SELECT username, COUNT(username) AS logincount
+    FROM radpostauth
+    WHERE reply = 'Access-Accept'
+      AND nasip <> ''
+    GROUP BY username
+    ORDER BY logincount DESC;
+  "
 }
 
-function logins_per_user {
-  $MYSQL "SELECT username, COUNT(username) AS logincount
-  FROM radpostauth
-  WHERE reply = 'Access-Accept'
-    AND nasip <> ''
-  GROUP BY username
-  ORDER BY logincount DESC;"
+function stat_user_log {
+  $MYSQL "
+    SELECT *
+    FROM radpostauth
+    ORDER BY authdate DESC
+    LIMIT 20;
+  "
 }
 
-function logins_per_user_last_day {
-  $MYSQL "SELECT username, COUNT(username) AS logincount
-  FROM radpostauth
-  WHERE reply = 'Access-Accept'
-    AND nasip <> ''
-    AND UNIX_TIMESTAMP('2013-07-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400
-  GROUP BY username
-  ORDER BY logincount DESC;"
+function stat_nas_count {
+  $MYSQL "
+    SELECT nas.shortname, COUNT(nas.id) AS logincount
+    FROM nas
+    LEFT JOIN radpostauth
+    ON radpostauth.nasip = nas.nasname
+    GROUP BY nas.id;
+  "
 }
 
 #  _____  ____
@@ -428,20 +433,32 @@ case "$1" in
   stat)
 
     case "$2" in
-      last-logins)
-        last_logins
+      user)
+
+      case "$3" in
+        last)
+          stat_user_last
+        ;;
+
+        count)
+          stat_user_count
+        ;;
+
+        log)
+          stat_user_log
+        ;;
+
+      esac
       ;;
 
-      logins-per-nas)
-        logins_per_nas
-      ;;
+      nas)
 
-      logins-per-user)
-        logins_per_user
-      ;;
+      case "$3" in
+        count)
+          stat_nas_count
+        ;;
 
-      logins-per-user-day)
-        logins_per_user_last_day
+      esac
       ;;
 
     esac
