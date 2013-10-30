@@ -6,6 +6,70 @@ MYSQL_DEV="mysql --user=root --password=root radius -e"
 
 MYSQL=$MYSQL_DEV
 
+# #     # ####### #       ######  ####### ######
+# #     # #       #       #     # #       #     #
+# #     # #       #       #     # #       #     #
+# ####### #####   #       ######  #####   ######
+# #     # #       #       #       #       #   #
+# #     # #       #       #       #       #    #
+# #     # ####### ####### #       ####### #     #
+#
+
+function password {
+  # -a algorithm
+  #        use algorithm for password generation.
+  #        0 - (default) pronounceable password generation
+  #        1 - random character password generation
+  #
+  # -n num_of_pass
+  #        generate num_of_pass number of passwords. Default is 6.
+  #
+  # -m min_pass_len
+  #        generate  password  with  minimum  length   min_pass_len.    If
+  #        min_pass_len  >  max_pass_len then max_pass_len = min_pass_len.
+  #        Default minimum password length is 8.
+  #
+  # -x max_pass_len
+  #        generate  password  with  maximum  length   max_pass_len.    If
+  #        min_pass_len  >  max_pass_len then max_pass_len = min_pass_len.
+  #        Default maximum password length is 10.
+  #
+  # -M mode
+  #        Use symbolsets specified with  mode  for  password  generation.
+  #        mode  is  a text string consisting of characters S, s, N, n, C,
+  #        c, L, l. Where:
+  #
+  #        L      generator must use small letters symbol  set  for  every
+  #               generated  password  (always  present  if  pronounceable
+  #               password generation algorithm is used).
+
+  apg -a 1 -n 1 -m 8 -x 8 -M L
+}
+
+
+# Strong
+F_STG='\033[0;31m' # Red
+# Emphazie
+F_EMP='\033[0;32m' # Green
+# Comment
+F_CMT='\033[0;33m' # Yellow
+# Reset
+F_RST='\033[0m'
+
+function echo_question {
+  echo -e "${F_STG}$*?${F_RST}"
+}
+
+function echo_value {
+
+  if [ -n "$2" ]; then
+    SUGGESTION=" [${F_CMT}$2${F_RST}]"
+  fi
+
+  echo -e -n "${F_EMP}$1${F_RST}$SUGGESTION: "
+}
+
+
 # #     #  #####  ####### ######
 # #     # #     # #       #     #
 # #     # #       #       #     #
@@ -14,20 +78,77 @@ MYSQL=$MYSQL_DEV
 # #     # #     # #       #    #
 #  #####   #####  ####### #     #
 
-function user_add {
-  #USERNAME="$1"
-  #VALUE="$2"
 
-  echo "Add a new user!"
-  echo -n "username: "
+function case_user {
+  VALUE="$1"
+  shift 1
+  VALUES=$@
+
+  case $VALUE in
+
+    add)
+      user_add $VALUES
+    ;;
+
+    show)
+      user_show $VALUES
+    ;;
+
+    update)
+      user_update $VALUES
+    ;;
+
+    delete)
+      user_delete $VALUES
+    ;;
+
+    *)
+
+    ;;
+
+  esac
+}
+
+function user_add {
+  GUEST="$1"
+
+  echo_question "Do you want to create a new user"
+
+  echo_value "username"
+
   read USERNAME
-  echo -n "password: "
-  read PASSWORD
+
+  PASSWORD=$(password)
+  echo_value  "password" $PASSWORD
+  read INPUT
+
+  if [ -n "$INPUT" ]; then
+    PASSWORD="$INPUT"
+  fi
 
   $MYSQL "
     INSERT
       INTO radcheck (username,attribute,op,value)
       VALUES ('$USERNAME','Cleartext-Password',':=','$PASSWORD');
+  "
+
+  if [ "$GUEST" == "guest" ]; then
+
+    $MYSQL "
+      INSERT
+        INTO radcheck (username,attribute,op,value)
+        VALUES ('$USERNAME','Access-Period',':=','360');
+    "
+
+  fi
+
+  echo "Following values have been written to the database:"
+
+  $MYSQL "
+    SELECT *
+    FROM radcheck
+    WHERE username = '$USERNAME'
+
   "
 }
 
@@ -37,6 +158,31 @@ function user_show {
       FROM radcheck
       WHERE attribute = 'Cleartext-Password'
         AND username <> '';
+  "
+}
+
+function user_update {
+
+  $MYSQL "
+
+  "
+}
+
+function user_delete {
+  SHORTNAME="$1"
+
+  if [ -z "$SHORTNAME" ]; then
+
+    echo "Enter username!" >2&
+
+    exit 1
+
+  fi
+
+  $MYSQL "
+    DELETE
+      FROM radcheck
+      WHERE shortname = '$SHORTNAME';
   "
 }
 
@@ -77,6 +223,14 @@ function nas_show {
 
 function nas_delete {
   SHORTNAME="$1"
+
+  if [ -z "$SHORTNAME" ]; then
+
+    echo "Enter username!" >2&
+
+    exit 1
+
+  fi
 
   $MYSQL "
     DELETE
@@ -583,16 +737,11 @@ function case_db_uninstall {
 
 case "$1" in
 
-  user)
-    case "$2" in
-      add)
-        user_add "$3" "$4"
-      ;;
-      show)
-        user_show
-      ;;
 
-    esac
+
+  user)
+    shift 1
+    case_user $@
     ;;
 
   nas)
