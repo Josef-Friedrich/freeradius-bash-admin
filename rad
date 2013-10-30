@@ -142,12 +142,6 @@ function user_add {
 
   fi
 
-  $MYSQL "
-    INSERT
-      INTO radreply (username,attribute,op,value)
-      VALUES ('$USERNAME','Reply-Message',':=','Willkommen im Wlan des Pirckheimer-Gymnasiums.');
-  "
-
   echo "Following values have been written to the database:"
 
   $MYSQL "
