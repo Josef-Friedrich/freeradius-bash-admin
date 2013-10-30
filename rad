@@ -70,46 +70,38 @@ function echo_value {
 }
 
 
-# #     #  #####  ####### ######
-# #     # #     # #       #     #
-# #     # #       #       #     #
-# #     #  #####  #####   ######
-# #     #       # #       #   #
-# #     # #     # #       #    #
-#  #####   #####  ####### #     #
+#    #    ######  ######
+#   # #   #     # #     #
+#  #   #  #     # #     #
+# #     # #     # #     #
+# ####### #     # #     #
+# #     # #     # #     #
+# #     # ######  ######
 
 
-function case_user {
+function add {
   VALUE="$1"
   shift 1
   VALUES=$@
 
   case $VALUE in
 
-    add)
+    user)
       user_add $VALUES
     ;;
 
-    show)
+    nas)
       user_show $VALUES
     ;;
 
-    update)
-      user_update $VALUES
-    ;;
-
-    delete)
-      user_delete $VALUES
-    ;;
-
     *)
-
+      help
     ;;
 
   esac
 }
 
-function user_add {
+function add_user {
   GUEST="$1"
 
   echo_question "Do you want to create a new user"
@@ -152,49 +144,7 @@ function user_add {
   "
 }
 
-function user_show {
-  $MYSQL "
-    SELECT username, value as password
-      FROM radcheck
-      WHERE attribute = 'Cleartext-Password'
-        AND username <> '';
-  "
-}
-
-function user_update {
-
-  $MYSQL "
-
-  "
-}
-
-function user_delete {
-  SHORTNAME="$1"
-
-  if [ -z "$SHORTNAME" ]; then
-
-    echo "Enter username!" >2&
-
-    exit 1
-
-  fi
-
-  $MYSQL "
-    DELETE
-      FROM radcheck
-      WHERE shortname = '$SHORTNAME';
-  "
-}
-
-# #     #    #     #####
-# ##    #   # #   #     #
-# # #   #  #   #  #
-# #  #  # #     #  #####
-# #   # # #######       #
-# #    ## #     # #     #
-# #     # #     #  #####
-
-function nas_add {
+function add_nas {
   #NASNAME="$1"
   #SHORTNAME="$2"
   #SECRET="$3"
@@ -214,14 +164,76 @@ function nas_add {
   "
 }
 
-function nas_show {
+
+
+#  #####  #     # ####### #     #
+# #     # #     # #     # #  #  #
+# #       #     # #     # #  #  #
+#  #####  ####### #     # #  #  #
+#       # #     # #     # #  #  #
+# #     # #     # #     # #  #  #
+#  #####  #     # #######  ## ##
+
+
+function show_user {
+  $MYSQL "
+    SELECT username, value as password
+      FROM radcheck
+      WHERE attribute = 'Cleartext-Password'
+        AND username <> '';
+  "
+}
+
+function show_nas {
   $MYSQL "
     SELECT shortname, secret, nasname AS ip
       FROM nas;
   "
 }
 
-function nas_delete {
+# #     # ######  ######
+# #     # #     # #     #
+# #     # #     # #     #
+# #     # ######  #     #
+# #     # #       #     #
+# #     # #       #     #
+#  #####  #       ######
+
+function upd_user {
+
+  $MYSQL "
+
+  "
+}
+
+# ######  ####### #
+# #     # #       #
+# #     # #       #
+# #     # #####   #
+# #     # #       #
+# #     # #       #
+# ######  ####### #######
+
+function del_user {
+  SHORTNAME="$1"
+
+  if [ -z "$SHORTNAME" ]; then
+
+    echo "Enter username!" >2&
+
+    exit 1
+
+  fi
+
+  $MYSQL "
+    DELETE
+      FROM radcheck
+      WHERE shortname = '$SHORTNAME';
+  "
+}
+
+
+function del_nas {
   SHORTNAME="$1"
 
   if [ -z "$SHORTNAME" ]; then
@@ -310,22 +322,54 @@ function stat_db_table {
   "
 }
 
-# ######  ######
-# #     # #     #
-# #     # #     #
-# #     # ######
-# #     # #     #
-# #     # #     #
-# ######  ######
+# ### #     #  #####  #######
+#  #  ##    # #     #    #
+#  #  # #   # #          #
+#  #  #  #  #  #####     #
+#  #  #   # #       #    #
+#  #  #    ## #     #    #
+# ### #     #  #####     #
 
-# # #    #  ####  #####   ##   #      #
-# # ##   # #        #    #  #  #      #
-# # # #  #  ####    #   #    # #      #
-# # #  # #      #   #   ###### #      #
-# # #   ## #    #   #   #    # #      #
-# # #    #  ####    #   #    # ###### ######
+function inst {
 
-function db_install_schema {
+  case "$1" in
+    schema)
+      db_install_schema
+    ;;
+
+    nas)
+      db_install_nas
+    ;;
+
+    cui)
+      db_install_cui
+    ;;
+
+    ippool)
+      db_install_ippool
+    ;;
+
+    wimax)
+      db_install_wimax
+    ;;
+
+    all)
+      db_install_schema
+      db_install_nas
+      db_install_cui
+      db_install_ippool
+      db_install_wimax
+    ;;
+
+    *)
+      db_install_schema
+    ;;
+
+  esac
+
+}
+
+function inst_schema {
   $MYSQL "
 
     #
@@ -475,7 +519,7 @@ function db_install_schema {
   "
 }
 
-function db_install_nas {
+function inst_nas {
   $MYSQL "
 
     #
@@ -502,7 +546,7 @@ function db_install_nas {
   "
 }
 
-function db_install_cui {
+function inst_cui {
   $MYSQL "
 
     #
@@ -524,7 +568,7 @@ function db_install_cui {
   "
 }
 
-function db_install_ippool {
+function inst_ippool {
   $MYSQL "
 
     #
@@ -552,7 +596,7 @@ function db_install_ippool {
   "
 }
 
-function db_install_wimax {
+function inst_wimax {
   $MYSQL "
 
     #
@@ -577,14 +621,82 @@ function db_install_wimax {
   "
 }
 
-# #    # #    # # #    #  ####  #####   ##   #      #
-# #    # ##   # # ##   # #        #    #  #  #      #
-# #    # # #  # # # #  #  ####    #   #    # #      #
-# #    # #  # # # #  # #      #   #   ###### #      #
-# #    # #   ## # #   ## #    #   #   #    # #      #
-#  ####  #    # # #    #  ####    #   #    # ###### ######
+# ######  ######  ####### ######
+# #     # #     # #       #     #
+# #     # #     # #       #     #
+# ######  ######  #####   ######
+# #       #   #   #       #
+# #       #    #  #       #
+# #       #     # ####### #
 
-function db_uninstall_schema {
+function prep {
+  $MYSQL "
+    INSERT INTO radgroupcheck
+      (groupname,attribute,op,value)
+      VALUES
+      ('guests45min','Access-Period',':=', 2700),
+      ('guests90min','Access-Period',':=', 5400),
+      ('guests9hours','Access-Period',':=', 32400);
+  "
+
+  $MYSQL "
+    INSERT INTO radgroupreply
+      (groupname,attribute,op,value)
+      VALUES
+      ('guests45min','Reply-Message',':=', 'Gast-Zugang für 45 Minuten.'),
+      ('guests90min','Reply-Message',':=', 'Gast-Zugang für 90 Minuten.'),
+      ('guests9hours','Reply-Message',':=', 'Gast-Zugang für 9 Stunden.');
+  "
+
+}
+
+# #     # #     # ### #     #  #####  #######
+# #     # ##    #  #  ##    # #     #    #
+# #     # # #   #  #  # #   # #          #
+# #     # #  #  #  #  #  #  #  #####     #
+# #     # #   # #  #  #   # #       #    #
+# #     # #    ##  #  #    ## #     #    #
+#  #####  #     # ### #     #  #####     #
+
+function uninst {
+  case "$1" in
+
+    schema)
+      db_uninstall_schema
+    ;;
+
+    nas)
+      db_uninstall_nas
+    ;;
+
+    cui)
+      db_uninstall_cui
+    ;;
+
+    ippool)
+      db_uninstall_ippool
+    ;;
+
+    wimax)
+      db_uninstall_wimax
+    ;;
+
+    all)
+      db_uninstall_schema
+      db_uninstall_nas
+      db_uninstall_cui
+      db_uninstall_ippool
+      db_uninstall_wimax
+    ;;
+
+    *)
+      db_uninstall_schema
+    ;;
+
+  esac
+}
+
+function uninst_schema {
   $MYSQL "
     DROP TABLE IF EXISTS
       radacct,
@@ -597,134 +709,56 @@ function db_uninstall_schema {
   "
 }
 
-function db_uninstall_nas {
+function uninst_nas {
   $MYSQL "
     DROP TABLE IF EXISTS
       nas;
   "
 }
 
-function db_uninstall_cui {
+function uninst_cui {
   $MYSQL "
     DROP TABLE IF EXISTS
       cui;
   "
 }
 
-function db_uninstall_ippool {
+function uninst_ippool {
   $MYSQL "
     DROP TABLE IF EXISTS
       radippool;
   "
 }
 
-function db_uninstall_wimax {
+function uninst_wimax {
   $MYSQL "
     DROP TABLE IF EXISTS
       wimax;
   "
 }
 
-#  #####     #     #####  #######    ####### #     # #     #  #####  ####### ### ####### #     #  #####
-# #     #   # #   #     # #          #       #     # ##    # #     #    #     #  #     # ##    # #     #
-# #        #   #  #       #          #       #     # # #   # #          #     #  #     # # #   # #
-# #       #     #  #####  #####      #####   #     # #  #  # #          #     #  #     # #  #  #  #####
-# #       #######       # #          #       #     # #   # # #          #     #  #     # #   # #       #
-# #     # #     # #     # #          #       #     # #    ## #     #    #     #  #     # #    ## #     #
-#  #####  #     #  #####  #######    #        #####  #     #  #####     #    ### ####### #     #  #####
+# #     # ####### #       ######
+# #     # #       #       #     #
+# #     # #       #       #     #
+# ####### #####   #       ######
+# #     # #       #       #
+# #     # #       #       #
+# #     # ####### ####### #
 
-function case_db {
-  VALUE="$1"
-  shift 1
-  VALUES="$*"
+function help {
+  echo "usage: rad <command> [<args>]
 
-  case $VALUE in
-    install)
-      case_db_install $VALUES
-    ;;
-
-    uninstall)
-      case_db_install $VALUES
-    ;;
-
-  esac
-}
-
-function case_db_install {
-
-  case "$1" in
-    schema)
-      db_install_schema
-    ;;
-
-    nas)
-      db_install_nas
-    ;;
-
-    cui)
-      db_install_cui
-    ;;
-
-    ippool)
-      db_install_ippool
-    ;;
-
-    wimax)
-      db_install_wimax
-    ;;
-
-    all)
-      db_install_schema
-      db_install_nas
-      db_install_cui
-      db_install_ippool
-      db_install_wimax
-    ;;
-
-    *)
-      db_install_schema
-    ;;
-
-  esac
-
-}
-
-function case_db_uninstall {
-  case "$1" in
-
-    schema)
-      db_uninstall_schema
-    ;;
-
-    nas)
-      db_uninstall_nas
-    ;;
-
-    cui)
-      db_uninstall_cui
-    ;;
-
-    ippool)
-      db_uninstall_ippool
-    ;;
-
-    wimax)
-      db_uninstall_wimax
-    ;;
-
-    all)
-      db_uninstall_schema
-      db_uninstall_nas
-      db_uninstall_cui
-      db_uninstall_ippool
-      db_uninstall_wimax
-    ;;
-
-    *)
-      db_uninstall_schema
-    ;;
-
-  esac
+The commands are:
+   add        Add user, group, nas etc.
+   show       Show user, group, nas etc.
+   upd        Update user, group, nas etc.
+   del        Delete user, group, nas etc.
+   help       Display help topics
+   stat       Show statistics
+   log        Show logs
+   inst       Install
+   uinst      Uninstall
+   prep       Prepopulate"
 }
 
 #  #####     #     #####  #######
@@ -737,74 +771,27 @@ function case_db_uninstall {
 
 case "$1" in
 
-
-
-  user)
+  add)
     shift 1
-    case_user $@
+    add $@
     ;;
 
-  nas)
-    case "$2" in
-      add)
-        nas_add "$3" "$4" "$5"
-      ;;
-
-      delete)
-        nas_delete "$3"
-      ;;
-
-      show)
-        nas_show
-      ;;
-    esac
+  show)
+    shift 1
+    show $@
     ;;
 
-  stat)
-
-    case "$2" in
-      db)
-        stat_db_table $4
-      ;;
-
-      user)
-
-      case "$3" in
-        last)
-          stat_user_last
-        ;;
-
-        count)
-          stat_user_count
-        ;;
-
-        log)
-          stat_user_log
-        ;;
-
-      esac
-      ;;
-
-      nas)
-
-      case "$3" in
-        count)
-          stat_nas_count
-        ;;
-
-      esac
-      ;;
-
-    esac
+  upd)
+    shift 1
+    upd $@
     ;;
 
-    db)
-      shift 1
-      case_db "$*"
+  del)
+    shift 1
+    del $@
     ;;
 
   *)
-
     help
     ;;
 
