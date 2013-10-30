@@ -137,7 +137,7 @@ function user_add {
     $MYSQL "
       INSERT
         INTO radcheck (username,attribute,op,value)
-        VALUES ('$USERNAME','Access-Period',':=','360');
+        VALUES ('$USERNAME','Access-Period',':=','60');
     "
 
   fi
@@ -226,7 +226,7 @@ function nas_delete {
 
   if [ -z "$SHORTNAME" ]; then
 
-    echo "Enter username!" >2&
+    echo "Enter shortname!" >2&
 
     exit 1
 
