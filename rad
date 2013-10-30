@@ -6,12 +6,13 @@ MYSQL_DEV="mysql --user=root --password=root radius -e"
 
 MYSQL=$MYSQL_DEV
 
-#  _    _  _____ ______ _____
-# | |  | |/ ____|  ____|  __ \
-# | |  | | (___ | |__  | |__) |
-# | |  | |\___ \|  __| |  _  /
-# | |__| |____) | |____| | \ \
-#  \____/|_____/|______|_|  \_\
+# #     #  #####  ####### ######
+# #     # #     # #       #     #
+# #     # #       #       #     #
+# #     #  #####  #####   ######
+# #     #       # #       #   #
+# #     # #     # #       #    #
+#  #####   #####  ####### #     #
 
 function user_add {
   #USERNAME="$1"
@@ -39,12 +40,13 @@ function user_show {
   "
 }
 
-#  _   _           _____
-# | \ | |   /\    / ____|
-# |  \| |  /  \  | (___
-# | . ` | / /\ \  \___ \
-# | |\  |/ ____ \ ____) |
-# |_| \_/_/    \_\_____/
+# #     #    #     #####
+# ##    #   # #   #     #
+# # #   #  #   #  #
+# #  #  # #     #  #####
+# #   # # #######       #
+# #    ## #     # #     #
+# #     # #     #  #####
 
 function nas_add {
   #NASNAME="$1"
@@ -83,12 +85,13 @@ function nas_delete {
   "
 }
 
-#   _____ _______    _______
-#  / ____|__   __|/\|__   __|
-# | (___    | |  /  \  | |
-#  \___ \   | | / /\ \ | |
-#  ____) |  | |/ ____ \| |
-# |_____/   |_/_/    \_\_|
+#  #####  #######    #    #######
+# #     #    #      # #      #
+# #          #     #   #     #
+#  #####     #    #     #    #
+#       #    #    #######    #
+# #     #    #    #     #    #
+#  #####     #    #     #    #
 
 function stat_user_last {
   $MYSQL "
@@ -132,20 +135,41 @@ function stat_nas_count {
   "
 }
 
-#  _____  ____
-# |  __ \|  _ \
-# | |  | | |_) |
-# | |  | |  _ <
-# | |__| | |_) |
-# |_____/|____/
-#
+function stat_db_table {
+  TABLE="$1"
 
-#  _           _        _ _
-# (_)         | |      | | |
-#  _ _ __  ___| |_ __ _| | |
-# | | '_ \/ __| __/ _` | | |
-# | | | | \__ \ || (_| | | |
-# |_|_| |_|___/\__\__,_|_|_|
+  if [ -z "$TABLE" ]; then
+
+    echo "Select table!"
+
+    $MYSQL "
+      SHOW TABLES;
+    "
+
+    exit 1
+  fi
+
+  $MYSQL "
+    SELECT *
+    FROM $TABLE
+    LIMIT 100;
+  "
+}
+
+# ######  ######
+# #     # #     #
+# #     # #     #
+# #     # ######
+# #     # #     #
+# #     # #     #
+# ######  ######
+
+# # #    #  ####  #####   ##   #      #
+# # ##   # #        #    #  #  #      #
+# # # #  #  ####    #   #    # #      #
+# # #  # #      #   #   ###### #      #
+# # #   ## #    #   #   #    # #      #
+# # #    #  ####    #   #    # ###### ######
 
 function db_install_schema {
   $MYSQL "
@@ -399,12 +423,12 @@ function db_install_wimax {
   "
 }
 
-#              _           _        _ _
-#             (_)         | |      | | |
-#  _   _ _ __  _ _ __  ___| |_ __ _| | |
-# | | | | '_ \| | '_ \/ __| __/ _` | | |
-# | |_| | | | | | | | \__ \ || (_| | | |
-#  \__,_|_| |_|_|_| |_|___/\__\__,_|_|_|
+# #    # #    # # #    #  ####  #####   ##   #      #
+# #    # ##   # # ##   # #        #    #  #  #      #
+# #    # # #  # # # #  #  ####    #   #    # #      #
+# #    # #  # # # #  # #      #   #   ###### #      #
+# #    # #   ## # #   ## #    #   #   #    # #      #
+#  ####  #    # # #    #  ####    #   #    # ###### ######
 
 function db_uninstall_schema {
   $MYSQL "
@@ -447,6 +471,116 @@ function db_uninstall_wimax {
   "
 }
 
+#  #####     #     #####  #######    ####### #     # #     #  #####  ####### ### ####### #     #  #####
+# #     #   # #   #     # #          #       #     # ##    # #     #    #     #  #     # ##    # #     #
+# #        #   #  #       #          #       #     # # #   # #          #     #  #     # # #   # #
+# #       #     #  #####  #####      #####   #     # #  #  # #          #     #  #     # #  #  #  #####
+# #       #######       # #          #       #     # #   # # #          #     #  #     # #   # #       #
+# #     # #     # #     # #          #       #     # #    ## #     #    #     #  #     # #    ## #     #
+#  #####  #     #  #####  #######    #        #####  #     #  #####     #    ### ####### #     #  #####
+
+function case_db {
+  VALUE="$1"
+  shift 1
+  VALUES="$*"
+
+  case $VALUE in
+    install)
+      case_db_install $VALUES
+    ;;
+
+    uninstall)
+      case_db_install $VALUES
+    ;;
+
+  esac
+}
+
+function case_db_install {
+
+  case "$1" in
+    schema)
+      db_install_schema
+    ;;
+
+    nas)
+      db_install_nas
+    ;;
+
+    cui)
+      db_install_cui
+    ;;
+
+    ippool)
+      db_install_ippool
+    ;;
+
+    wimax)
+      db_install_wimax
+    ;;
+
+    all)
+      db_install_schema
+      db_install_nas
+      db_install_cui
+      db_install_ippool
+      db_install_wimax
+    ;;
+
+    *)
+      db_install_schema
+    ;;
+
+  esac
+
+}
+
+function case_db_uninstall {
+  case "$1" in
+
+    schema)
+      db_uninstall_schema
+    ;;
+
+    nas)
+      db_uninstall_nas
+    ;;
+
+    cui)
+      db_uninstall_cui
+    ;;
+
+    ippool)
+      db_uninstall_ippool
+    ;;
+
+    wimax)
+      db_uninstall_wimax
+    ;;
+
+    all)
+      db_uninstall_schema
+      db_uninstall_nas
+      db_uninstall_cui
+      db_uninstall_ippool
+      db_uninstall_wimax
+    ;;
+
+    *)
+      db_uninstall_schema
+    ;;
+
+  esac
+}
+
+#  #####     #     #####  #######
+# #     #   # #   #     # #
+# #        #   #  #       #
+# #       #     #  #####  #####
+# #       #######       # #
+# #     # #     # #     # #
+#  #####  #     #  #####  #######
+
 case "$1" in
 
   user)
@@ -480,6 +614,10 @@ case "$1" in
   stat)
 
     case "$2" in
+      db)
+        stat_db_table $4
+      ;;
+
       user)
 
       case "$3" in
@@ -512,85 +650,8 @@ case "$1" in
     ;;
 
     db)
-
-    case "$2" in
-      install)
-
-      case "$3" in
-        schema)
-          db_install_schema
-        ;;
-
-        nas)
-          db_install_nas
-        ;;
-
-        cui)
-          db_install_cui
-        ;;
-
-        ippool)
-          db_install_ippool
-        ;;
-
-        wimax)
-          db_install_wimax
-        ;;
-
-        all)
-          db_install_schema
-          db_install_nas
-          db_install_cui
-          db_install_ippool
-          db_install_wimax
-        ;;
-
-        *)
-          db_install_schema
-        ;;
-
-      esac
-      ;;
-
-      uninstall)
-
-      case "$3" in
-        schema)
-          db_uninstall_schema
-        ;;
-
-        nas)
-          db_uninstall_nas
-        ;;
-
-        cui)
-          db_uninstall_cui
-        ;;
-
-        ippool)
-          db_uninstall_ippool
-        ;;
-
-        wimax)
-          db_uninstall_wimax
-        ;;
-
-        all)
-          db_uninstall_schema
-          db_uninstall_nas
-          db_uninstall_cui
-          db_uninstall_ippool
-          db_uninstall_wimax
-        ;;
-
-        *)
-          db_uninstall_schema
-        ;;
-
-      esac
-      ;;
-
-    esac
+      shift 1
+      case_db "$*"
     ;;
 
   *)
