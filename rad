@@ -331,7 +331,7 @@ function stat_db_table {
 # ####### #######  #####
 
 function log {
-  tail -f /var/log/freeradius/radius.log
+  tail -n 100 -f /var/log/freeradius/radius.log
 }
 
 # ### #     #  #####  #######
@@ -345,48 +345,187 @@ function log {
 function inst {
 
   case "$1" in
-    schema)
-      db_install_schema
+    all)
+      inst_user
+      inst_group
+      inst_nas
+      inst_radacct
+      inst_radcheck
+      inst_radgroupcheck
+      inst_radgroupreply
+      inst_radreply
+      inst_radusergroup
+      inst_cui
+      inst_ippool
+      inst_wimax
+    ;;
+
+    common)
+      inst_user
+      inst_group
+      inst_nas
+      inst_radacct
+      inst_radcheck
+      inst_radgroupcheck
+      inst_radgroupreply
+      inst_radreply
+      inst_radusergroup
+    ;;
+
+    user)
+      inst_user
+    ;;
+
+    group)
+      inst_group
     ;;
 
     nas)
-      db_install_nas
+      inst_nas
+    ;;
+
+    radacct)
+      inst_radacct
+    ;;
+
+    radcheck)
+      inst_radcheck
+    ;;
+
+    radgroupcheck)
+      inst_radgroupcheck
+    ;;
+
+    radgroupreply)
+      inst_radgroupreply
+    ;;
+
+    radreply)
+      inst_radreply
+    ;;
+
+    radusergroup)
+      inst_radusergroup
     ;;
 
     cui)
-      db_install_cui
+      inst_cui
     ;;
 
     ippool)
-      db_install_ippool
+      inst_ippool
     ;;
 
     wimax)
-      db_install_wimax
-    ;;
-
-    all)
-      db_install_schema
-      db_install_nas
-      db_install_cui
-      db_install_ippool
-      db_install_wimax
+      inst_wimax
     ;;
 
     *)
-      db_install_schema
+      inst_help
     ;;
 
   esac
 
 }
 
-function inst_schema {
+function inst_help {
+  echo "usage: rad inst <table>
+
+    all    (user, nas, group, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, cui, ippool, wimax)
+    common (user, nas, group, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup)
+    user
+    group
+    nas
+    radacct
+    radcheck
+    radgroupcheck
+    radgroupreply
+    radreply
+    radusergroup
+    cui
+    ippool
+    wimax"
+}
+
+#
+# Table structure for table 'user'
+#
+function inst_user {
   $MYSQL "
 
-    #
-    # Table structure for table 'radacct'
-    #
+    CREATE TABLE user (
+
+      id                    int(10)                 NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      firstname             varchar(128)            NOT NULL default '',
+      lastname              varchar(128)            NOT NULL default '',
+      description           varchar(200)            NOT NULL default '',
+
+
+      PRIMARY KEY (id),
+      KEY username (username)
+
+    );
+
+  "
+}
+
+#
+# Table structure for table 'group'
+#
+function inst_group {
+  $MYSQL "
+
+    CREATE TABLE group (
+
+      id                    int(10)                 NOT NULL auto_increment,
+      groupname             varchar(64)             NOT NULL default '',
+      title                 varchar(128)            NOT NULL default '',
+      description           varchar(200)            NOT NULL default '',
+
+
+      PRIMARY KEY (id),
+      KEY username (groupname)
+
+    );
+
+  "
+}
+
+#
+# Table structure for table 'nas'
+#
+function inst_nas {
+  $MYSQL "
+
+    CREATE TABLE nas (
+
+      id                    int(10)                 NOT NULL auto_increment,
+      nasname               varchar(128)            NOT NULL,
+      shortname             varchar(32),
+      type                  varchar(30)             DEFAULT 'other',
+      ports                 int(5),
+      secret                varchar(60)             DEFAULT 'secret' NOT NULL,
+      server                varchar(64),
+      community             varchar(50),
+      description           varchar(200)            DEFAULT 'RADIUS Client',
+
+      PRIMARY KEY (id),
+      KEY nasname (nasname)
+
+    );
+
+  "
+}
+
+
+#
+# Table structure for table 'radacct'
+#
+function inst_radacct {
+  $MYSQL "
 
     CREATE TABLE radacct (
 
@@ -428,10 +567,14 @@ function inst_schema {
       KEY nasipaddress (nasipaddress)
 
     );
+  "
+}
 
-    #
-    # Table structure for table 'radcheck'
-    #
+#
+# Table structure for table 'radcheck'
+#
+function inst_radcheck {
+  $MYSQL "
 
     CREATE TABLE radcheck (
 
@@ -445,10 +588,14 @@ function inst_schema {
       KEY username (username(32))
 
     );
+  "
+}
 
-    #
-    # Table structure for table 'radgroupcheck'
-    #
+#
+# Table structure for table 'radgroupcheck'
+#
+function inst_radgroupcheck {
+  $MYSQL "
 
     CREATE TABLE radgroupcheck (
 
@@ -462,10 +609,14 @@ function inst_schema {
       KEY groupname (groupname(32))
 
     );
+  "
+}
 
-    #
-    # Table structure for table 'radgroupreply'
-    #
+#
+# Table structure for table 'radgroupreply'
+#
+function inst_radgroupreply {
+  $MYSQL "
 
     CREATE TABLE radgroupreply (
 
@@ -480,9 +631,14 @@ function inst_schema {
 
     );
 
-    #
-    # Table structure for table 'radreply'
-    #
+  "
+}
+
+#
+# Table structure for table 'radreply'
+#
+function inst_radreply {
+  $MYSQL "
 
     CREATE TABLE radreply (
 
@@ -497,10 +653,14 @@ function inst_schema {
 
     );
 
+  "
+}
 
-    #
-    # Table structure for table 'radusergroup'
-    #
+#
+# Table structure for table 'radusergroup'
+#
+function inst_radusergroup {
+  $MYSQL "
 
     CREATE TABLE radusergroup (
 
@@ -531,39 +691,11 @@ function inst_schema {
   "
 }
 
-function inst_nas {
-  $MYSQL "
-
-    #
-    # Table structure for table 'nas'
-    #
-
-    CREATE TABLE nas (
-
-      id                    int(10)                 NOT NULL auto_increment,
-      nasname               varchar(128)            NOT NULL,
-      shortname             varchar(32),
-      type                  varchar(30)             DEFAULT 'other',
-      ports                 int(5),
-      secret                varchar(60)             DEFAULT 'secret' NOT NULL,
-      server                varchar(64),
-      community             varchar(50),
-      description           varchar(200)            DEFAULT 'RADIUS Client',
-
-      PRIMARY KEY (id),
-      KEY nasname (nasname)
-
-    );
-
-  "
-}
-
+#
+# Table structure for table 'cui'
+#
 function inst_cui {
   $MYSQL "
-
-    #
-    # Table structure for table 'cui'
-    #
 
     CREATE TABLE cui (
 
@@ -580,12 +712,11 @@ function inst_cui {
   "
 }
 
+#
+# Table structure for table 'radippool'
+#
 function inst_ippool {
   $MYSQL "
-
-    #
-    # Table structure for table 'radippool'
-    #
 
     CREATE TABLE radippool (
 
@@ -608,13 +739,12 @@ function inst_ippool {
   "
 }
 
+#
+# WiMAX Table structure for table 'wimax',
+# which replaces the 'radpostauth' table.
+#
 function inst_wimax {
   $MYSQL "
-
-    #
-    # WiMAX Table structure for table 'wimax',
-    # which replaces the 'radpostauth' table.
-    #
 
     CREATE TABLE wimax (
 
