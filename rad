@@ -322,6 +322,18 @@ function stat_db_table {
   "
 }
 
+# #       #######  #####
+# #       #     # #     #
+# #       #     # #
+# #       #     # #  ####
+# #       #     # #     #
+# #       #     # #     #
+# ####### #######  #####
+
+function log {
+  tail -f /var/log/freeradius/radius.log
+}
+
 # ### #     #  #####  #######
 #  #  ##    # #     #    #
 #  #  # #   # #          #
@@ -791,11 +803,43 @@ case "$1" in
     del $@
     ;;
 
+  help)
+    shift 1
+    help $@
+    ;;
+
+  stat)
+    shift 1
+    stat $@
+    ;;
+
+  log)
+    shift 1
+    log $@
+    ;;
+
+  del)
+    shift 1
+    del $@
+    ;;
+
+  inst)
+    shift 1
+    inst $@
+    ;;
+
+  uninst)
+    shift 1
+    uninst $@
+    ;;
+
+  prep)
+    shift 1
+    prep $@
+    ;;
+
   *)
     help
     ;;
 
 esac
-
-
-
