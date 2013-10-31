@@ -347,7 +347,7 @@ function inst {
   case "$1" in
     all)
       inst_user
-      inst_group
+      inst_groups
       inst_nas
       inst_radacct
       inst_radcheck
@@ -355,6 +355,7 @@ function inst {
       inst_radgroupreply
       inst_radreply
       inst_radusergroup
+      inst_radpostauth
       inst_cui
       inst_ippool
       inst_wimax
@@ -362,7 +363,7 @@ function inst {
 
     common)
       inst_user
-      inst_group
+      inst_groups
       inst_nas
       inst_radacct
       inst_radcheck
@@ -370,14 +371,15 @@ function inst {
       inst_radgroupreply
       inst_radreply
       inst_radusergroup
+      inst_radpostauth
     ;;
 
     user)
       inst_user
     ;;
 
-    group)
-      inst_group
+    groups)
+      inst_groups
     ;;
 
     nas)
@@ -408,6 +410,10 @@ function inst {
       inst_radusergroup
     ;;
 
+    radpostauth)
+      inst_radpostauth
+    ;;
+
     cui)
       inst_cui
     ;;
@@ -431,10 +437,10 @@ function inst {
 function inst_help {
   echo "usage: rad inst <table>
 
-    all    (user, nas, group, radacct, radcheck, radgroupcheck, radgroupreply,
-            radreply, radusergroup, cui, ippool, wimax)
-    common (user, nas, group, radacct, radcheck, radgroupcheck, radgroupreply,
-            radreply, radusergroup)
+    all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth, cui, ippool, wimax)
+    common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth)
     user
     group
     nas
@@ -444,6 +450,7 @@ function inst_help {
     radgroupreply
     radreply
     radusergroup
+    radpostauth
     cui
     ippool
     wimax"
@@ -473,12 +480,12 @@ function inst_user {
 }
 
 #
-# Table structure for table 'group'
+# Table structure for table 'groups'
 #
-function inst_group {
+function inst_groups {
   $MYSQL "
 
-    CREATE TABLE group (
+    CREATE TABLE groups (
 
       id                    int(10)                 NOT NULL auto_increment,
       groupname             varchar(64)             NOT NULL default '',
@@ -671,9 +678,14 @@ function inst_radusergroup {
       KEY username (username(32))
     ) ;
 
-    #
-    # Table structure for table 'radpostauth'
-    #
+  "
+}
+
+#
+# Table structure for table 'radpostauth'
+#
+function inst_radpostauth {
+  $MYSQL "
 
     CREATE TABLE radpostauth (
 
@@ -801,82 +813,106 @@ function prep {
 #  #####  #     # ### #     #  #####     #
 
 function uninst {
-  case "$1" in
 
-    schema)
-      db_uninstall_schema
+
+  case "$1" in
+    all)
+      TABLES="user, groups, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth, cui, radippool, wimax"
+    ;;
+
+    common)
+      TABLES="user, groups, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth"
+    ;;
+
+    user)
+      TABLES="user"
+    ;;
+
+    groups)
+      TABLES="groups"
     ;;
 
     nas)
-      db_uninstall_nas
+      TABLES="nas"
+    ;;
+
+    radacct)
+      TABLES="radacct"
+    ;;
+
+    radcheck)
+      TABLES="radcheck"
+    ;;
+
+    radgroupcheck)
+      TABLES="radgroupcheck"
+    ;;
+
+    radgroupreply)
+      TABLES="radgroupreply"
+    ;;
+
+    radreply)
+      TABLES="radreply"
+    ;;
+
+    radusergroup)
+      TABLES="radusergroup"
+    ;;
+
+    radpostauth)
+      TABLES="radpostauth"
     ;;
 
     cui)
-      db_uninstall_cui
+      TABLES="cui"
     ;;
 
     ippool)
-      db_uninstall_ippool
+      TABLES="radippool"
     ;;
 
     wimax)
-      db_uninstall_wimax
-    ;;
-
-    all)
-      db_uninstall_schema
-      db_uninstall_nas
-      db_uninstall_cui
-      db_uninstall_ippool
-      db_uninstall_wimax
+      TABLES="wimax"
     ;;
 
     *)
-      db_uninstall_schema
+      uninst_help
     ;;
 
   esac
+
+  if [ -n "$TABLES" ]; then
+
+    $MYSQL "
+      DROP TABLE IF EXISTS
+       $TABLES;
+    "
+
+  fi
+
 }
 
-function uninst_schema {
-  $MYSQL "
-    DROP TABLE IF EXISTS
-      radacct,
-      radcheck,
-      radgroupcheck,
-      radgroupreply,
-      radreply,
-      radusergroup,
-      radpostauth;
-  "
-}
+function uninst_help {
+  echo "usage: rad uninst <table>
 
-function uninst_nas {
-  $MYSQL "
-    DROP TABLE IF EXISTS
-      nas;
-  "
-}
-
-function uninst_cui {
-  $MYSQL "
-    DROP TABLE IF EXISTS
-      cui;
-  "
-}
-
-function uninst_ippool {
-  $MYSQL "
-    DROP TABLE IF EXISTS
-      radippool;
-  "
-}
-
-function uninst_wimax {
-  $MYSQL "
-    DROP TABLE IF EXISTS
-      wimax;
-  "
+    all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth, cui, ippool, wimax)
+    common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth)
+    user
+    groups
+    nas
+    radacct
+    radcheck
+    radgroupcheck
+    radgroupreply
+    radreply
+    radusergroup
+    radpostauth
+    cui
+    ippool
+    wimax"
 }
 
 # #     # ####### #       ######
