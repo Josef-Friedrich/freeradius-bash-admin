@@ -43,7 +43,16 @@ function password {
   #               generated  password  (always  present  if  pronounceable
   #               password generation algorithm is used).
 
-  apg -a 1 -n 1 -m 8 -x 8 -M L
+  WEAK="-m 6 -x 6 -M L"
+  STRONG="-m 8 -x 8 -M CLN"
+
+  APPEND=$STRONG
+
+  if [ "$1" == "weak" ]; then
+    APPEND=$WEAK
+  fi
+
+  apg -a 1 -n 1 $APPEND
 }
 
 
@@ -112,6 +121,10 @@ function add {
 
     group)
       add_group $VALUES
+    ;;
+
+    guests)
+      add_guests $VALUES
     ;;
 
     nas)
@@ -208,6 +221,36 @@ function add_nas {
       INTO nas (nasname,shortname,secret)
       VALUES ('$NASNAME','$SHORTNAME','$SECRET');
   "
+}
+
+function add_guests {
+  uninst all
+  inst all
+
+  SUM=50
+  START=100
+  END=$((START + SUM))
+
+  for i in $(seq $START $END); do
+    echo $i
+
+    local USERNAME="g$i"
+    local PASSWORD=$(password weak)
+
+    $MYSQL "
+      INSERT
+        INTO radcheck (username,attribute,op,value)
+        VALUES ('$USERNAME','Cleartext-Password',':=','$PASSWORD');
+      INSERT
+        INTO user (username,firstname,lastname)
+        VALUES ('$USERNAME','Gast-Zugang','Nr. $i');
+      INSERT
+        INTO radusergroup (username,groupname,priority)
+        VALUES ('$USERNAME','guests',1);
+    "
+
+  done
+
 }
 
 #  #####  #     # ####### #     #
@@ -531,7 +574,7 @@ function inst_user {
       description           varchar(200)            NOT NULL default '',
 
       PRIMARY KEY (id),
-      KEY username (username)
+      KEY username_key (username)
 
     );
 
@@ -552,7 +595,7 @@ function inst_groups {
       description           varchar(200)            NOT NULL default '',
 
       PRIMARY KEY (id),
-      KEY groupname (groupname)
+      KEY groupname_key (groupname)
 
     );
 
