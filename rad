@@ -56,19 +56,40 @@ F_CMT='\033[0;33m' # Yellow
 # Reset
 F_RST='\033[0m'
 
-function echo_question {
-  echo -e "${F_STG}$*?${F_RST}"
+function prompt_init {
+  echo -e "${F_STG}$*${F_RST}"
+
+  echo "
+Werte in eckigen Klammern werden übernommen, wenn Sie die Eingabe mit der
+Eingabetaste bestätigen.
+"
 }
 
-function echo_value {
+function label {
+  LABEL="$1"
+  SUGGESTION="$2"
 
-  if [ -n "$2" ]; then
-    SUGGESTION=" [${F_CMT}$2${F_RST}]"
+  if [ -n "$SUGGESTION" ]; then
+    local SUGGESTION_FORMATED=" [${F_CMT}$SUGGESTION${F_RST}]"
   fi
 
-  echo -e -n "${F_EMP}$1${F_RST}$SUGGESTION: "
+  echo -e -n "${F_EMP}$LABEL${F_RST}$SUGGESTION_FORMATED: "
 }
 
+function prompt {
+  local NAME="$1"
+  local LABEL="$2"
+  local SUGGESTION="$3"
+
+  label "$LABEL" "$SUGGESTION"
+  read $NAME
+
+  if [ -z "${!NAME}" ]; then
+    eval $NAME="$SUGGESTION"
+  fi
+
+  export $NAME
+}
 
 #    #    ######  ######
 #   # #   #     # #     #
@@ -78,7 +99,6 @@ function echo_value {
 # #     # #     # #     #
 # #     # ######  ######
 
-
 function add {
   VALUE="$1"
   shift 1
@@ -87,11 +107,15 @@ function add {
   case $VALUE in
 
     user)
-      user_add $VALUES
+      add_user $VALUES
+    ;;
+
+    group)
+      add_group $VALUES
     ;;
 
     nas)
-      user_show $VALUES
+      add_nas $VALUES
     ;;
 
     *)
@@ -99,6 +123,28 @@ function add {
     ;;
 
   esac
+}
+
+function add_group {
+  prompt_init "Fügen Sie eine neue Gruppe hinzu!"
+
+  prompt "TITLE"        "Titel der Gruppe"         "Test-Gruppe"
+  prompt "GROUPNAME"    "Kurzname der Gruppe"
+  prompt "DESCRIPTION"  "Beschreibung der Gruppe"
+
+  echo $TITLE
+
+  $MYSQL "
+    INSERT
+      INTO groups (groupname,title,description)
+      VALUES ('$GROUPNAME','$TITLE','$DESCRIPTION');
+  "
+
+  $MYSQL "
+    SELECT *
+      FROM groups
+      WHERE groupname = '$GROUPNAME';
+  "
 }
 
 function add_user {
@@ -163,8 +209,6 @@ function add_nas {
       VALUES ('$NASNAME','$SHORTNAME','$SECRET');
   "
 }
-
-
 
 #  #####  #     # ####### #     #
 # #     # #     # #     # #  #  #
@@ -322,6 +366,22 @@ function stat_db_table {
   "
 }
 
+# ####### #     # ######
+# #        #   #  #     #
+# #         # #   #     #
+# #####      #    ######
+# #         # #   #
+# #        #   #  #
+# ####### #     # #
+
+function exp {
+  $MYSQL "
+    SELECT groupname,title
+    FROM groups;
+  " | tr '\t' ','
+
+}
+
 # #       #######  #####
 # #       #     # #     #
 # #       #     # #
@@ -465,11 +525,10 @@ function inst_user {
     CREATE TABLE user (
 
       id                    int(10)                 NOT NULL auto_increment,
-      username              varchar(64)             NOT NULL default '',
+      username              varchar(64)             NOT NULL UNIQUE default '',
       firstname             varchar(128)            NOT NULL default '',
       lastname              varchar(128)            NOT NULL default '',
       description           varchar(200)            NOT NULL default '',
-
 
       PRIMARY KEY (id),
       KEY username (username)
@@ -488,13 +547,12 @@ function inst_groups {
     CREATE TABLE groups (
 
       id                    int(10)                 NOT NULL auto_increment,
-      groupname             varchar(64)             NOT NULL default '',
+      groupname             varchar(64)             NOT NULL UNIQUE default '',
       title                 varchar(128)            NOT NULL default '',
       description           varchar(200)            NOT NULL default '',
 
-
       PRIMARY KEY (id),
-      KEY username (groupname)
+      KEY groupname (groupname)
 
     );
 
@@ -977,6 +1035,11 @@ case "$1" in
   stat)
     shift 1
     stat $@
+    ;;
+
+  exp)
+    shift 1
+    exp $@
     ;;
 
   log)
