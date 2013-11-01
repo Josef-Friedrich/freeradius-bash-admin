@@ -301,21 +301,42 @@ function upd_user {
 # #     # #       #
 # ######  ####### #######
 
+function del {
+  VALUE="$1"
+  shift 1
+  VALUES=$@
+
+  case $VALUE in
+
+    user)
+      del_user $VALUES
+    ;;
+
+    *)
+      help
+    ;;
+
+  esac
+}
+
 function del_user {
-  SHORTNAME="$1"
+  local USERNAME="$1"
 
-  if [ -z "$SHORTNAME" ]; then
+  if [ -z "$USERNAME" ]; then
 
-    echo "Enter username!" >2&
+    echo "Enter username!"
 
     exit 1
-
   fi
 
   $MYSQL "
-    DELETE
-      FROM radcheck
-      WHERE shortname = '$SHORTNAME';
+    DELETE u, rug, rc
+      FROM user AS u
+      JOIN radusergroup AS rug
+        ON u.username = rug.username
+      JOIN radcheck as rc
+        ON u.username = rc.username
+      WHERE u.username = '$USERNAME';
   "
 }
 
@@ -335,8 +356,22 @@ function del_nas {
     DELETE
       FROM nas
       WHERE shortname = '$SHORTNAME';
+
+
+
   "
+  $MYSQL "
+    DELETE u, rug, rc
+      FROM user AS u
+      JOIN radusergroup AS rug
+        ON u.username = rug.username
+      JOIN radcheck as rc
+        ON u.username = rc.username
+      WHERE u.username = '$USERNAME';
+
+"
 }
+
 
 #  #####  #######    #    #######
 # #     #    #      # #      #
