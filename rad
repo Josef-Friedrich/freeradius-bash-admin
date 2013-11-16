@@ -482,6 +482,8 @@ function log {
 
 function inst {
 
+  inst_database
+
   case "$1" in
     all)
       inst_user
@@ -592,6 +594,12 @@ function inst_help {
     cui
     ippool
     wimax"
+}
+
+function inst_database {
+  $MYSQL "
+    CREATE DATABASE IF NOT EXISTS radius;
+  "
 }
 
 #
