@@ -1,0 +1,49 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+_show	rad	/^function _show {$/;"	f
+_show_nas	rad	/^function _show_nas {$/;"	f
+_show_user	rad	/^function _show_user {$/;"	f
+_statisics_db_table	rad	/^function _statisics_db_table {$/;"	f
+_statisics_nas_count	rad	/^function _statisics_nas_count {$/;"	f
+_statisics_user_count	rad	/^function _statisics_user_count {$/;"	f
+_statisics_user_last	rad	/^function _statisics_user_last {$/;"	f
+_statisics_user_log	rad	/^function _statisics_user_log {$/;"	f
+add	rad	/^function add {$/;"	f
+add_group	rad	/^function add_group {$/;"	f
+add_guests	rad	/^function add_guests {$/;"	f
+add_nas	rad	/^function add_nas {$/;"	f
+add_user	rad	/^function add_user {$/;"	f
+del	rad	/^function del {$/;"	f
+del_nas	rad	/^function del_nas {$/;"	f
+del_user	rad	/^function del_user {$/;"	f
+exp	rad	/^function exp {$/;"	f
+help	rad	/^function help {$/;"	f
+inst	rad	/^function inst {$/;"	f
+inst_cui	rad	/^function inst_cui {$/;"	f
+inst_database	rad	/^function inst_database {$/;"	f
+inst_groups	rad	/^function inst_groups {$/;"	f
+inst_help	rad	/^function inst_help {$/;"	f
+inst_ippool	rad	/^function inst_ippool {$/;"	f
+inst_nas	rad	/^function inst_nas {$/;"	f
+inst_radacct	rad	/^function inst_radacct {$/;"	f
+inst_radcheck	rad	/^function inst_radcheck {$/;"	f
+inst_radgroupcheck	rad	/^function inst_radgroupcheck {$/;"	f
+inst_radgroupreply	rad	/^function inst_radgroupreply {$/;"	f
+inst_radpostauth	rad	/^function inst_radpostauth {$/;"	f
+inst_radreply	rad	/^function inst_radreply {$/;"	f
+inst_radusergroup	rad	/^function inst_radusergroup {$/;"	f
+inst_user	rad	/^function inst_user {$/;"	f
+inst_wimax	rad	/^function inst_wimax {$/;"	f
+label	rad	/^function label {$/;"	f
+log	rad	/^function log {$/;"	f
+password	rad	/^function password {$/;"	f
+prep	rad	/^function prep {$/;"	f
+prompt	rad	/^function prompt {$/;"	f
+prompt_init	rad	/^function prompt_init {$/;"	f
+uninst	rad	/^function uninst {$/;"	f
+uninst_help	rad	/^function uninst_help {$/;"	f
+upd_user	rad	/^function upd_user {$/;"	f

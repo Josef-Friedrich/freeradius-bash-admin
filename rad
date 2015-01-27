@@ -1,10 +1,13 @@
 #! /bin/bash
 
-MYSQL_PROD="mysql --user=root --password=root radius --silent --skip-column-names -e"
+. /etc/freeradius-bash-admin.conf
 
-MYSQL_DEV="mysql --user=root --password=root radius -e"
 
-MYSQL=$MYSQL_DEV
+MYSQL_CREDENTIALS="--user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE"
+
+#MYSQL_OPTIONS_PRODUCTION="--silent --skip-column-names"
+
+MYSQL="mysql $MYSQL_CREDENTIALS $MYSQL_OPTIONS_PRODUCTION -e"
 
 # #     # ####### #       ######  ####### ######
 # #     # #       #       #     # #       #     #
@@ -262,7 +265,30 @@ function add_guests {
 #  #####  #     # #######  ## ##
 
 
-function show_user {
+function _show {
+  VALUE="$1"
+  shift 1
+  VALUES=$@
+
+  case $VALUE in
+
+    user)
+      _show_user $VALUES
+    ;;
+
+    nas)
+      _show_nas $VALUES
+    ;;
+    
+    *)
+      help
+    ;;
+
+  esac
+}
+
+
+function _show_user {
   $MYSQL "
     SELECT username, value as password
       FROM radcheck
@@ -271,7 +297,7 @@ function show_user {
   "
 }
 
-function show_nas {
+function _show_nas {
   $MYSQL "
     SELECT shortname, secret, nasname AS ip
       FROM nas;
@@ -381,17 +407,52 @@ function del_nas {
 # #     #    #    #     #    #
 #  #####     #    #     #    #
 
-function stat_user_last {
+function _statistics {
+
+  case $1 in
+
+    user-last)
+      _statistics_user_last
+    ;;
+
+    user-count)
+      _statistics_user_count
+    ;;
+
+    user-log)
+      _statistics_user_log
+    ;;
+
+    *)
+      _statistics_help
+    ;;
+
+  esac
+}
+
+function _statistics_help {
+  echo "Usage: rad statistics <options>
+
+Options:
+  - user-last
+  - user-count
+  - user-log
+  - nas-count
+  - db-table
+"
+}
+
+function _statistics_user_last {
   $MYSQL "
     SELECT username, authdate, nasip FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
     ORDER BY authdate DESC
-    LIMIT 10;
+    LIMIT 100;
   "
 }
 
-function stat_user_count {
+function _statistics_user_count {
   LAST_DAY="AND UNIX_TIMESTAMP('2013-07-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400"
 
   $MYSQL "
@@ -404,16 +465,16 @@ function stat_user_count {
   "
 }
 
-function stat_user_log {
+function _statistics_user_log {
   $MYSQL "
     SELECT *
     FROM radpostauth
     ORDER BY authdate DESC
-    LIMIT 20;
+    LIMIT 100;
   "
 }
 
-function stat_nas_count {
+function _statistics_nas_count {
   $MYSQL "
     SELECT nas.shortname, COUNT(nas.id) AS logincount
     FROM nas
@@ -423,7 +484,7 @@ function stat_nas_count {
   "
 }
 
-function stat_db_table {
+function _statistics_db_table {
   TABLE="$1"
 
   if [ -z "$TABLE" ]; then
@@ -1067,20 +1128,20 @@ function uninst_help {
 # #     # #       #       #
 # #     # ####### ####### #
 
-function help {
+function _help {
   echo "usage: rad <command> [<args>]
 
 The commands are:
-   add        Add user, group, nas etc.
-   show       Show user, group, nas etc.
-   upd        Update user, group, nas etc.
-   del        Delete user, group, nas etc.
-   help       Display help topics
-   stat       Show statistics
-   log        Show logs
-   inst       Install
-   uinst      Uninstall
-   prep       Prepopulate"
+   add              Add user, group, nas etc.
+   show             Show user, group, nas etc.
+   upd              Update user, group, nas etc.
+   del              Delete user, group, nas etc.
+   help             Display help topics
+   statistics       Show statistics
+   log              Show logs
+   inst             Install
+   uinst            Uninstall
+   prep             Prepopulate"
 }
 
 #  #####     #     #####  #######
@@ -1100,7 +1161,7 @@ case "$1" in
 
   show)
     shift 1
-    show $@
+    _show $@
     ;;
 
   upd)
@@ -1118,9 +1179,9 @@ case "$1" in
     help $@
     ;;
 
-  stat)
+  statistics)
     shift 1
-    stat $@
+    _statistics $@
     ;;
 
   exp)
