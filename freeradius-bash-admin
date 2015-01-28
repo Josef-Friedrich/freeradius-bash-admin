@@ -423,6 +423,14 @@ function _statistics {
       _statistics_user_log
     ;;
 
+    nas-count)
+      _statistics_nas_count
+    ;;
+
+    db-table)
+      _statistics_db_table "$2"
+    ;;
+
     *)
       _statistics_help
     ;;
@@ -431,14 +439,14 @@ function _statistics {
 }
 
 function _statistics_help {
-  echo "Usage: rad statistics <options>
+  echo "Usage: $0 statistics <options>
 
 Options:
   - user-last
   - user-count
   - user-log
   - nas-count
-  - db-table
+  - db-table <table>
 "
 }
 
@@ -453,13 +461,14 @@ function _statistics_user_last {
 }
 
 function _statistics_user_count {
-  LAST_DAY="AND UNIX_TIMESTAMP('2013-07-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400"
+  LAST_DAY="AND UNIX_TIMESTAMP('2015-01-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400"
 
   $MYSQL "
     SELECT username, COUNT(username) AS logincount
     FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
+      $LAST_DAY
     GROUP BY username
     ORDER BY logincount DESC;
   "
@@ -1164,19 +1173,19 @@ case "$1" in
     _show $@
     ;;
 
-  upd)
+  update)
     shift 1
-    upd $@
+    _update $@
     ;;
 
-  del)
+  delete)
     shift 1
-    del $@
+    _delete $@
     ;;
 
   help)
     shift 1
-    help $@
+    _help
     ;;
 
   statistics)
@@ -1191,31 +1200,28 @@ case "$1" in
 
   log)
     shift 1
-    log $@
+    _log $@
     ;;
 
-  del)
+  install)
     shift 1
-    del $@
+    _install $@
     ;;
 
-  inst)
+  uninstall)
     shift 1
-    inst $@
+    _uninstall $@
     ;;
 
-  uninst)
+  prepopulate)
     shift 1
-    uninst $@
-    ;;
-
-  prep)
-    shift 1
-    prep $@
+    _prepopulate $@
     ;;
 
   *)
-    help
+    _help
     ;;
 
 esac
+
+# :vim set TlistOpen: #
