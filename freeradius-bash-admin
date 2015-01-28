@@ -416,7 +416,8 @@ function _statistics {
     ;;
 
     user-count)
-      _statistics_user_count
+      shift
+      _statistics_user_count "$@"
     ;;
 
     user-log)
@@ -443,7 +444,7 @@ function _statistics_help {
 
 Options:
   - user-last
-  - user-count
+  - user-count <interval> e.g.: 1 week or 2 month
   - user-log
   - nas-count
   - db-table <table>
@@ -461,14 +462,21 @@ function _statistics_user_last {
 }
 
 function _statistics_user_count {
-  LAST_DAY="AND UNIX_TIMESTAMP('2015-01-02 14:12:38') - UNIX_TIMESTAMP(authdate) < 86400"
+
+  INTERVAL="$@"
+
+  if [ -z "$INTERVAL" ] ; then
+    INTERVAL="1 WEEK"
+  fi
+
+  echo "Interval: $INTERVAL"
 
   $MYSQL "
     SELECT username, COUNT(username) AS logincount
     FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
-      $LAST_DAY
+      AND authdate > CURDATE() - INTERVAL $INTERVAL
     GROUP BY username
     ORDER BY logincount DESC;
   "
@@ -1138,19 +1146,19 @@ function uninst_help {
 # #     # ####### ####### #
 
 function _help {
-  echo "usage: rad <command> [<args>]
+  echo "usage: $0 <command> [<args>]
 
 The commands are:
    add              Add user, group, nas etc.
    show             Show user, group, nas etc.
-   upd              Update user, group, nas etc.
-   del              Delete user, group, nas etc.
+   update           Update user, group, nas etc.
+   delete           Delete user, group, nas etc.
    help             Display help topics
    statistics       Show statistics
    log              Show logs
-   inst             Install
-   uinst            Uninstall
-   prep             Prepopulate"
+   install          Install
+   uninstall        Uninstall
+   prepopulate      Prepopulate"
 }
 
 #  #####     #     #####  #######
