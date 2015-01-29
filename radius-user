@@ -1,0 +1,125 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+function _add {
+  GUEST="$1"
+
+  echo_question "Do you want to create a new user"
+
+  echo_value "username"
+
+  read USERNAME
+
+  PASSWORD=$(password)
+  echo_value  "password" $PASSWORD
+  read INPUT
+
+  if [ -n "$INPUT" ]; then
+    PASSWORD="$INPUT"
+  fi
+
+  $MYSQL "
+    INSERT
+      INTO radcheck (username,attribute,op,value)
+      VALUES ('$USERNAME','Cleartext-Password',':=','$PASSWORD');
+  "
+
+  if [ "$GUEST" == "guest" ]; then
+
+    $MYSQL "
+      INSERT
+        INTO radcheck (username,attribute,op,value)
+        VALUES ('$USERNAME','Access-Period',':=','60');
+    "
+
+  fi
+
+  echo "Following values have been written to the database:"
+
+  $MYSQL "
+    SELECT *
+    FROM radcheck
+    WHERE username = '$USERNAME'
+
+  "
+}
+
+function _show {
+  $MYSQL "
+    SELECT username, value as password
+      FROM radcheck
+      WHERE attribute = 'Cleartext-Password'
+        AND username <> '';
+  "
+}
+
+function _update {
+
+  $MYSQL "
+
+  "
+}
+
+function _delete {
+  local USERNAME="$1"
+
+  if [ -z "$USERNAME" ]; then
+
+    echo "Enter username!"
+
+    exit 1
+  fi
+
+  $MYSQL "
+    DELETE u, rug, rc
+      FROM user AS u
+      JOIN radusergroup AS rug
+        ON u.username = rug.username
+      JOIN radcheck as rc
+        ON u.username = rc.username
+      WHERE u.username = '$USERNAME';
+  "
+}
+
+function _help {
+  echo "Usage: $0 <command> [<args>]
+
+The commands are:
+  add              Add user
+  show             Show user
+  update           Update user
+  delete           Delete user
+  help             Display help topics
+"
+}
+
+case "$1" in
+
+  add)
+    shift 1
+    _add $@
+    ;;
+
+  show)
+    shift 1
+    _show $@
+    ;;
+
+  update)
+    shift 1
+    _update $@
+    ;;
+
+  delete)
+    shift 1
+    _delete $@
+    ;;
+
+  *)
+    _help
+    ;;
+
+esac

@@ -1,0 +1,119 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+_user_last() {
+  $MYSQL "
+    SELECT username, authdate, nasip FROM radpostauth
+    WHERE reply = 'Access-Accept'
+      AND nasip <> ''
+    ORDER BY authdate DESC
+    LIMIT 100;
+  "
+}
+
+_user_count() {
+
+  INTERVAL="$@"
+
+  if [ -z "$INTERVAL" ] ; then
+    INTERVAL="1 WEEK"
+  fi
+
+  echo "Interval: $INTERVAL"
+
+  $MYSQL "
+    SELECT username, COUNT(username) AS logincount
+    FROM radpostauth
+    WHERE reply = 'Access-Accept'
+      AND nasip <> ''
+      AND authdate > CURDATE() - INTERVAL $INTERVAL
+    GROUP BY username
+    ORDER BY logincount DESC;
+  "
+}
+
+_user_log() {
+  $MYSQL "
+    SELECT *
+    FROM radpostauth
+    ORDER BY authdate DESC
+    LIMIT 100;
+  "
+}
+
+_nas_count() {
+  $MYSQL "
+    SELECT nas.shortname, COUNT(nas.id) AS logincount
+    FROM nas
+    LEFT JOIN radpostauth
+    ON radpostauth.nasip = nas.nasname
+    GROUP BY nas.id;
+  "
+}
+
+_db_table() {
+  TABLE="$1"
+
+  if [ -z "$TABLE" ]; then
+
+    echo "Select table!"
+
+    $MYSQL "
+      SHOW TABLES;
+    "
+
+    exit 1
+  fi
+
+  $MYSQL "
+    SELECT *
+    FROM $TABLE
+    LIMIT 100;
+  "
+}
+
+_statistics_help() {
+  echo "Usage: $0 <options>
+
+Options:
+  - user-last
+  - user-count <interval> e.g.: 1 week or 2 month
+  - user-log
+  - nas-count
+  - db-table <table>
+"
+}
+
+case $1 in
+
+  user-last)
+    _user_last
+  ;;
+
+  user-count)
+    shift
+    _user_count "$@"
+  ;;
+
+  user-log)
+    _user_log
+  ;;
+
+  nas-count)
+    _nas_count
+  ;;
+
+  db-table)
+    _db_table "$2"
+  ;;
+
+  *)
+    _help
+  ;;
+
+esac
+
+

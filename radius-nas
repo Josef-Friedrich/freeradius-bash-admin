@@ -1,0 +1,105 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+function add_nas {
+  #NASNAME="$1"
+  #SHORTNAME="$2"
+  #SECRET="$3"
+
+  echo "Add a new NAS!"
+  echo -n "shortname: "
+  read SHORTNAME
+  echo -n "ip address: "
+  read NASNAME
+  echo -n "secret: "
+  read SECRET
+
+  $MYSQL "
+    INSERT
+      INTO nas (nasname,shortname,secret)
+      VALUES ('$NASNAME','$SHORTNAME','$SECRET');
+  "
+}
+
+function _show_nas {
+  $MYSQL "
+    SELECT shortname, secret, nasname AS ip
+      FROM nas;
+  "
+}
+
+function del_nas {
+  SHORTNAME="$1"
+
+  if [ -z "$SHORTNAME" ]; then
+
+    echo "Enter shortname!" >2&
+
+    exit 1
+
+  fi
+
+  $MYSQL "
+    DELETE
+      FROM nas
+      WHERE shortname = '$SHORTNAME';
+  "
+  $MYSQL "
+    DELETE u, rug, rc
+      FROM user AS u
+      JOIN radusergroup AS rug
+        ON u.username = rug.username
+      JOIN radcheck as rc
+        ON u.username = rc.username
+      WHERE u.username = '$USERNAME';
+
+"
+}
+
+function _help {
+  echo "Usage: $0 <command> [<args>]
+
+The commands are:
+   add              Add nas
+   show             Show nas
+   update           Update nas
+   delete           Delete nas 
+   help             Display help topics
+"
+}
+
+case "$1" in
+
+  add)
+    shift 1
+    add $@
+    ;;
+
+  show)
+    shift 1
+    _show $@
+    ;;
+
+  update)
+    shift 1
+    _update $@
+    ;;
+
+  delete)
+    shift 1
+    _delete $@
+    ;;
+
+  help)
+    shift 1
+    _help
+    ;;
+
+  *)
+    _help
+    ;;
+
+esac
