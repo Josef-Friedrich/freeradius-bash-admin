@@ -40,7 +40,7 @@ _user_log() {
     SELECT *
     FROM radpostauth
     ORDER BY authdate DESC
-    LIMIT 100;
+    LIMIT 500;
   "
 }
 
@@ -71,7 +71,7 @@ _db_table() {
   $MYSQL "
     SELECT *
     FROM $TABLE
-    LIMIT 100;
+    LIMIT 500;
   "
 }
 

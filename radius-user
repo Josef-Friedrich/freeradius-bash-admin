@@ -48,6 +48,21 @@ _add() {
 }
 
 _show() {
+  USERNAME="$1"
+
+  if [ -z $USERNAME ]; then
+    echo "Usage: show <username>"
+    exit 1
+  fi
+
+  $MYSQL "
+    SELECT *
+      FROM radcheck
+      WHERE username = '$USERNAME';
+  "
+}
+
+_show_all() {
   $MYSQL "
     SELECT username, value as password
       FROM radcheck
@@ -64,9 +79,19 @@ _update() {
 }
 
 _password() {
+  USERNAME="$1"
+  PASSWORD="$2"
 
-	echo $1
-	echo $2
+  if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
+     echo "password <username> <password>"
+     exit 1
+  fi
+
+  $MYSQL "UPDATE radcheck
+    SET value = '$PASSWORD'
+    WHERE username = '$USERNAME'
+      AND attribute = 'Cleartext-Password'
+  "
 }
 
 _delete() {
@@ -95,7 +120,8 @@ function _help {
 
 The commands are:
   add              Add user
-  show             Show user
+  show <username>                : Show user
+  show-all                       : Show all user
   update           Update user
   password <username> <password> : Update password.
   delete <username>              : Delete user
@@ -114,6 +140,10 @@ case "$1" in
     shift 1
     _show $@
     ;;
+
+  show-all)
+    _show_all
+  ;;
 
   update)
     shift 1
