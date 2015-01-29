@@ -75,12 +75,12 @@ _db_table() {
   "
 }
 
-_statistics_help() {
+_help() {
   echo "Usage: $0 <options>
 
 Options:
   - user-last
-  - user-count <interval> e.g.: 1 week or 2 month
+  - user-count <interval> e.g.: \"1 week\" or \"2 month\"
   - user-log
   - nas-count
   - db-table <table>
@@ -115,5 +115,4 @@ case $1 in
   ;;
 
 esac
-
 

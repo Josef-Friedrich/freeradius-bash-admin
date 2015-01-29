@@ -4,7 +4,7 @@
 
 MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
 
-function _add {
+_add() {
   GUEST="$1"
 
   echo_question "Do you want to create a new user"
@@ -47,7 +47,7 @@ function _add {
   "
 }
 
-function _show {
+_show() {
   $MYSQL "
     SELECT username, value as password
       FROM radcheck
@@ -56,14 +56,20 @@ function _show {
   "
 }
 
-function _update {
+_update() {
 
   $MYSQL "
 
   "
 }
 
-function _delete {
+_password() {
+
+	echo $1
+	echo $2
+}
+
+_delete() {
   local USERNAME="$1"
 
   if [ -z "$USERNAME" ]; then
@@ -91,8 +97,9 @@ The commands are:
   add              Add user
   show             Show user
   update           Update user
-  delete           Delete user
-  help             Display help topics
+  password <username> <password> : Update password.
+  delete <username>              : Delete user
+  help                           : Display help topics
 "
 }
 
@@ -111,6 +118,11 @@ case "$1" in
   update)
     shift 1
     _update $@
+    ;;
+  
+  password)
+    shift 1
+    _password $@
     ;;
 
   delete)
