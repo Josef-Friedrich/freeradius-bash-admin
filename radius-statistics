@@ -40,7 +40,7 @@ _user_log() {
     SELECT *
     FROM radpostauth
     ORDER BY authdate DESC
-    LIMIT 100;
+    LIMIT 500;
   "
 }
 
@@ -66,7 +66,7 @@ _db_values() {
   $MYSQL "
     SELECT *
     FROM $TABLE
-    LIMIT 100;
+    LIMIT 500;
   "
 }
 
@@ -91,7 +91,7 @@ _help() {
 
 Options:
   - user-last
-  - user-count <interval> e.g.: 1 week or 2 month
+  - user-count <interval> e.g.: \"1 week\" or \"2 month\"
   - user-log
   - nas-count
   - db-values <table>
@@ -136,5 +136,4 @@ case $1 in
   ;;
 
 esac
-
 

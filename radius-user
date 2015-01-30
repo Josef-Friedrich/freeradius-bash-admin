@@ -4,7 +4,7 @@
 
 MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
 
-function _add {
+_add() {
   GUEST="$1"
 
   echo_question "Do you want to create a new user"
@@ -47,7 +47,22 @@ function _add {
   "
 }
 
-function _show {
+_show() {
+  USERNAME="$1"
+
+  if [ -z $USERNAME ]; then
+    echo "Usage: show <username>"
+    exit 1
+  fi
+
+  $MYSQL "
+    SELECT *
+      FROM radcheck
+      WHERE username = '$USERNAME';
+  "
+}
+
+_show_all() {
   $MYSQL "
     SELECT username, value as password
       FROM radcheck
@@ -56,14 +71,30 @@ function _show {
   "
 }
 
-function _update {
+_update() {
 
   $MYSQL "
 
   "
 }
 
-function _delete {
+_password() {
+  USERNAME="$1"
+  PASSWORD="$2"
+
+  if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
+     echo "password <username> <password>"
+     exit 1
+  fi
+
+  $MYSQL "UPDATE radcheck
+    SET value = '$PASSWORD'
+    WHERE username = '$USERNAME'
+      AND attribute = 'Cleartext-Password'
+  "
+}
+
+_delete() {
   local USERNAME="$1"
 
   if [ -z "$USERNAME" ]; then
@@ -89,10 +120,12 @@ function _help {
 
 The commands are:
   add              Add user
-  show             Show user
+  show <username>                : Show user
+  show-all                       : Show all user
   update           Update user
-  delete           Delete user
-  help             Display help topics
+  password <username> <password> : Update password.
+  delete <username>              : Delete user
+  help                           : Display help topics
 "
 }
 
@@ -108,9 +141,18 @@ case "$1" in
     _show $@
     ;;
 
+  show-all)
+    _show_all
+  ;;
+
   update)
     shift 1
     _update $@
+    ;;
+  
+  password)
+    shift 1
+    _password $@
     ;;
 
   delete)
