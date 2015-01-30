@@ -1,0 +1,32 @@
+#! /bin/bash
+
+
+function add_guests {
+  uninst all
+  inst all
+
+  SUM=50
+  START=100
+  END=$((START + SUM))
+
+  for i in $(seq $START $END); do
+    echo $i
+
+    local USERNAME="g$i"
+    local PASSWORD=$(password weak)
+
+    $MYSQL "
+      INSERT
+        INTO radcheck (username,attribute,op,value)
+        VALUES ('$USERNAME','Cleartext-Password',':=','$PASSWORD');
+      INSERT
+        INTO user (username,firstname,lastname)
+        VALUES ('$USERNAME','Gast-Zugang','Nr. $i');
+      INSERT
+        INTO radusergroup (username,groupname,priority)
+        VALUES ('$USERNAME','guests',1);
+    "
+
+  done
+
+}

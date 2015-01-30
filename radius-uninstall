@@ -1,0 +1,103 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+function _help {
+  echo "usage: rad uninst <table>
+
+    all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth, cui, ippool, wimax)
+    common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth)
+    user
+    groups
+    nas
+    radacct
+    radcheck
+    radgroupcheck
+    radgroupreply
+    radreply
+    radusergroup
+    radpostauth
+    cui
+    ippool
+    wimax"
+}
+
+case "$1" in
+  all)
+    TABLES="user, groups, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth, cui, radippool, wimax"
+  ;;
+
+  common)
+    TABLES="user, groups, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth"
+  ;;
+
+  user)
+    TABLES="user"
+  ;;
+
+  groups)
+    TABLES="groups"
+  ;;
+
+  nas)
+    TABLES="nas"
+  ;;
+
+  radacct)
+    TABLES="radacct"
+  ;;
+
+  radcheck)
+    TABLES="radcheck"
+  ;;
+
+  radgroupcheck)
+    TABLES="radgroupcheck"
+  ;;
+
+  radgroupreply)
+    TABLES="radgroupreply"
+  ;;
+
+  radreply)
+    TABLES="radreply"
+  ;;
+
+  radusergroup)
+    TABLES="radusergroup"
+  ;;
+
+  radpostauth)
+    TABLES="radpostauth"
+  ;;
+
+  cui)
+    TABLES="cui"
+  ;;
+
+  ippool)
+    TABLES="radippool"
+  ;;
+
+  wimax)
+    TABLES="wimax"
+  ;;
+
+  *)
+    _help
+  ;;
+
+esac
+
+if [ -n "$TABLES" ]; then
+
+  $MYSQL "
+    DROP TABLE IF EXISTS
+     $TABLES;
+  "
+
+fi

@@ -1,0 +1,23 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+$MYSQL "
+  INSERT INTO radgroupcheck
+    (groupname,attribute,op,value)
+    VALUES
+    ('guests45min','Access-Period',':=', 2700),
+    ('guests90min','Access-Period',':=', 5400),
+    ('guests9hours','Access-Period',':=', 32400);
+"
+
+$MYSQL "
+  INSERT INTO radgroupreply
+    (groupname,attribute,op,value)
+    VALUES
+    ('guests45min','Reply-Message',':=', 'Gast-Zugang für 45 Minuten.'),
+    ('guests90min','Reply-Message',':=', 'Gast-Zugang für 90 Minuten.'),
+    ('guests9hours','Reply-Message',':=', 'Gast-Zugang für 9 Stunden.');
+"

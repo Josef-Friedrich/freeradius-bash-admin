@@ -1,0 +1,441 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+function _install_help {
+  echo "usage: rad inst <table>
+
+    all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth, cui, ippool, wimax)
+    common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+            radreply, radusergroup, radpostauth)
+    user
+    group
+    nas
+    radacct
+    radcheck
+    radgroupcheck
+    radgroupreply
+    radreply
+    radusergroup
+    radpostauth
+    cui
+    ippool
+    wimax"
+}
+
+function _install_database {
+  $MYSQL "
+    CREATE DATABASE IF NOT EXISTS radius;
+  "
+}
+
+#
+# Table structure for table 'user'
+#
+function _install_user {
+  $MYSQL "
+
+    CREATE TABLE user (
+
+      id                    int(10)                 NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL UNIQUE default '',
+      firstname             varchar(128)            NOT NULL default '',
+      lastname              varchar(128)            NOT NULL default '',
+      description           varchar(200)            NOT NULL default '',
+
+      PRIMARY KEY (id),
+      KEY username_key (username)
+
+    );
+
+  "
+}
+
+#
+# Table structure for table 'groups'
+#
+function _install_groups {
+  $MYSQL "
+
+    CREATE TABLE groups (
+
+      id                    int(10)                 NOT NULL auto_increment,
+      groupname             varchar(64)             NOT NULL UNIQUE default '',
+      title                 varchar(128)            NOT NULL default '',
+      description           varchar(200)            NOT NULL default '',
+
+      PRIMARY KEY (id),
+      KEY groupname_key (groupname)
+
+    );
+
+  "
+}
+
+#
+# Table structure for table 'nas'
+#
+function _install_nas {
+  $MYSQL "
+
+    CREATE TABLE nas (
+
+      id                    int(10)                 NOT NULL auto_increment,
+      nasname               varchar(128)            NOT NULL,
+      shortname             varchar(32),
+      type                  varchar(30)             DEFAULT 'other',
+      ports                 int(5),
+      secret                varchar(60)             DEFAULT 'secret' NOT NULL,
+      server                varchar(64),
+      community             varchar(50),
+      description           varchar(200)            DEFAULT 'RADIUS Client',
+
+      PRIMARY KEY (id),
+      KEY nasname (nasname)
+
+    );
+
+  "
+}
+
+
+#
+# Table structure for table 'radacct'
+#
+function _install_radacct {
+  $MYSQL "
+
+    CREATE TABLE radacct (
+
+      radacctid             bigint(21)              NOT NULL auto_increment,
+      acctsessionid         varchar(64)             NOT NULL default '',
+      acctuniqueid          varchar(32)             NOT NULL default '',
+      username              varchar(64)             NOT NULL default '',
+      groupname             varchar(64)             NOT NULL default '',
+      realm                 varchar(64)             default '',
+      nasipaddress          varchar(15)             NOT NULL default '',
+      nasportid             varchar(15)             default NULL,
+      nasporttype           varchar(32)             default NULL,
+      acctstarttime         datetime                NULL default NULL,
+      acctstoptime          datetime                NULL default NULL,
+      acctsessiontime       int(12)                 default NULL,
+      acctauthentic         varchar(32)             default NULL,
+      connectinfo_start     varchar(50)             default NULL,
+      connectinfo_stop      varchar(50)             default NULL,
+      acctinputoctets       bigint(20)              default NULL,
+      acctoutputoctets      bigint(20)              default NULL,
+      calledstationid       varchar(50)             NOT NULL default '',
+      callingstationid      varchar(50)             NOT NULL default '',
+      acctterminatecause    varchar(32)             NOT NULL default '',
+      servicetype           varchar(32)             default NULL,
+      framedprotocol        varchar(32)             default NULL,
+      framedipaddress       varchar(15)             NOT NULL default '',
+      acctstartdelay        int(12)                 default NULL,
+      acctstopdelay         int(12)                 default NULL,
+      xascendsessionsvrkey  varchar(10)             default NULL,
+
+      PRIMARY KEY (radacctid),
+      KEY username (username),
+      KEY framedipaddress (framedipaddress),
+      KEY acctsessionid (acctsessionid),
+      KEY acctsessiontime (acctsessiontime),
+      KEY acctuniqueid (acctuniqueid),
+      KEY acctstarttime (acctstarttime),
+      KEY acctstoptime (acctstoptime),
+      KEY nasipaddress (nasipaddress)
+
+    );
+  "
+}
+
+#
+# Table structure for table 'radcheck'
+#
+function _install_radcheck {
+  $MYSQL "
+
+    CREATE TABLE radcheck (
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '==',
+      value                 varchar(253)            NOT NULL default '',
+
+      PRIMARY KEY (id),
+      KEY username (username(32))
+
+    );
+  "
+}
+
+#
+# Table structure for table 'radgroupcheck'
+#
+function _install_radgroupcheck {
+  $MYSQL "
+
+    CREATE TABLE radgroupcheck (
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      groupname             varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '==',
+      value                 varchar(253)            NOT NULL default '',
+
+      PRIMARY KEY  (id),
+      KEY groupname (groupname(32))
+
+    );
+  "
+}
+
+#
+# Table structure for table 'radgroupreply'
+#
+function _install_radgroupreply {
+  $MYSQL "
+
+    CREATE TABLE radgroupreply (
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      groupname             varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '=',
+      value                 varchar(253)            NOT NULL default '',
+
+      PRIMARY KEY  (id),
+      KEY groupname (groupname(32))
+
+    );
+
+  "
+}
+
+#
+# Table structure for table 'radreply'
+#
+function _install_radreply {
+  $MYSQL "
+
+    CREATE TABLE radreply (
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      attribute             varchar(64)             NOT NULL default '',
+      op                    char(2)                 NOT NULL DEFAULT '=',
+      value                 varchar(253)            NOT NULL default '',
+
+      PRIMARY KEY (id),
+      KEY username (username(32))
+
+    );
+
+  "
+}
+
+#
+# Table structure for table 'radusergroup'
+#
+function _install_radusergroup {
+  $MYSQL "
+
+    CREATE TABLE radusergroup (
+
+      username              varchar(64)             NOT NULL default '',
+      groupname             varchar(64)             NOT NULL default '',
+      priority              int(11)                 NOT NULL default '1',
+
+      KEY username (username(32))
+    ) ;
+
+  "
+}
+
+#
+# Table structure for table 'radpostauth'
+#
+function _install_radpostauth {
+  $MYSQL "
+
+    CREATE TABLE radpostauth (
+
+      id                    int(11)                 NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      pass                  varchar(64)             NOT NULL default '',
+      nasip                 varchar(64)             NOT NULL default '',
+      reply                 varchar(32)             NOT NULL default '',
+      authdate              timestamp               NOT NULL,
+
+      PRIMARY KEY (id)
+
+    );
+
+  "
+}
+
+#
+# Table structure for table 'cui'
+#
+function _install_cui {
+  $MYSQL "
+
+    CREATE TABLE cui (
+
+      clientipaddress       varchar(15)             NOT NULL default '',
+      callingstationid      varchar(50)             NOT NULL default '',
+      username              varchar(64)             NOT NULL default '',
+      cui                   varchar(32)             NOT NULL default '',
+      creationdate          timestamp               NOT NULL default CURRENT_TIMESTAMP,
+      lastaccounting        timestamp               NOT NULL default '0000-00-00 00:00:00',
+
+      PRIMARY KEY  (username,clientipaddress,callingstationid)
+
+    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  "
+}
+
+#
+# Table structure for table 'radippool'
+#
+function _install_ippool {
+  $MYSQL "
+
+    CREATE TABLE radippool (
+
+      id                    int(11)                 unsigned NOT NULL auto_increment,
+      pool_name             varchar(30)             NOT NULL,
+      framedipaddress       varchar(15)             NOT NULL default '',
+      nasipaddress          varchar(15)             NOT NULL default '',
+      calledstationid       VARCHAR(30)             NOT NULL,
+      callingstationid      VARCHAR(30)             NOT NULL,
+      expiry_time           DATETIME                NULL default NULL,
+      username              varchar(64)             NOT NULL default '',
+      pool_key              varchar(30)             NOT NULL,
+
+      PRIMARY KEY (id),
+      KEY radippool_poolname_expire (pool_name, expiry_time),
+      KEY framedipaddress (framedipaddress),
+      KEY radippool_nasip_poolkey_ipaddress (nasipaddress, pool_key, framedipaddress)
+
+    ) ENGINE=InnoDB;
+  "
+}
+
+#
+# WiMAX Table structure for table 'wimax',
+# which replaces the 'radpostauth' table.
+#
+function _install_wimax {
+  $MYSQL "
+
+    CREATE TABLE wimax (
+
+      id                    int(11)                 NOT NULL auto_increment,
+      username              varchar(64)             NOT NULL default '',
+      authdate              timestamp               NOT NULL,
+      spi                   varchar(16)             NOT NULL default '',
+      mipkey                varchar(400)            NOT NULL default '',
+      lifetime              int(12)                 default NULL,
+
+      PRIMARY KEY  (id),
+      KEY username (username),
+      KEY spi (spi)
+
+    );
+  "
+}
+
+
+_install_database
+
+case "$1" in
+  all)
+    _install_user
+    _install_groups
+    _install_nas
+    _install_radacct
+    _install_radcheck
+    _install_radgroupcheck
+    _install_radgroupreply
+    _install_radreply
+    _install_radusergroup
+    _install_radpostauth
+    _install_cui
+    _install_ippool
+    _install_wimax
+  ;;
+
+  common)
+    _install_user
+    _install_groups
+    _install_nas
+    _install_radacct
+    _install_radcheck
+    _install_radgroupcheck
+    _install_radgroupreply
+    _install_radreply
+    _install_radusergroup
+    _install_radpostauth
+  ;;
+
+  user)
+    _install_user
+  ;;
+
+  groups)
+    _install_groups
+  ;;
+
+  nas)
+    _install_nas
+  ;;
+
+  radacct)
+    _install_radacct
+  ;;
+
+  radcheck)
+    _install_radcheck
+  ;;
+
+  radgroupcheck)
+    _install_radgroupcheck
+  ;;
+
+  radgroupreply)
+    _install_radgroupreply
+  ;;
+
+  radreply)
+    _install_radreply
+  ;;
+
+  radusergroup)
+    _install_radusergroup
+  ;;
+
+  radpostauth)
+    _install_radpostauth
+  ;;
+
+  cui)
+    _install_cui
+  ;;
+
+  ippool)
+    _install_ippool
+  ;;
+
+  wimax)
+    _install_wimax
+  ;;
+
+  *)
+    _install_help
+  ;;
+
+esac

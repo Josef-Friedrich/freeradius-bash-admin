@@ -1,0 +1,24 @@
+#! /bin/bash
+
+
+function add_group {
+  prompt_init "Fügen Sie eine neue Gruppe hinzu!"
+
+  prompt "TITLE"        "Titel der Gruppe"         "Test-Gruppe"
+  prompt "GROUPNAME"    "Kurzname der Gruppe"
+  prompt "DESCRIPTION"  "Beschreibung der Gruppe"
+
+  echo $TITLE
+
+  $MYSQL "
+    INSERT
+      INTO groups (groupname,title,description)
+      VALUES ('$GROUPNAME','$TITLE','$DESCRIPTION');
+  "
+
+  $MYSQL "
+    SELECT *
+      FROM groups
+      WHERE groupname = '$GROUPNAME';
+  "
+}

@@ -54,17 +54,12 @@ _nas_count() {
   "
 }
 
-_db_table() {
+_db_values() {
   TABLE="$1"
 
   if [ -z "$TABLE" ]; then
-
     echo "Select table!"
-
-    $MYSQL "
-      SHOW TABLES;
-    "
-
+    $MYSQL "SHOW TABLES;"
     exit 1
   fi
 
@@ -75,7 +70,23 @@ _db_table() {
   "
 }
 
-_statistics_help() {
+_db_layout() {
+  TABLE="$1"
+
+  if [ -z "$TABLE" ]; then
+    echo "Select table!"
+    $MYSQL "SHOW TABLES;"
+    exit 1
+  fi
+
+  $MYSQL "DESCRIBE $TABLE;"
+}
+
+_log() {
+  tail -n 100 -f /var/log/freeradius/radius.log
+}
+
+_help() {
   echo "Usage: $0 <options>
 
 Options:
@@ -83,7 +94,9 @@ Options:
   - user-count <interval> e.g.: 1 week or 2 month
   - user-log
   - nas-count
-  - db-table <table>
+  - db-values <table>
+  - db-layout <table>
+  - log
 "
 }
 
@@ -106,8 +119,16 @@ case $1 in
     _nas_count
   ;;
 
-  db-table)
-    _db_table "$2"
+  db-values)
+    _db_values "$2"
+  ;;
+
+  db-layout)
+    _db_layout "$2"
+  ;;
+
+  log)
+    _log
   ;;
 
   *)

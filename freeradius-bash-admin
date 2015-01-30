@@ -560,99 +560,99 @@ function log {
 
 function inst {
 
-  inst_database
+  _install_database
 
   case "$1" in
     all)
-      inst_user
-      inst_groups
-      inst_nas
-      inst_radacct
-      inst_radcheck
-      inst_radgroupcheck
-      inst_radgroupreply
-      inst_radreply
-      inst_radusergroup
-      inst_radpostauth
-      inst_cui
-      inst_ippool
-      inst_wimax
+      _install_user
+      _install_groups
+      _install_nas
+      _install_radacct
+      _install_radcheck
+      _install_radgroupcheck
+      _install_radgroupreply
+      _install_radreply
+      _install_radusergroup
+      _install_radpostauth
+      _install_cui
+      _install_ippool
+      _install_wimax
     ;;
 
     common)
-      inst_user
-      inst_groups
-      inst_nas
-      inst_radacct
-      inst_radcheck
-      inst_radgroupcheck
-      inst_radgroupreply
-      inst_radreply
-      inst_radusergroup
-      inst_radpostauth
+      _install_user
+      _install_groups
+      _install_nas
+      _install_radacct
+      _install_radcheck
+      _install_radgroupcheck
+      _install_radgroupreply
+      _install_radreply
+      _install_radusergroup
+      _install_radpostauth
     ;;
 
     user)
-      inst_user
+      _install_user
     ;;
 
     groups)
-      inst_groups
+      _install_groups
     ;;
 
     nas)
-      inst_nas
+      _install_nas
     ;;
 
     radacct)
-      inst_radacct
+      _install_radacct
     ;;
 
     radcheck)
-      inst_radcheck
+      _install_radcheck
     ;;
 
     radgroupcheck)
-      inst_radgroupcheck
+      _install_radgroupcheck
     ;;
 
     radgroupreply)
-      inst_radgroupreply
+      _install_radgroupreply
     ;;
 
     radreply)
-      inst_radreply
+      _install_radreply
     ;;
 
     radusergroup)
-      inst_radusergroup
+      _install_radusergroup
     ;;
 
     radpostauth)
-      inst_radpostauth
+      _install_radpostauth
     ;;
 
     cui)
-      inst_cui
+      _install_cui
     ;;
 
     ippool)
-      inst_ippool
+      _install_ippool
     ;;
 
     wimax)
-      inst_wimax
+      _install_wimax
     ;;
 
     *)
-      inst_help
+      _install_help
     ;;
 
   esac
 
 }
 
-function inst_help {
+function _install_help {
   echo "usage: rad inst <table>
 
     all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
@@ -674,7 +674,7 @@ function inst_help {
     wimax"
 }
 
-function inst_database {
+function _install_database {
   $MYSQL "
     CREATE DATABASE IF NOT EXISTS radius;
   "
@@ -683,7 +683,7 @@ function inst_database {
 #
 # Table structure for table 'user'
 #
-function inst_user {
+function _install_user {
   $MYSQL "
 
     CREATE TABLE user (
@@ -705,7 +705,7 @@ function inst_user {
 #
 # Table structure for table 'groups'
 #
-function inst_groups {
+function _install_groups {
   $MYSQL "
 
     CREATE TABLE groups (
@@ -726,7 +726,7 @@ function inst_groups {
 #
 # Table structure for table 'nas'
 #
-function inst_nas {
+function _install_nas {
   $MYSQL "
 
     CREATE TABLE nas (
@@ -753,7 +753,7 @@ function inst_nas {
 #
 # Table structure for table 'radacct'
 #
-function inst_radacct {
+function _install_radacct {
   $MYSQL "
 
     CREATE TABLE radacct (
@@ -802,7 +802,7 @@ function inst_radacct {
 #
 # Table structure for table 'radcheck'
 #
-function inst_radcheck {
+function _install_radcheck {
   $MYSQL "
 
     CREATE TABLE radcheck (
@@ -823,7 +823,7 @@ function inst_radcheck {
 #
 # Table structure for table 'radgroupcheck'
 #
-function inst_radgroupcheck {
+function _install_radgroupcheck {
   $MYSQL "
 
     CREATE TABLE radgroupcheck (
@@ -844,7 +844,7 @@ function inst_radgroupcheck {
 #
 # Table structure for table 'radgroupreply'
 #
-function inst_radgroupreply {
+function _install_radgroupreply {
   $MYSQL "
 
     CREATE TABLE radgroupreply (
@@ -866,7 +866,7 @@ function inst_radgroupreply {
 #
 # Table structure for table 'radreply'
 #
-function inst_radreply {
+function _install_radreply {
   $MYSQL "
 
     CREATE TABLE radreply (
@@ -888,7 +888,7 @@ function inst_radreply {
 #
 # Table structure for table 'radusergroup'
 #
-function inst_radusergroup {
+function _install_radusergroup {
   $MYSQL "
 
     CREATE TABLE radusergroup (
@@ -906,7 +906,7 @@ function inst_radusergroup {
 #
 # Table structure for table 'radpostauth'
 #
-function inst_radpostauth {
+function _install_radpostauth {
   $MYSQL "
 
     CREATE TABLE radpostauth (
@@ -928,7 +928,7 @@ function inst_radpostauth {
 #
 # Table structure for table 'cui'
 #
-function inst_cui {
+function _install_cui {
   $MYSQL "
 
     CREATE TABLE cui (
@@ -949,7 +949,7 @@ function inst_cui {
 #
 # Table structure for table 'radippool'
 #
-function inst_ippool {
+function _install_ippool {
   $MYSQL "
 
     CREATE TABLE radippool (
@@ -977,7 +977,7 @@ function inst_ippool {
 # WiMAX Table structure for table 'wimax',
 # which replaces the 'radpostauth' table.
 #
-function inst_wimax {
+function _install_wimax {
   $MYSQL "
 
     CREATE TABLE wimax (
