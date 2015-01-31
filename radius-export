@@ -1,0 +1,5 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+mysqldump --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE | gzip > "$(pwd)/$(date "+%Y-%m-%dT%H-%M-%S").sql.gz"
