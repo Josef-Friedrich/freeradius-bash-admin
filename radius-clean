@@ -4,11 +4,31 @@
 
 MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
 
-_cron() {
-  $MYSQL "DELETE FROM radpostauth
-  WHERE authdate < NOW() - INTERVAL 3 MONTH
-  ORDER BY authdate DESC
-  ;"
+_radpostauth() {
+  $MYSQL "
+    DELETE FROM radpostauth
+    WHERE authdate < NOW() - INTERVAL 3 MONTH
+    ORDER BY authdate DESC
+  ;
+  "
 }
 
-_cron
+_help() {
+  echo "Usage: $0 <options>
+
+Options:
+  - radpostauth
+ "
+}
+
+case "$1" in
+
+  radpostauth)
+    _radpostauth
+    ;;
+
+  *)
+    _help
+    ;;
+
+esac
