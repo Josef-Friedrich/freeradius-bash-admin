@@ -4,7 +4,7 @@
 
 MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
 
-function add_nas {
+_add() {
   #NASNAME="$1"
   #SHORTNAME="$2"
   #SECRET="$3"
@@ -24,14 +24,14 @@ function add_nas {
   "
 }
 
-function _show_nas {
+_show() {
   $MYSQL "
-    SELECT shortname, secret, nasname AS ip
+    SELECT id, shortname, secret, nasname AS ip
       FROM nas;
   "
 }
 
-function del_nas {
+_delete() {
   SHORTNAME="$1"
 
   if [ -z "$SHORTNAME" ]; then
@@ -59,7 +59,7 @@ function del_nas {
 "
 }
 
-function _help {
+_help() {
   echo "Usage: $0 <command> [<args>]
 
 The commands are:
@@ -75,7 +75,7 @@ case "$1" in
 
   add)
     shift 1
-    add $@
+    _add $@
     ;;
 
   show)

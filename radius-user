@@ -51,23 +51,30 @@ _show() {
   USERNAME="$1"
 
   if [ -z $USERNAME ]; then
-    echo "Usage: show <username>"
+    echo "Usage: $0 show <username> or <all>"
     exit 1
+  fi
+  
+  if [ "$USERNAME" = 'all' ]; then
+    AND="AND r.username <> ''"
+  else
+    AND="AND r.username = '$USERNAME'"
   fi
 
   $MYSQL "
-    SELECT *
-      FROM radcheck
-      WHERE username = '$USERNAME';
-  "
-}
+    SELECT 
 
-_show_all() {
-  $MYSQL "
-    SELECT username, value as password
-      FROM radcheck
-      WHERE attribute = 'Cleartext-Password'
-        AND username <> '';
+      r.username AS Username, 
+      u.prename as Prename, 
+      u.lastname as Lastname, 
+      r.value AS Password
+      
+      FROM radcheck AS r
+      JOIN user AS u 
+        ON r.username = u.User_Name
+      WHERE r.attribute = 'Cleartext-Password'
+        $AND
+     ;
   "
 }
 
@@ -101,25 +108,18 @@ _delete() {
     echo "Usage: delete <username>"
     exit 1
   fi
-
-  $MYSQL "
-    DELETE u, rug, rc
-      FROM user AS u
-      JOIN radusergroup AS rug
-        ON u.username = rug.username
-      JOIN radcheck as rc
-        ON u.username = rc.username
-      WHERE u.username = '$USERNAME';
-  "
+  
+  $MYSQL "DELETE FROM user WHERE User_Name = '$USERNAME';"
+  $MYSQL "DELETE FROM radcheck WHERE username = '$USERNAME';"
+  $MYSQL "DELETE FROM radusergroup WHERE username = '$USERNAME';"
 }
 
-function _help {
+_help() {
   echo "Usage: $0 <command> [<args>]
 
 The commands are:
   add              Add user
-  show <username>                : Show user
-  show-all                       : Show all user
+  show <username> or <all>       : Show user
   update           Update user
   password <username> <password> : Update password.
   delete <username>              : Delete user
@@ -138,10 +138,6 @@ case "$1" in
     shift 1
     _show $@
     ;;
-
-  show-all)
-    _show_all
-  ;;
 
   update)
     shift 1

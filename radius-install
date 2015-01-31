@@ -4,8 +4,8 @@
 
 MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
 
-function _install_help {
-  echo "usage: rad inst <table>
+_help() {
+  echo "Usage: $0 <table>
 
     all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
             radreply, radusergroup, radpostauth, cui, ippool, wimax)
@@ -26,23 +26,24 @@ function _install_help {
     wimax"
 }
 
-function _install_database {
+_database() {
   $MYSQL "
-    CREATE DATABASE IF NOT EXISTS radius;
+    DROP DATABASE IF EXISTS $MYSQL_DATABASE; 
+    CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
   "
 }
 
 #
 # Table structure for table 'user'
 #
-function _install_user {
+_user() {
   $MYSQL "
 
     CREATE TABLE user (
 
       id                    int(10)                 NOT NULL auto_increment,
       username              varchar(64)             NOT NULL UNIQUE default '',
-      firstname             varchar(128)            NOT NULL default '',
+      prename               varchar(128)            NOT NULL default '',
       lastname              varchar(128)            NOT NULL default '',
       description           varchar(200)            NOT NULL default '',
 
@@ -57,7 +58,7 @@ function _install_user {
 #
 # Table structure for table 'groups'
 #
-function _install_groups {
+_groups() {
   $MYSQL "
 
     CREATE TABLE groups (
@@ -78,7 +79,7 @@ function _install_groups {
 #
 # Table structure for table 'nas'
 #
-function _install_nas {
+_nas() {
   $MYSQL "
 
     CREATE TABLE nas (
@@ -105,7 +106,7 @@ function _install_nas {
 #
 # Table structure for table 'radacct'
 #
-function _install_radacct {
+_radacct() {
   $MYSQL "
 
     CREATE TABLE radacct (
@@ -154,7 +155,7 @@ function _install_radacct {
 #
 # Table structure for table 'radcheck'
 #
-function _install_radcheck {
+_radcheck() {
   $MYSQL "
 
     CREATE TABLE radcheck (
@@ -175,7 +176,7 @@ function _install_radcheck {
 #
 # Table structure for table 'radgroupcheck'
 #
-function _install_radgroupcheck {
+_radgroupcheck() {
   $MYSQL "
 
     CREATE TABLE radgroupcheck (
@@ -196,7 +197,7 @@ function _install_radgroupcheck {
 #
 # Table structure for table 'radgroupreply'
 #
-function _install_radgroupreply {
+_radgroupreply() {
   $MYSQL "
 
     CREATE TABLE radgroupreply (
@@ -218,7 +219,7 @@ function _install_radgroupreply {
 #
 # Table structure for table 'radreply'
 #
-function _install_radreply {
+_radreply() {
   $MYSQL "
 
     CREATE TABLE radreply (
@@ -240,7 +241,7 @@ function _install_radreply {
 #
 # Table structure for table 'radusergroup'
 #
-function _install_radusergroup {
+_radusergroup() {
   $MYSQL "
 
     CREATE TABLE radusergroup (
@@ -258,7 +259,7 @@ function _install_radusergroup {
 #
 # Table structure for table 'radpostauth'
 #
-function _install_radpostauth {
+_radpostauth() {
   $MYSQL "
 
     CREATE TABLE radpostauth (
@@ -280,7 +281,7 @@ function _install_radpostauth {
 #
 # Table structure for table 'cui'
 #
-function _install_cui {
+_cui() {
   $MYSQL "
 
     CREATE TABLE cui (
@@ -301,7 +302,7 @@ function _install_cui {
 #
 # Table structure for table 'radippool'
 #
-function _install_ippool {
+_ippool() {
   $MYSQL "
 
     CREATE TABLE radippool (
@@ -329,7 +330,7 @@ function _install_ippool {
 # WiMAX Table structure for table 'wimax',
 # which replaces the 'radpostauth' table.
 #
-function _install_wimax {
+_wimax() {
   $MYSQL "
 
     CREATE TABLE wimax (
@@ -350,92 +351,92 @@ function _install_wimax {
 }
 
 
-_install_database
+_database
 
 case "$1" in
   all)
-    _install_user
-    _install_groups
-    _install_nas
-    _install_radacct
-    _install_radcheck
-    _install_radgroupcheck
-    _install_radgroupreply
-    _install_radreply
-    _install_radusergroup
-    _install_radpostauth
-    _install_cui
-    _install_ippool
-    _install_wimax
+    _user
+    _groups
+    _nas
+    _radacct
+    _radcheck
+    _radgroupcheck
+    _radgroupreply
+    _radreply
+    _radusergroup
+    _radpostauth
+    _cui
+    _ippool
+    _wimax
   ;;
 
   common)
-    _install_user
-    _install_groups
-    _install_nas
-    _install_radacct
-    _install_radcheck
-    _install_radgroupcheck
-    _install_radgroupreply
-    _install_radreply
-    _install_radusergroup
-    _install_radpostauth
+    _user
+    _groups
+    _nas
+    _radacct
+    _radcheck
+    _radgroupcheck
+    _radgroupreply
+    _radreply
+    _radusergroup
+    _radpostauth
   ;;
 
   user)
-    _install_user
+    _user
   ;;
 
   groups)
-    _install_groups
+    _groups
   ;;
 
   nas)
-    _install_nas
+    _nas
   ;;
 
   radacct)
-    _install_radacct
+    _radacct
   ;;
 
   radcheck)
-    _install_radcheck
+    _radcheck
   ;;
 
   radgroupcheck)
-    _install_radgroupcheck
+    _radgroupcheck
   ;;
 
   radgroupreply)
-    _install_radgroupreply
+    _radgroupreply
   ;;
 
   radreply)
-    _install_radreply
+    _radreply
   ;;
 
   radusergroup)
-    _install_radusergroup
+    _radusergroup
   ;;
 
   radpostauth)
-    _install_radpostauth
+    _radpostauth
   ;;
 
   cui)
-    _install_cui
+    _cui
   ;;
 
   ippool)
-    _install_ippool
+    _ippool
   ;;
 
   wimax)
-    _install_wimax
+    _wimax
   ;;
 
   *)
-    _install_help
+    _help
   ;;
 
 esac
