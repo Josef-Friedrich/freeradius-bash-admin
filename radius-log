@@ -25,13 +25,18 @@ _user_count() {
   echo "Interval: $INTERVAL"
 
   $MYSQL "
-    SELECT username, COUNT(username) AS logincount
-    FROM radpostauth
-    WHERE reply = 'Access-Accept'
-      AND nasip <> ''
-      AND authdate > CURDATE() - INTERVAL $INTERVAL
-    GROUP BY username
-    ORDER BY logincount DESC;
+    SELECT 
+      CONCAT_WS(' ', u.prename, u.lastname) as Name,
+      r.username AS Username, 
+      COUNT(r.username) AS Count
+    FROM radpostauth AS r
+    JOIN user AS u
+      ON u.User_Name = r.username
+    WHERE r.reply = 'Access-Accept'
+      AND r.nasip <> ''
+      AND r.authdate > CURDATE() - INTERVAL $INTERVAL
+    GROUP BY r.username
+    ORDER BY Count DESC;
   "
 }
 
