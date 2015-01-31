@@ -1,9 +1,10 @@
 #! /bin/bash
 
+. /etc/freeradius-bash-admin.conf
 
-function add_guests {
-  uninst all
-  inst all
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+_add() {
 
   SUM=50
   START=100
@@ -30,3 +31,61 @@ function add_guests {
   done
 
 }
+
+_show_expired() {
+  $MYSQL "
+    SELECT pa.username
+    FROM radpostauth AS pa
+    JOIN radcheck AS c
+      ON pa.username = c.username
+    WHERE c.attribute = 'Access-Period' 
+      AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(pa.authdate) > c.value
+    GROUP BY pa.username
+    ORDER BY pa.authdate DESC
+    ;
+  "
+}
+
+_delete_expired() {
+
+   local TMP='/tmp/freeradius-bash-admin_guests.tmp'
+
+  _show_expired > $TMP 
+
+  for GUEST in $(cat $TMP); do
+    $MYSQL "DELETE FROM radcheck WHERE username = '$GUEST';"
+    echo "Delete $GUEST"
+  done
+}
+
+_help() {
+  echo "Usage: $0 <options>
+
+Options:
+
+  - add
+  - show-expired
+  - delete-expired
+"
+}
+
+case "$1" in
+
+  add)
+    shift 1
+    _add $@
+    ;;
+
+  show-expired)
+    _show_expired
+    ;;
+
+  delete-expired)
+    _delete_expired
+    ;;
+
+  *)
+    _help
+    ;;
+
+esac

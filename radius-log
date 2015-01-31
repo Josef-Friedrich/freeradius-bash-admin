@@ -83,6 +83,12 @@ _db_layout() {
     $MYSQL "SHOW TABLES;"
     exit 1
   fi
+  
+  echo "
+  
+# Table '$TABLE'
+
+"
 
   $MYSQL "DESCRIBE $TABLE;"
 }

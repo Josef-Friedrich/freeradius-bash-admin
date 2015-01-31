@@ -1,0 +1,14 @@
+#! /bin/bash
+
+. /etc/freeradius-bash-admin.conf
+
+MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
+
+_cron() {
+  $MYSQL "DELETE FROM radpostauth
+  WHERE authdate < NOW() - INTERVAL 3 MONTH
+  ORDER BY authdate DESC
+  ;"
+}
+
+_cron
