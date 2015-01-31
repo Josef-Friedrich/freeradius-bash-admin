@@ -82,7 +82,7 @@ _db_layout() {
   $MYSQL "DESCRIBE $TABLE;"
 }
 
-_log() {
+_log_file() {
   tail -n 100 -f /var/log/freeradius/radius.log
 }
 
@@ -96,7 +96,7 @@ Options:
   - nas-count
   - db-values <table>
   - db-layout <table>
-  - log
+  - log-file
 "
 }
 
@@ -127,8 +127,8 @@ case $1 in
     _db_layout "$2"
   ;;
 
-  log)
-    _log
+  log-file)
+    _log_file
   ;;
 
   *)

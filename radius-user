@@ -98,9 +98,7 @@ _delete() {
   local USERNAME="$1"
 
   if [ -z "$USERNAME" ]; then
-
-    echo "Enter username!"
-
+    echo "Usage: delete <username>"
     exit 1
   fi
 
