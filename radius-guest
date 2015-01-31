@@ -54,7 +54,7 @@ _delete_expired() {
 
   for GUEST in $(cat $TMP); do
     $MYSQL "DELETE FROM radcheck WHERE username = '$GUEST';"
-    echo "Delete $GUEST"
+    echo "Delete '$GUEST'."
   done
 }
 
