@@ -4,19 +4,46 @@
 
 MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
 
+
+_check_id() {
+  ID="$1"
+
+  if [ -z "$ID" ]; then
+    echo "Usage: $0 delete <id>
+
+Select NAS by id!
+"
+    _show
+    exit 1
+  fi
+}
+
+_set_values() {
+  while true ; do
+    case "$1" in
+      -n|--name)
+        NAME="$2"
+        shift 2
+      ;;
+
+      -p|--password|--pass)
+        PASSWORD="$2"
+        shift 2
+      ;;
+
+      -i|--ip)
+        IP="$2"
+        shift 2
+      ;;
+
+      *)
+        break
+      ;;
+    esac
+  done 
+}
+
 _add() {
-  #NASNAME="$1"
-  #SHORTNAME="$2"
-  #SECRET="$3"
-
-  echo "Add a new NAS!"
-  echo -n "shortname: "
-  read SHORTNAME
-  echo -n "ip address: "
-  read NASNAME
-  echo -n "secret: "
-  read SECRET
-
   $MYSQL "
     INSERT
       INTO nas (nasname,shortname,secret)
@@ -31,32 +58,43 @@ _show() {
   "
 }
 
+_update() {
+  _check_id "$1"
+
+  shift
+
+  _set_values "$@"
+
+  echo $NAME
+  echo $PASSWORD
+  echo $IP
+
+  $MYSQL "
+    UPDATE nas
+      SET nasname = 'lol',
+      shortname = 'lol'
+      WHERE id = '$ID';
+  "
+}
+
 _delete() {
-  SHORTNAME="$1"
+  ID="$1"
 
-  if [ -z "$SHORTNAME" ]; then
+  if [ -z "$ID" ]; then
+    echo "Usage: $0 delete <id>
 
-    echo "Enter shortname!" >2&
-
+Select NAS by id!
+"
+    _show
     exit 1
-
   fi
 
   $MYSQL "
     DELETE
       FROM nas
-      WHERE shortname = '$SHORTNAME';
+      WHERE id = '$ID';
   "
-  $MYSQL "
-    DELETE u, rug, rc
-      FROM user AS u
-      JOIN radusergroup AS rug
-        ON u.username = rug.username
-      JOIN radcheck as rc
-        ON u.username = rc.username
-      WHERE u.username = '$USERNAME';
 
-"
 }
 
 _help() {
@@ -66,8 +104,8 @@ The commands are:
    add              Add nas
    show             Show nas
    update           Update nas
-   delete           Delete nas 
-   help             Display help topics
+   delete <id>      Delete nas by ID.
+   help             Display help topics.
 "
 }
 
@@ -94,7 +132,6 @@ case "$1" in
     ;;
 
   help)
-    shift 1
     _help
     ;;
 
@@ -103,3 +140,5 @@ case "$1" in
     ;;
 
 esac
+
+# vim: set ts=2 sw=2 sts=2 et :
