@@ -40,7 +40,7 @@ _show() {
     AND="AND r.username = '$USERNAME'"
   fi
 
-  $MYSQL "
+  _mysql "
     SELECT 
 
       r.username AS Username, 
@@ -59,7 +59,7 @@ _show() {
 
 _update() {
 
-  $MYSQL "
+  _mysql "
 
   "
 }
@@ -73,7 +73,7 @@ _password() {
      exit 1
   fi
 
-  $MYSQL "UPDATE radcheck
+  _mysql "UPDATE radcheck
     SET value = '$PASSWORD'
     WHERE username = '$USERNAME'
       AND attribute = 'Cleartext-Password'
@@ -88,9 +88,9 @@ _delete() {
     exit 1
   fi
   
-  $MYSQL "DELETE FROM user WHERE User_Name = '$USERNAME';"
-  $MYSQL "DELETE FROM radcheck WHERE username = '$USERNAME';"
-  $MYSQL "DELETE FROM radusergroup WHERE username = '$USERNAME';"
+  _mysql "DELETE FROM user WHERE User_Name = '$USERNAME';"
+  _mysql "DELETE FROM radcheck WHERE username = '$USERNAME';"
+  _mysql "DELETE FROM radusergroup WHERE username = '$USERNAME';"
 }
 
 _help() {

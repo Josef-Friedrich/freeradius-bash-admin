@@ -2,9 +2,6 @@
 
 . /etc/freeradius-bash-admin.conf
 
-MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
-
-
 _check_id() {
   ID="$1"
 
@@ -44,7 +41,7 @@ _set_values() {
 }
 
 _add() {
-  $MYSQL "
+  _mysql "
     INSERT
       INTO nas (nasname,shortname,secret)
       VALUES ('$NASNAME','$SHORTNAME','$SECRET');
@@ -52,7 +49,7 @@ _add() {
 }
 
 _show() {
-  $MYSQL "
+  _mysql "
     SELECT id, shortname, secret, nasname AS ip
       FROM nas;
   "
@@ -69,7 +66,7 @@ _update() {
   echo $PASSWORD
   echo $IP
 
-  $MYSQL "
+  _mysql "
     UPDATE nas
       SET nasname = 'lol',
       shortname = 'lol'
@@ -89,7 +86,7 @@ Select NAS by id!
     exit 1
   fi
 
-  $MYSQL "
+  _mysql "
     DELETE
       FROM nas
       WHERE id = '$ID';

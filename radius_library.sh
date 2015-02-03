@@ -4,6 +4,10 @@ _mysql() {
   mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e "$@"
 }
 
+_mysql_base() {
+  mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "$@"
+}
+
 _password_generator() {
   # -a algorithm
   #        use algorithm for password generation.

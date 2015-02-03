@@ -2,8 +2,6 @@
 
 . /etc/freeradius-bash-admin.conf
 
-MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
-
 function _help {
   echo "usage: rad uninst <table>
 
@@ -95,7 +93,7 @@ esac
 
 if [ -n "$TABLES" ]; then
 
-  $MYSQL "
+  _mysql "
     DROP TABLE IF EXISTS
      $TABLES;
   "

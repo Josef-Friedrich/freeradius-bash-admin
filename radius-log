@@ -2,10 +2,8 @@
 
 . /etc/freeradius-bash-admin.conf
 
-MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
-
 _user_last() {
-  $MYSQL "
+  _mysql "
     SELECT username, authdate, nasip FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
@@ -24,7 +22,7 @@ _user_count() {
 
   echo "Interval: $INTERVAL"
 
-  $MYSQL "
+  _mysql "
     SELECT 
       CONCAT_WS(' ', u.prename, u.lastname) as Name,
       r.username AS Username, 
@@ -41,7 +39,7 @@ _user_count() {
 }
 
 _user_log() {
-  $MYSQL "
+  _mysql "
     SELECT *
     FROM radpostauth
     ORDER BY authdate DESC
@@ -50,7 +48,7 @@ _user_log() {
 }
 
 _nas_count() {
-  $MYSQL "
+  _mysql "
     SELECT nas.shortname, COUNT(nas.id) AS logincount
     FROM nas
     LEFT JOIN radpostauth
@@ -64,11 +62,11 @@ _db_values() {
 
   if [ -z "$TABLE" ]; then
     echo "Select table!"
-    $MYSQL "SHOW TABLES;"
+    _mysql "SHOW TABLES;"
     exit 1
   fi
 
-  $MYSQL "
+  _mysql "
     SELECT *
     FROM $TABLE
     LIMIT 500;
@@ -80,7 +78,7 @@ _db_layout() {
 
   if [ -z "$TABLE" ]; then
     echo "Select table!"
-    $MYSQL "SHOW TABLES;"
+    _mysql "SHOW TABLES;"
     exit 1
   fi
   
@@ -90,7 +88,7 @@ _db_layout() {
 
 "
 
-  $MYSQL "DESCRIBE $TABLE;"
+  _mysql "DESCRIBE $TABLE;"
 }
 
 _log_file() {

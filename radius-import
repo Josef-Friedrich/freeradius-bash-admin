@@ -2,8 +2,6 @@
 
 . /etc/freeradius-bash-admin.conf
 
-MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD"
-
 _usage() {
   echo "$0 <dump-file.sql.gz>"
 }
@@ -15,7 +13,7 @@ if [ -z "$FILE" ]; then
   exit 1
 fi
 
-$MYSQL -e " 
+_mysql_base " 
   DROP DATABASE IF EXISTS $MYSQL_DATABASE;
   CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
 "
