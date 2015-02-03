@@ -1,6 +1,10 @@
 #! /bin/bash
 
-function password {
+_mysql() {
+  mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e "$@"
+}
+
+_password_generator() {
   # -a algorithm
   #        use algorithm for password generation.
   #        0 - (default) pronounceable password generation
@@ -31,10 +35,10 @@ function password {
   WEAK="-m 6 -x 6 -M L"
   STRONG="-m 8 -x 8 -M CLN"
 
-  APPEND=$STRONG
+  APPEND="$STRONG"
 
   if [ "$1" == "weak" ]; then
-    APPEND=$WEAK
+    APPEND="$WEAK"
   fi
 
   apg -a 1 -n 1 $APPEND
@@ -55,8 +59,8 @@ Eingabetaste bestätigen.
 }
 
 function _label {
-  LABEL="$1"
-  SUGGESTION="$2"
+  local LABEL="$1"
+  local SUGGESTION="$2"
 
   if [ -n "$SUGGESTION" ]; then
     local SUGGESTION_FORMATED=" [${FORMAT_COMMENT}$SUGGESTION${FORMAT_RESET}]"

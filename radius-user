@@ -2,47 +2,26 @@
 
 . /etc/freeradius-bash-admin.conf
 
-MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
-
 _add() {
-  GUEST="$1"
 
-  echo_question "Do you want to create a new user"
+  _prompt USER_NAME "User name"
+  _prompt FIRST_NAME "First name"
+  _prompt LAST_NAME "Last name"
+  _prompt DESCRIPTION "Description"
+  _prompt PASSWORD "Password" $(_password_generator)
 
-  echo_value "username"
-
-  read USERNAME
-
-  PASSWORD=$(password)
-  echo_value  "password" $PASSWORD
-  read INPUT
-
-  if [ -n "$INPUT" ]; then
-    PASSWORD="$INPUT"
-  fi
-
-  $MYSQL "
+  _mysql "
     INSERT
       INTO radcheck (username,attribute,op,value)
-      VALUES ('$USERNAME','Cleartext-Password',':=','$PASSWORD');
+      VALUES ('$USER_NAME','Cleartext-Password',':=','$PASSWORD');
   "
-
-  if [ "$GUEST" == "guest" ]; then
-
-    $MYSQL "
-      INSERT
-        INTO radcheck (username,attribute,op,value)
-        VALUES ('$USERNAME','Access-Period',':=','60');
-    "
-
-  fi
 
   echo "Following values have been written to the database:"
 
-  $MYSQL "
+  _mysql "
     SELECT *
     FROM radcheck
-    WHERE username = '$USERNAME'
+    WHERE username = '$USER_NAME'
 
   "
 }
