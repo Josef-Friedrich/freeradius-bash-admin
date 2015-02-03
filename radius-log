@@ -33,7 +33,7 @@ _user_count() {
     WHERE r.reply = 'Access-Accept'
       AND r.nasip <> ''
       AND r.authdate > CURDATE() - INTERVAL $INTERVAL
-    GROUP BY r.USER_NAME
+    GROUP BY r.username
     ORDER BY Count DESC;
   "
 }
