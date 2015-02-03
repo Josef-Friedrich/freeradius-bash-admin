@@ -24,7 +24,7 @@ _set_values() {
       ;;
 
       -p|--password|--pass)
-        PASSWORD="$2"
+        PASS_WORD="$2"
         shift 2
       ;;
 
@@ -63,7 +63,7 @@ _update() {
   _set_values "$@"
 
   echo $NAME
-  echo $PASSWORD
+  echo $PASS_WORD
   echo $IP
 
   _mysql "

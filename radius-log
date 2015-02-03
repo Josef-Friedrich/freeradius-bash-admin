@@ -4,7 +4,7 @@
 
 _user_last() {
   _mysql "
-    SELECT username, authdate, nasip FROM radpostauth
+    SELECT USER_NAME, authdate, nasip FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
     ORDER BY authdate DESC
@@ -25,15 +25,15 @@ _user_count() {
   _mysql "
     SELECT 
       CONCAT_WS(' ', u.prename, u.lastname) as Name,
-      r.username AS Username, 
-      COUNT(r.username) AS Count
+      r.USER_NAME AS USER_NAME, 
+      COUNT(r.USER_NAME) AS Count
     FROM radpostauth AS r
     JOIN user AS u
-      ON u.User_Name = r.username
+      ON u.User_Name = r.USER_NAME
     WHERE r.reply = 'Access-Accept'
       AND r.nasip <> ''
       AND r.authdate > CURDATE() - INTERVAL $INTERVAL
-    GROUP BY r.username
+    GROUP BY r.USER_NAME
     ORDER BY Count DESC;
   "
 }

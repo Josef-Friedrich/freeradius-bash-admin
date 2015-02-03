@@ -2,8 +2,6 @@
 
 . /etc/freeradius-bash-admin.conf
 
-MYSQL="mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e"
-
 _help() {
   echo "Usage: $0 <table>
 
@@ -27,7 +25,7 @@ _help() {
 }
 
 _database() {
-  $MYSQL "
+  _mysql_base "
     DROP DATABASE IF EXISTS $MYSQL_DATABASE; 
     CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
   "
@@ -37,7 +35,7 @@ _database() {
 # Table structure for table 'user'
 #
 _user() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE user (
 
@@ -59,7 +57,7 @@ _user() {
 # Table structure for table 'groups'
 #
 _groups() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE groups (
 
@@ -80,7 +78,7 @@ _groups() {
 # Table structure for table 'nas'
 #
 _nas() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE nas (
 
@@ -107,7 +105,7 @@ _nas() {
 # Table structure for table 'radacct'
 #
 _radacct() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radacct (
 
@@ -156,7 +154,7 @@ _radacct() {
 # Table structure for table 'radcheck'
 #
 _radcheck() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radcheck (
 
@@ -177,7 +175,7 @@ _radcheck() {
 # Table structure for table 'radgroupcheck'
 #
 _radgroupcheck() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radgroupcheck (
 
@@ -198,7 +196,7 @@ _radgroupcheck() {
 # Table structure for table 'radgroupreply'
 #
 _radgroupreply() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radgroupreply (
 
@@ -220,7 +218,7 @@ _radgroupreply() {
 # Table structure for table 'radreply'
 #
 _radreply() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radreply (
 
@@ -242,7 +240,7 @@ _radreply() {
 # Table structure for table 'radusergroup'
 #
 _radusergroup() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radusergroup (
 
@@ -260,7 +258,7 @@ _radusergroup() {
 # Table structure for table 'radpostauth'
 #
 _radpostauth() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radpostauth (
 
@@ -282,7 +280,7 @@ _radpostauth() {
 # Table structure for table 'cui'
 #
 _cui() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE cui (
 
@@ -303,7 +301,7 @@ _cui() {
 # Table structure for table 'radippool'
 #
 _ippool() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE radippool (
 
@@ -331,7 +329,7 @@ _ippool() {
 # which replaces the 'radpostauth' table.
 #
 _wimax() {
-  $MYSQL "
+  _mysql "
 
     CREATE TABLE wimax (
 

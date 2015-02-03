@@ -8,12 +8,12 @@ _add() {
   _prompt FIRST_NAME "First name"
   _prompt LAST_NAME "Last name"
   _prompt DESCRIPTION "Description"
-  _prompt PASSWORD "Password" $(_password_generator)
+  _prompt PASS_WORD "Password" $(_password_generator)
 
   _mysql "
     INSERT
       INTO radcheck (username,attribute,op,value)
-      VALUES ('$USER_NAME','Cleartext-Password',':=','$PASSWORD');
+      VALUES ('$USER_NAME','Cleartext-Password',':=','$PASS_WORD');
   "
 
   echo "Following values have been written to the database:"
@@ -27,17 +27,17 @@ _add() {
 }
 
 _show() {
-  USERNAME="$1"
+  USER_NAME="$1"
 
-  if [ -z $USERNAME ]; then
+  if [ -z $USER_NAME ]; then
     echo "Usage: $0 show <username> or <all>"
     exit 1
   fi
   
-  if [ "$USERNAME" = 'all' ]; then
+  if [ "$USER_NAME" = 'all' ]; then
     AND="AND r.username <> ''"
   else
-    AND="AND r.username = '$USERNAME'"
+    AND="AND r.username = '$USER_NAME'"
   fi
 
   _mysql "
@@ -65,32 +65,35 @@ _update() {
 }
 
 _password() {
-  USERNAME="$1"
-  PASSWORD="$2"
+  USER_NAME="$1"
 
-  if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
-     echo "password <username> <password>"
+  if [ -z "$USER_NAME" ] ; then
+     echo "Usage: $0 password <username>"
      exit 1
   fi
 
+  _prompt PASS_WORD "Enter password" $(_password_generator)
+
   _mysql "UPDATE radcheck
-    SET value = '$PASSWORD'
-    WHERE username = '$USERNAME'
+    SET value = '$PASS_WORD'
+    WHERE username = '$USER_NAME'
       AND attribute = 'Cleartext-Password'
   "
+
+  _show "$USER_NAME"
 }
 
 _delete() {
-  local USERNAME="$1"
+  local USER_NAME="$1"
 
-  if [ -z "$USERNAME" ]; then
+  if [ -z "$USER_NAME" ]; then
     echo "Usage: delete <username>"
     exit 1
   fi
   
-  _mysql "DELETE FROM user WHERE User_Name = '$USERNAME';"
-  _mysql "DELETE FROM radcheck WHERE username = '$USERNAME';"
-  _mysql "DELETE FROM radusergroup WHERE username = '$USERNAME';"
+  _mysql "DELETE FROM user WHERE User_Name = '$USER_NAME';"
+  _mysql "DELETE FROM radcheck WHERE username = '$USER_NAME';"
+  _mysql "DELETE FROM radusergroup WHERE username = '$USER_NAME';"
 }
 
 _help() {

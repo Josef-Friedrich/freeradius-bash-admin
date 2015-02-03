@@ -11,19 +11,19 @@ _add() {
   for i in $(seq $START $END); do
     echo $i
 
-    local USERNAME="g$i"
-    local PASSWORD=$(password weak)
+    local USER_NAME="g$i"
+    local PASS_WORD=$(password weak)
 
     _mysql "
       INSERT
         INTO radcheck (username,attribute,op,value)
-        VALUES ('$USERNAME','Cleartext-Password',':=','$PASSWORD');
+        VALUES ('$USER_NAME','Cleartext-Password',':=','$PASS_WORD');
       INSERT
         INTO user (username,firstname,lastname)
-        VALUES ('$USERNAME','Gast-Zugang','Nr. $i');
+        VALUES ('$USER_NAME','Gast-Zugang','Nr. $i');
       INSERT
         INTO radusergroup (username,groupname,priority)
-        VALUES ('$USERNAME','guests',1);
+        VALUES ('$USER_NAME','guests',1);
     "
 
   done
