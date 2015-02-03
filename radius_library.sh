@@ -40,3 +40,42 @@ function password {
   apg -a 1 -n 1 $APPEND
 }
 
+FORMAT_STRONG='\033[0;31m' # Red
+FORMAT_EMPHASIZE='\033[0;32m' # Green
+FORMAT_COMMENT='\033[0;33m' # Yellow
+FORMAT_RESET='\033[0m'
+
+function _prompt_init {
+  echo -e "${FORMAT_STRONG}$*${FORMAT_RESET}"
+
+  echo "
+Werte in eckigen Klammern werden übernommen, wenn Sie die Eingabe mit der
+Eingabetaste bestätigen.
+"
+}
+
+function _label {
+  LABEL="$1"
+  SUGGESTION="$2"
+
+  if [ -n "$SUGGESTION" ]; then
+    local SUGGESTION_FORMATED=" [${FORMAT_COMMENT}$SUGGESTION${FORMAT_RESET}]"
+  fi
+
+  echo -e -n "${FORMAT_EMPHASIZE}$LABEL${FORMAT_RESET}$SUGGESTION_FORMATED: "
+}
+
+function _prompt {
+  local NAME="$1"
+  local LABEL="$2"
+  local SUGGESTION="$3"
+
+  _label "$LABEL" "$SUGGESTION"
+  read $NAME
+
+  if [ -z "${!NAME}" ]; then
+    eval $NAME="$SUGGESTION"
+  fi
+
+  export $NAME
+}
