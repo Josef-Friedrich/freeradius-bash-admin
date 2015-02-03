@@ -2,9 +2,9 @@
 
 . /etc/freeradius-bash-admin.conf
 
-_user_last() {
+_last_logins() {
   _mysql "
-    SELECT USER_NAME, authdate, nasip FROM radpostauth
+    SELECT username, authdate, nasip FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
     ORDER BY authdate DESC
@@ -25,11 +25,11 @@ _user_count() {
   _mysql "
     SELECT 
       CONCAT_WS(' ', u.prename, u.lastname) as Name,
-      r.USER_NAME AS USER_NAME, 
-      COUNT(r.USER_NAME) AS Count
+      r.username AS Username, 
+      COUNT(r.username) AS Count
     FROM radpostauth AS r
     JOIN user AS u
-      ON u.User_Name = r.USER_NAME
+      ON u.User_Name = r.username
     WHERE r.reply = 'Access-Accept'
       AND r.nasip <> ''
       AND r.authdate > CURDATE() - INTERVAL $INTERVAL
@@ -99,7 +99,7 @@ _help() {
   echo "Usage: $0 <options>
 
 Options:
-  - user-last
+  - last-logins
   - user-count <interval> e.g.: \"1 week\" or \"2 month\"
   - user-log
   - nas-count
@@ -111,8 +111,8 @@ Options:
 
 case $1 in
 
-  user-last)
-    _user_last
+  last-logins)
+    _last_logins
   ;;
 
   user-count)
