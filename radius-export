@@ -2,6 +2,26 @@
 
 . /etc/freeradius-bash-admin.conf
 
-mysqldump --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE | gzip > "$(pwd)/$(date "+%Y-%m-%dT%H-%M-%S").sql.gz"
+_usage() {
+  echo "radius-export <path> <file-name>"
+}
+
+EXPORT_PATH="$1"
+
+EXPORT_FILE_NAME="$2"
+
+if [ -z "$EXPORT_PATH" ]; then
+  EXPORT_PATH="$EXPORT_DIRECTORY"
+fi
+
+if [ -z "$EXPORT_FILE_NAME" ]; then
+  EXPORT_FILE_NAME="radius_"$(date "+%Y-%m-%dT%H-%M-%S")
+fi
+
+EXPORT_FILE=$EXPORT_PATH"/"$EXPORT_FILE_NAME".sql.gz"
+
+mysqldump --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE | gzip > $EXPORT_FILE
+
+echo "The database was exported to the file '$EXPORT_FILE'"
 
 # vim: set ts=2 sw=2 sts=2 et :
