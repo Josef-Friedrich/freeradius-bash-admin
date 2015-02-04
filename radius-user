@@ -10,6 +10,11 @@ _add() {
   _prompt DESCRIPTION "Description"
   _prompt PASS_WORD "Password" $(_password_generator)
 
+  if [ -z $USER_NAME ] && [ -z $PASS_WORD ]; then
+    echo "User name and password can not be blank!"
+    exit 1
+  fi
+
   _mysql "
     INSERT
       INTO radcheck (username,attribute,op,value)
