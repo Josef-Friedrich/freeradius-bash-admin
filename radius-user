@@ -16,14 +16,9 @@ _add() {
       VALUES ('$USER_NAME','Cleartext-Password',':=','$PASS_WORD');
   "
 
-  echo "Following values have been written to the database:"
+  echo "Those values have been written to the database:"
 
-  _mysql "
-    SELECT *
-    FROM radcheck
-    WHERE username = '$USER_NAME'
-
-  "
+  _show "$USER_NAME"
 }
 
 _show() {
@@ -33,7 +28,7 @@ _show() {
     echo "Usage: $0 show <username> or <all>"
     exit 1
   fi
-  
+
   if [ "$USER_NAME" = 'all' ]; then
     AND="AND r.username <> ''"
   else
@@ -41,16 +36,16 @@ _show() {
   fi
 
   _mysql "
-    SELECT 
+    SELECT
 
-      r.username AS Username, 
-      u.prename as Prename, 
-      u.lastname as Lastname, 
+      r.username AS Username,
+      u.firstname as Firstname,
+      u.lastname as Lastname,
       r.value AS Password
-      
+
       FROM radcheck AS r
-      JOIN user AS u 
-        ON r.username = u.User_Name
+      JOIN user AS u
+        ON r.username = u.username
       WHERE r.attribute = 'Cleartext-Password'
         $AND
      ;
@@ -90,8 +85,8 @@ _delete() {
     echo "Usage: delete <username>"
     exit 1
   fi
-  
-  _mysql "DELETE FROM user WHERE User_Name = '$USER_NAME';"
+
+  _mysql "DELETE FROM user WHERE username = '$USER_NAME';"
   _mysql "DELETE FROM radcheck WHERE username = '$USER_NAME';"
   _mysql "DELETE FROM radusergroup WHERE username = '$USER_NAME';"
 }
@@ -125,7 +120,7 @@ case "$1" in
     shift 1
     _update $@
     ;;
-  
+
   password)
     shift 1
     _password $@
