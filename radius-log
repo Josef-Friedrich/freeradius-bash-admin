@@ -23,13 +23,13 @@ _user_count() {
   echo "Interval: $INTERVAL"
 
   _mysql "
-    SELECT 
-      CONCAT_WS(' ', u.prename, u.lastname) as Name,
-      r.username AS Username, 
+    SELECT
+      CONCAT_WS(' ', u.firstname, u.lastname) as Name,
+      r.username AS Username,
       COUNT(r.username) AS Count
     FROM radpostauth AS r
     JOIN user AS u
-      ON u.User_Name = r.username
+      ON u.username = r.username
     WHERE r.reply = 'Access-Accept'
       AND r.nasip <> ''
       AND r.authdate > CURDATE() - INTERVAL $INTERVAL
@@ -81,9 +81,9 @@ _db_layout() {
     _mysql "SHOW TABLES;"
     exit 1
   fi
-  
+
   echo "
-  
+
 # Table '$TABLE'
 
 "
