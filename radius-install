@@ -2,7 +2,7 @@
 
 . /etc/freeradius-bash-admin.conf
 
-_help() {
+_usage() {
   echo "Usage: $0 <table>
 
     all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
@@ -434,7 +434,7 @@ case "$1" in
   ;;
 
   *)
-    _help
+    _usage
   ;;
 
 esac

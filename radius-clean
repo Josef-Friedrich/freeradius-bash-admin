@@ -11,7 +11,7 @@ _radpostauth() {
   "
 }
 
-_help() {
+_usage() {
   echo "Usage: $0 <options>
 
 Options:
@@ -26,7 +26,7 @@ case "$1" in
     ;;
 
   *)
-    _help
+    _usage
     ;;
 
 esac

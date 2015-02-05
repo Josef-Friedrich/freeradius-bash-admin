@@ -2,7 +2,7 @@
 
 . /etc/freeradius-bash-admin.conf
 
-function _help {
+function _usage {
   echo "usage: rad uninst <table>
 
     all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
@@ -86,7 +86,7 @@ case "$1" in
   ;;
 
   *)
-    _help
+    _usage
   ;;
 
 esac

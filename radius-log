@@ -95,8 +95,8 @@ _log_file() {
   tail -n 100 -f /var/log/freeradius/radius.log
 }
 
-_help() {
-  echo "Usage: $0 <options>
+_usage() {
+  echo "Usage: radius-log <options>
 
 Options:
   - last-logins
@@ -141,7 +141,7 @@ case $1 in
   ;;
 
   *)
-    _help
+    _usage
   ;;
 
 esac

@@ -3,7 +3,7 @@
 . /etc/freeradius-bash-admin.conf
 
 _usage() {
-  echo "$0 <dump-file.sql.gz>"
+  echo "radius-import <dump-file.sql.gz>"
 }
 
 FILE="$1"

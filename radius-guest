@@ -56,8 +56,8 @@ _delete_expired() {
   done
 }
 
-_help() {
-  echo "Usage: $0 <options>
+_usage() {
+  echo "Usage: radius-guest <options>
 
 Options:
 
@@ -83,7 +83,7 @@ case "$1" in
     ;;
 
   *)
-    _help
+    _usage
     ;;
 
 esac

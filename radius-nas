@@ -94,7 +94,7 @@ Select NAS by id!
 
 }
 
-_help() {
+_usage() {
   echo "Usage: $0 <command> [<args>]
 
 The commands are:
@@ -129,11 +129,11 @@ case "$1" in
     ;;
 
   help)
-    _help
+    _usage
     ;;
 
   *)
-    _help
+    _usage
     ;;
 
 esac
