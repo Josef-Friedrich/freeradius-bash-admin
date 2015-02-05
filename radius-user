@@ -2,8 +2,20 @@
 
 . /etc/freeradius-bash-admin.conf
 
-_add() {
 
+_value() {
+  local DATABASE="$1"
+  local COLUMN="$2"
+
+  _mysql_silent "
+    SELECT
+      $COLUMN
+      FROM $DATABASE
+      WHERE username = '$USER_NAME';
+  "
+}
+
+_add() {
   _prompt USER_NAME "User name"
   _prompt FIRST_NAME "First name"
   _prompt LAST_NAME "Last name"
@@ -62,18 +74,6 @@ _show() {
   "
 }
 
-_value() {
-  local DATABASE="$1"
-  local COLUMN="$2"
-
-  _mysql_silent "
-    SELECT
-      $COLUMN
-      FROM $DATABASE
-      WHERE username = '$USER_NAME';
-  "
-}
-
 _update() {
 
   USER_NAME="$1"
@@ -88,22 +88,29 @@ _update() {
   _prompt DESCRIPTION "Description" "$(_value 'user' 'description')"
   _prompt PASS_WORD "Password" "$(_password_generator)"
 
-  echo "$FIRST_NAME"
-  echo "$LAST_NAME"
-  echo "$DESCRIPTION"
+  _mysql "
+    UPDATE radcheck
+      SET
+        value = '$PASS_WORD'
+      WHERE username = '$USER_NAME'
+        AND attribute = 'Cleartext-Password';
 
-  # _mysql "UPDATE radcheck
-  #   SET value = '$PASS_WORD'
-  #   WHERE username = '$USER_NAME'
-  #     AND attribute = 'Cleartext-Password'
-  # "
+    UPDATE user
+      SET
+        firstname = '$FIRST_NAME',
+        lastname = '$LAST_NAME',
+        description = '$DESCRIPTION'
+      WHERE username = '$USER_NAME';
+  "
+
+  _show "$USER_NAME"
 }
 
 _password() {
   USER_NAME="$1"
 
   if [ -z "$USER_NAME" ] ; then
-     echo "Usage: $0 password <username>"
+     echo "Usage: radius-user password <username>"
      exit 1
   fi
 
@@ -139,7 +146,7 @@ Options:
   add                            : Add user.
   show <username> or <all>       : Show user.
   update <username>              : Update user.
-  password <username> <password> : Update password.
+  password <username>            : Update password.
   delete <username>              : Delete user.
   help                           : Display help topics.
 "
