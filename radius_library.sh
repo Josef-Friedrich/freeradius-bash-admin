@@ -1,11 +1,28 @@
 #! /bin/bash
 
 _mysql() {
-  mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE -e "$@"
+  mysql \
+    --user=$MYSQL_USER \
+    --password=$MYSQL_PASSWORD \
+    $MYSQL_DATABASE \
+    --execute "$@" 2>/dev/null
 }
 
 _mysql_base() {
-  mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "$@"
+  mysql \
+    --user=$MYSQL_USER \
+    --password=$MYSQL_PASSWORD \
+    --execute "$@" 2>/dev/null
+}
+
+_mysql_silent() {
+  mysql \
+    --user=$MYSQL_USER \
+    --password=$MYSQL_PASSWORD \
+    --silent \
+    --skip-column-names \
+    $MYSQL_DATABASE \
+    --execute "$@" 2>/dev/null
 }
 
 _password_generator() {
@@ -79,11 +96,11 @@ function _prompt {
   local SUGGESTION="$3"
 
   _label "$LABEL" "$SUGGESTION"
-  read $NAME
+  read "$NAME"
 
   if [ -z "${!NAME}" ]; then
-    eval $NAME="$SUGGESTION"
+    eval "$NAME='$SUGGESTION'"
   fi
 
-  export $NAME
+  export "$NAME"
 }

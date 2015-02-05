@@ -17,8 +17,12 @@ _add() {
 
   _mysql "
     INSERT
-      INTO radcheck (username,attribute,op,value)
+      INTO radcheck (username, attribute, op, value)
       VALUES ('$USER_NAME','Cleartext-Password',':=','$PASS_WORD');
+
+    INSERT
+      INTO user (username, firstname, lastname, description)
+      VALUES ('$USER_NAME','$FIRST_NAME','$LAST_NAME','$DESCRIPTION');
   "
 
   echo "Those values have been written to the database:"
@@ -44,9 +48,10 @@ _show() {
     SELECT
 
       r.username AS Username,
+      r.value AS Password,
       u.firstname as Firstname,
       u.lastname as Lastname,
-      r.value AS Password
+      u.description as Description
 
       FROM radcheck AS r
       JOIN user AS u
@@ -57,11 +62,41 @@ _show() {
   "
 }
 
+_value() {
+  local DATABASE="$1"
+  local COLUMN="$2"
+
+  _mysql_silent "
+    SELECT
+      $COLUMN
+      FROM $DATABASE
+      WHERE username = '$USER_NAME';
+  "
+}
+
 _update() {
 
-  _mysql "
+  USER_NAME="$1"
 
-  "
+  if [ -z "$USER_NAME" ] ; then
+     echo "Usage: radius-user update <username>"
+     exit 1
+  fi
+
+  _prompt FIRST_NAME "First name" "$(_value 'user' 'firstname')"
+  _prompt LAST_NAME "Last name" "$(_value 'user' 'lastname')"
+  _prompt DESCRIPTION "Description" "$(_value 'user' 'description')"
+  _prompt PASS_WORD "Password" "$(_password_generator)"
+
+  echo "$FIRST_NAME"
+  echo "$LAST_NAME"
+  echo "$DESCRIPTION"
+
+  # _mysql "UPDATE radcheck
+  #   SET value = '$PASS_WORD'
+  #   WHERE username = '$USER_NAME'
+  #     AND attribute = 'Cleartext-Password'
+  # "
 }
 
 _password() {
@@ -87,7 +122,7 @@ _delete() {
   local USER_NAME="$1"
 
   if [ -z "$USER_NAME" ]; then
-    echo "Usage: delete <username>"
+    echo "Usage: radius-user delete <username>"
     exit 1
   fi
 
@@ -97,15 +132,16 @@ _delete() {
 }
 
 _help() {
-  echo "Usage: $0 <command> [<args>]
+  echo "Usage: radius-user <options>
 
-The commands are:
-  add              Add user
-  show <username> or <all>       : Show user
-  update           Update user
+Options:
+
+  add                            : Add user.
+  show <username> or <all>       : Show user.
+  update <username>              : Update user.
   password <username> <password> : Update password.
-  delete <username>              : Delete user
-  help                           : Display help topics
+  delete <username>              : Delete user.
+  help                           : Display help topics.
 "
 }
 
