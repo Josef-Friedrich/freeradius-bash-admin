@@ -70,15 +70,6 @@ FORMAT_EMPHASIZE='\033[0;32m' # Green
 FORMAT_COMMENT='\033[0;33m' # Yellow
 FORMAT_RESET='\033[0m'
 
-function _prompt_init {
-  echo -e "${FORMAT_STRONG}$*${FORMAT_RESET}"
-
-  echo "
-Werte in eckigen Klammern werden übernommen, wenn Sie die Eingabe mit der
-Eingabetaste bestätigen.
-"
-}
-
 function _label {
   local LABEL="$1"
   local SUGGESTION="$2"
