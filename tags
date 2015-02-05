@@ -4,86 +4,56 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+_add	radius-guest	/^_add() {$/;"	f
 _add	radius-nas	/^_add() {$/;"	f
 _add	radius-user	/^_add() {$/;"	f
+_check_id	radius-nas	/^_check_id() {$/;"	f
 _cui	radius-install	/^_cui() {$/;"	f
 _database	radius-install	/^_database() {$/;"	f
 _db_layout	radius-log	/^_db_layout() {$/;"	f
 _db_values	radius-log	/^_db_values() {$/;"	f
 _delete	radius-nas	/^_delete() {$/;"	f
 _delete	radius-user	/^_delete() {$/;"	f
+_delete_expired	radius-guest	/^_delete_expired() {$/;"	f
 _groups	radius-install	/^_groups() {$/;"	f
-_usage	freeradius-bash-admin	/^function _usage {$/;"	f
-_usage	radius-install	/^_usage() {$/;"	f
-_usage	radius-log	/^_usage() {$/;"	f
-_usage	radius-nas	/^_usage() {$/;"	f
-_usage	radius-uninstall	/^function _usage {$/;"	f
-_usage	radius-user	/^function _usage {$/;"	f
-_install_cui	freeradius-bash-admin	/^function _install_cui {$/;"	f
-_install_database	freeradius-bash-admin	/^function _install_database {$/;"	f
-_install_groups	freeradius-bash-admin	/^function _install_groups {$/;"	f
-_install_usage	freeradius-bash-admin	/^function _install_usage {$/;"	f
-_install_ippool	freeradius-bash-admin	/^function _install_ippool {$/;"	f
-_install_nas	freeradius-bash-admin	/^function _install_nas {$/;"	f
-_install_radacct	freeradius-bash-admin	/^function _install_radacct {$/;"	f
-_install_radcheck	freeradius-bash-admin	/^function _install_radcheck {$/;"	f
-_install_radgroupcheck	freeradius-bash-admin	/^function _install_radgroupcheck {$/;"	f
-_install_radgroupreply	freeradius-bash-admin	/^function _install_radgroupreply {$/;"	f
-_install_radpostauth	freeradius-bash-admin	/^function _install_radpostauth {$/;"	f
-_install_radreply	freeradius-bash-admin	/^function _install_radreply {$/;"	f
-_install_radusergroup	freeradius-bash-admin	/^function _install_radusergroup {$/;"	f
-_install_user	freeradius-bash-admin	/^function _install_user {$/;"	f
-_install_wimax	freeradius-bash-admin	/^function _install_wimax {$/;"	f
 _ippool	radius-install	/^_ippool() {$/;"	f
+_label	radius_library.sh	/^function _label {$/;"	f
+_last_logins	radius-log	/^_last_logins() {$/;"	f
 _log_file	radius-log	/^_log_file() {$/;"	f
+_mysql	radius_library.sh	/^_mysql() {$/;"	f
+_mysql_base	radius_library.sh	/^_mysql_base() {$/;"	f
+_mysql_silent	radius_library.sh	/^_mysql_silent() {$/;"	f
 _nas	radius-install	/^_nas() {$/;"	f
 _nas_count	radius-log	/^_nas_count() {$/;"	f
 _password	radius-user	/^_password() {$/;"	f
+_password_generator	radius_library.sh	/^_password_generator() {$/;"	f
+_prompt	radius_library.sh	/^function _prompt {$/;"	f
 _radacct	radius-install	/^_radacct() {$/;"	f
 _radcheck	radius-install	/^_radcheck() {$/;"	f
 _radgroupcheck	radius-install	/^_radgroupcheck() {$/;"	f
 _radgroupreply	radius-install	/^_radgroupreply() {$/;"	f
+_radpostauth	radius-clean	/^_radpostauth() {$/;"	f
 _radpostauth	radius-install	/^_radpostauth() {$/;"	f
 _radreply	radius-install	/^_radreply() {$/;"	f
 _radusergroup	radius-install	/^_radusergroup() {$/;"	f
-_show	freeradius-bash-admin	/^function _show {$/;"	f
+_set_values	radius-nas	/^_set_values() {$/;"	f
 _show	radius-nas	/^_show() {$/;"	f
 _show	radius-user	/^_show() {$/;"	f
-_show_all	radius-user	/^_show_all() {$/;"	f
-_show_nas	freeradius-bash-admin	/^function _show_nas {$/;"	f
-_show_user	freeradius-bash-admin	/^function _show_user {$/;"	f
-_statistics	freeradius-bash-admin	/^function _statistics {$/;"	f
-_statistics_db_table	freeradius-bash-admin	/^function _statistics_db_table {$/;"	f
-_statistics_usage	freeradius-bash-admin	/^function _statistics_usage {$/;"	f
-_statistics_nas_count	freeradius-bash-admin	/^function _statistics_nas_count {$/;"	f
-_statistics_user_count	freeradius-bash-admin	/^function _statistics_user_count {$/;"	f
-_statistics_user_last	freeradius-bash-admin	/^function _statistics_user_last {$/;"	f
-_statistics_user_log	freeradius-bash-admin	/^function _statistics_user_log {$/;"	f
+_show_expired	radius-guest	/^_show_expired() {$/;"	f
+_update	radius-nas	/^_update() {$/;"	f
 _update	radius-user	/^_update() {$/;"	f
+_usage	radius-clean	/^_usage() {$/;"	f
+_usage	radius-export	/^_usage() {$/;"	f
+_usage	radius-guest	/^_usage() {$/;"	f
 _usage	radius-import	/^_usage() {$/;"	f
+_usage	radius-install	/^_usage() {$/;"	f
+_usage	radius-log	/^_usage() {$/;"	f
+_usage	radius-nas	/^_usage() {$/;"	f
+_usage	radius-uninstall	/^function _usage {$/;"	f
+_usage	radius-user	/^_usage() {$/;"	f
 _user	radius-install	/^_user() {$/;"	f
 _user_count	radius-log	/^_user_count() {$/;"	f
-_user_last	radius-log	/^_user_last() {$/;"	f
 _user_log	radius-log	/^_user_log() {$/;"	f
+_value	radius-user	/^_value() {$/;"	f
 _wimax	radius-install	/^_wimax() {$/;"	f
-add	freeradius-bash-admin	/^function add {$/;"	f
-add_group	freeradius-bash-admin	/^function add_group {$/;"	f
 add_group	radius-group	/^function add_group {$/;"	f
-add_guests	freeradius-bash-admin	/^function add_guests {$/;"	f
-add_guests	radius-guest	/^function add_guests {$/;"	f
-add_nas	freeradius-bash-admin	/^function add_nas {$/;"	f
-add_user	freeradius-bash-admin	/^function add_user {$/;"	f
-del	freeradius-bash-admin	/^function del {$/;"	f
-del_nas	freeradius-bash-admin	/^function del_nas {$/;"	f
-del_user	freeradius-bash-admin	/^function del_user {$/;"	f
-exp	freeradius-bash-admin	/^function exp {$/;"	f
-inst	freeradius-bash-admin	/^function inst {$/;"	f
-label	freeradius-bash-admin	/^function label {$/;"	f
-log	freeradius-bash-admin	/^function log {$/;"	f
-password	freeradius-bash-admin	/^function password {$/;"	f
-prep	freeradius-bash-admin	/^function prep {$/;"	f
-prompt	freeradius-bash-admin	/^function prompt {$/;"	f
-prompt_init	freeradius-bash-admin	/^function prompt_init {$/;"	f
-uninst	freeradius-bash-admin	/^function uninst {$/;"	f
-uninst_usage	freeradius-bash-admin	/^function uninst_usage {$/;"	f
-upd_user	freeradius-bash-admin	/^function upd_user {$/;"	f
