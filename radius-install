@@ -3,7 +3,7 @@
 . /etc/freeradius-bash-admin.conf
 
 _usage() {
-  echo "Usage: $0 <table>
+  echo "Usage: radius-install <table>
 
     all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
             radreply, radusergroup, radpostauth, cui, ippool, wimax)

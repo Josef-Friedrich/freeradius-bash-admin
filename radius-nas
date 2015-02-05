@@ -6,7 +6,7 @@ _check_id() {
   ID="$1"
 
   if [ -z "$ID" ]; then
-    echo "Usage: $0 delete <id>
+    echo "Usage: radius-nas delete <id>
 
 Select NAS by id!
 "
@@ -78,7 +78,7 @@ _delete() {
   ID="$1"
 
   if [ -z "$ID" ]; then
-    echo "Usage: $0 delete <id>
+    echo "Usage: radius-nas delete <id>
 
 Select NAS by id!
 "
@@ -95,7 +95,7 @@ Select NAS by id!
 }
 
 _usage() {
-  echo "Usage: $0 <command> [<args>]
+  echo "Usage: radius-nas <command> [<args>]
 
 The commands are:
    add              Add nas

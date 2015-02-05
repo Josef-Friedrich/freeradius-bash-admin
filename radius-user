@@ -46,7 +46,7 @@ _show() {
   USER_NAME="$1"
 
   if [ -z $USER_NAME ]; then
-    echo "Usage: $0 show <username> or <all>"
+    echo "Usage: radius-user show <username> or <all>"
     exit 1
   fi
 

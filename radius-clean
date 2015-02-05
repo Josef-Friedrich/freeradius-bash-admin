@@ -12,7 +12,7 @@ _radpostauth() {
 }
 
 _usage() {
-  echo "Usage: $0 <options>
+  echo "Usage: radius-clean <options>
 
 Options:
   - radpostauth
