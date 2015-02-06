@@ -5,7 +5,8 @@ _mysql() {
     --user=$MYSQL_USER \
     --password=$MYSQL_PASSWORD \
     $MYSQL_DATABASE \
-    --execute "$@" 2>/dev/null
+    --execute "$@" # dev
+#    --execute "$@" 2>/dev/null # production
 }
 
 _mysql_base() {
@@ -65,20 +66,15 @@ _password_generator() {
   apg -a 1 -n 1 $APPEND
 }
 
-FORMAT_STRONG='\033[0;31m' # Red
-FORMAT_EMPHASIZE='\033[0;32m' # Green
-FORMAT_COMMENT='\033[0;33m' # Yellow
-FORMAT_RESET='\033[0m'
-
 function _label {
   local LABEL="$1"
   local SUGGESTION="$2"
 
   if [ -n "$SUGGESTION" ]; then
-    local SUGGESTION_FORMATED=" [${FORMAT_COMMENT}$SUGGESTION${FORMAT_RESET}]"
+    local SUGGESTION_FORMATED=" [$SUGGESTION]"
   fi
 
-  echo -e -n "${FORMAT_EMPHASIZE}$LABEL${FORMAT_RESET}$SUGGESTION_FORMATED: "
+  echo "$LABEL$SUGGESTION_FORMATED: "
 }
 
 function _prompt {
