@@ -133,6 +133,8 @@ _delete() {
     exit 1
   fi
 
+  _prompt_yes "Delete user '$USER_NAME'?"
+
   _mysql "DELETE FROM user WHERE username = '$USER_NAME';"
   _mysql "DELETE FROM radcheck WHERE username = '$USER_NAME';"
   _mysql "DELETE FROM radusergroup WHERE username = '$USER_NAME';"
@@ -177,6 +179,10 @@ case "$1" in
   delete)
     shift 1
     _delete $@
+    ;;
+
+  help)
+    _usage
     ;;
 
   *)

@@ -64,3 +64,12 @@ function _prompt {
 
   export "$NAME"
 }
+
+_prompt_yes() {
+  echo -n "$@ (y|n): "
+  read YES
+
+  if [ "$YES" != "y" ]; then
+    echo "exit"
+  fi
+}
