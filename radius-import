@@ -3,7 +3,7 @@
 . /etc/freeradius-bash-admin.conf
 
 _usage() {
-  echo "radius-import <dump-file.sql.gz>"
+  echo "Usage: radius-import <dump-file.sql.gz>"
 }
 
 FILE="$1"
@@ -12,6 +12,8 @@ if [ -z "$FILE" ]; then
   _usage
   exit 1
 fi
+
+_prompt_yes "Import dump file? All data will be lost!"
 
 _mysql_base " 
   DROP DATABASE IF EXISTS $MYSQL_DATABASE;

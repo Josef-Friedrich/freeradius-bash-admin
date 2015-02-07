@@ -3,7 +3,6 @@
 . /etc/freeradius-bash-admin.conf
 
 _add() {
-
   SUM=50
   START=100
   END=$((START + SUM))
@@ -45,7 +44,6 @@ _show_expired() {
 }
 
 _delete_expired() {
-
    local TMP='/tmp/freeradius-bash-admin_guests.tmp'
 
   _show_expired > $TMP 
@@ -61,9 +59,9 @@ _usage() {
 
 Options:
 
-  - add
-  - show-expired
-  - delete-expired
+  add            : Add new guest accounts.  
+  show-expired   : Show expired guest accounts.
+  delete-expired : Delete expired guest accounts.
 "
 }
 

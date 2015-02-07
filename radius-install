@@ -2,35 +2,6 @@
 
 . /etc/freeradius-bash-admin.conf
 
-_usage() {
-  echo "Usage: radius-install <table>
-
-    all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
-            radreply, radusergroup, radpostauth, cui, ippool, wimax)
-    common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
-            radreply, radusergroup, radpostauth)
-    user
-    group
-    nas
-    radacct
-    radcheck
-    radgroupcheck
-    radgroupreply
-    radreply
-    radusergroup
-    radpostauth
-    cui
-    ippool
-    wimax"
-}
-
-_database() {
-  _mysql_base "
-    DROP DATABASE IF EXISTS $MYSQL_DATABASE; 
-    CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
-  "
-}
-
 #
 # Table structure for table 'user'
 #
@@ -348,8 +319,49 @@ _wimax() {
   "
 }
 
+_database() {
+  _prompt_yes "Drop all existing tables? All data will be lost!"
 
-_database
+  _mysql_base "
+    DROP DATABASE IF EXISTS $MYSQL_DATABASE; 
+    CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
+  "
+}
+
+_usage() {
+  echo "Usage: radius-install [-d] <table>
+
+Options:
+
+  -d : Drop all existing tables.
+
+Tables:
+
+  all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth, cui, ippool, wimax)
+  common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth)
+  user
+  group
+  nas
+  radacct
+  radcheck
+  radgroupcheck
+  radgroupreply
+  radreply
+  radusergroup
+  radpostauth
+  cui
+  ippool
+  wimax"
+}
+
+DELETE="$1"
+
+if [ "$DELETE" = "-d" ]; then
+  shift 1
+  _database
+fi
 
 case "$1" in
   all)

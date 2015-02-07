@@ -3,7 +3,7 @@
 . /etc/freeradius-bash-admin.conf
 
 _usage() {
-  echo "radius-export <path> <file-name>"
+  echo "Usage: radius-export <path> <file-name>"
 }
 
 EXPORT_PATH="$1"

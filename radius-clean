@@ -15,8 +15,9 @@ _usage() {
   echo "Usage: radius-clean <options>
 
 Options:
-  - radpostauth
- "
+
+  radpostauth
+"
 }
 
 case "$1" in

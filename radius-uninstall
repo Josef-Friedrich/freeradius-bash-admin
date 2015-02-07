@@ -2,26 +2,28 @@
 
 . /etc/freeradius-bash-admin.conf
 
-function _usage {
-  echo "usage: rad uninst <table>
+_usage() {
+  echo "Usage: radius-uninstall <table>
 
-    all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
-            radreply, radusergroup, radpostauth, cui, ippool, wimax)
-    common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
-            radreply, radusergroup, radpostauth)
-    user
-    groups
-    nas
-    radacct
-    radcheck
-    radgroupcheck
-    radgroupreply
-    radreply
-    radusergroup
-    radpostauth
-    cui
-    ippool
-    wimax"
+Tables:
+
+  all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth, cui, ippool, wimax)
+  common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth)
+  user
+  groups
+  nas
+  radacct
+  radcheck
+  radgroupcheck
+  radgroupreply
+  radreply
+  radusergroup
+  radpostauth
+  cui
+  ippool
+  wimax"
 }
 
 case "$1" in
@@ -90,6 +92,8 @@ case "$1" in
   ;;
 
 esac
+
+_prompt_yes "Uninstall tables? All data will be lost!"
 
 if [ -n "$TABLES" ]; then
 

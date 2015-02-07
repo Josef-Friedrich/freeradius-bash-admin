@@ -99,13 +99,14 @@ _usage() {
   echo "Usage: radius-log <options>
 
 Options:
-  - last-logins
-  - user-count <interval> e.g.: \"1 week\" or \"2 month\"
-  - user-log
-  - nas-count
-  - db-values <table>
-  - db-layout <table>
-  - log-file
+
+  last-logins
+  user-count <interval> e.g.: \"1 week\" or \"2 month\"
+  user-log
+  nas-count
+  db-values <table>
+  db-layout <table>
+  log-file
 "
 }
 
