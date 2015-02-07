@@ -5,15 +5,14 @@ _mysql() {
     --user=$MYSQL_USER \
     --password=$MYSQL_PASSWORD \
     $MYSQL_DATABASE \
-    --execute "$@" # dev
-#    --execute "$@" 2>/dev/null # production
+    --execute "$@"
 }
 
 _mysql_base() {
   mysql \
     --user=$MYSQL_USER \
     --password=$MYSQL_PASSWORD \
-    --execute "$@" 2>/dev/null
+    --execute "$@"
 }
 
 _mysql_silent() {

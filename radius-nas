@@ -2,107 +2,108 @@
 
 . /etc/freeradius-bash-admin.conf
 
-_check_id() {
-  ID="$1"
+_value() {
+  local COLUMN="$1"
 
-  if [ -z "$ID" ]; then
-    echo "Usage: radius-nas delete <id>
-
-Select NAS by id!
-"
-    _show
-    exit 1
-  fi
-}
-
-_set_values() {
-  while true ; do
-    case "$1" in
-      -n|--name)
-        NAME="$2"
-        shift 2
-      ;;
-
-      -p|--password|--pass)
-        PASS_WORD="$2"
-        shift 2
-      ;;
-
-      -i|--ip)
-        IP="$2"
-        shift 2
-      ;;
-
-      *)
-        break
-      ;;
-    esac
-  done 
-}
-
-_add() {
-  _mysql "
-    INSERT
-      INTO nas (nasname,shortname,secret)
-      VALUES ('$NASNAME','$SHORTNAME','$SECRET');
-  "
-}
-
-_show() {
-  _mysql "
-    SELECT id, shortname, secret, nasname AS ip
-      FROM nas;
-  "
-}
-
-_update() {
-  _check_id "$1"
-
-  shift
-
-  _set_values "$@"
-
-  echo $NAME
-  echo $PASS_WORD
-  echo $IP
-
-  _mysql "
-    UPDATE nas
-      SET nasname = 'lol',
-      shortname = 'lol'
+  _mysql_silent "
+    SELECT
+      $COLUMN
+      FROM nas
       WHERE id = '$ID';
   "
 }
 
-_delete() {
-  ID="$1"
+_add() {
+  _prompt IP "IP address"
+  _prompt SHORT_NAME "Short name"
+  _prompt DESCRIPTION "Description"
+  _prompt SECRET "Secret" $(_password_generator)
+  
+  _mysql "
+    INSERT
+      INTO nas (nasname, shortname, secret, description)
+      VALUES ('$IP','$SHORT_NAME','$SECRET', '$DESCRIPTION');
+  "
+}
 
-  if [ -z "$ID" ]; then
-    echo "Usage: radius-nas delete <id>
+_show() {
+  local ID="$1"
 
-Select NAS by id!
-"
-    _show
+  if [ -z $ID ]; then
+    echo "Usage: radius-nas show <id> or <all>"
     exit 1
   fi
+
+  if [ "$ID" != 'all' ]; then
+    local WHERE="WHERE id = '$ID'"    
+  fi
+
+  _mysql "
+    SELECT 
+
+      id as ID, 
+      shortname as Shortname, 
+      secret AS Secret, 
+      nasname AS 'IP address',
+      description AS Description
+
+      FROM nas
+      $WHERE;
+  "
+}
+
+_update() {
+  local ID="$1"
+
+  if [ -z "$ID" ] ; then
+     echo "Usage: radius-nas update <id>"
+     exit 1
+  fi
+  _prompt SHORT_NAME "Short name" "$(_value shortname)"
+  _prompt SECRET "Secret" "$(_value secret)"
+  _prompt IP "IP address" "$(_value nasname)"
+  _prompt DESCRIPTION "Description" "$(_value description)"
+
+  _mysql "
+    UPDATE nas
+      SET 
+        nasname = '$IP',
+        shortname = '$SHORT_NAME',
+        secret = '$SECRET',
+        description = '$DESCRIPTION'
+      WHERE id = '$ID';
+  "
+
+  _show "$ID"
+}
+
+_delete() {
+  local ID="$1"
+
+  if [ -z "$ID" ]; then
+    echo "Usage: radius-nas delete <id>"
+    exit 1
+  fi
+
+  _prompt_yes "Delete nas (id: '$ID')?"
 
   _mysql "
     DELETE
       FROM nas
       WHERE id = '$ID';
   "
-
 }
 
 _usage() {
-  echo "Usage: radius-nas <command> [<args>]
+  echo "Usage: radius-nas <options>
 
-The commands are:
-   add              Add nas
-   show             Show nas
-   update           Update nas
-   delete <id>      Delete nas by ID.
-   help             Display help topics.
+Options:
+
+  add                 : Add nas.
+  show <id> or <all>  : Show nas.
+  update <id>         : Update nas.
+  delete <id>         : Delete nas by ID.
+  help                : Display help topics.
 "
 }
 

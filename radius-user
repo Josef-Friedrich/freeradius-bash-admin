@@ -43,7 +43,7 @@ _add() {
 }
 
 _show() {
-  USER_NAME="$1"
+  local USER_NAME="$1"
 
   if [ -z $USER_NAME ]; then
     echo "Usage: radius-user show <username> or <all>"
@@ -51,9 +51,9 @@ _show() {
   fi
 
   if [ "$USER_NAME" = 'all' ]; then
-    AND="AND r.username <> ''"
+    local AND="AND r.username <> ''"
   else
-    AND="AND r.username = '$USER_NAME'"
+    local AND="AND r.username = '$USER_NAME'"
   fi
 
   _mysql "
@@ -75,8 +75,7 @@ _show() {
 }
 
 _update() {
-
-  USER_NAME="$1"
+  local USER_NAME="$1"
 
   if [ -z "$USER_NAME" ] ; then
      echo "Usage: radius-user update <username>"
@@ -107,7 +106,7 @@ _update() {
 }
 
 _password() {
-  USER_NAME="$1"
+  local USER_NAME="$1"
 
   if [ -z "$USER_NAME" ] ; then
      echo "Usage: radius-user password <username>"
@@ -134,6 +133,7 @@ _delete() {
   fi
 
   _prompt_yes "Delete user '$USER_NAME'?"
+  _show "$USER_NAME"
 
   _mysql "DELETE FROM user WHERE username = '$USER_NAME';"
   _mysql "DELETE FROM radcheck WHERE username = '$USER_NAME';"
