@@ -7,7 +7,6 @@
 _add	radius-guest	/^_add() {$/;"	f
 _add	radius-nas	/^_add() {$/;"	f
 _add	radius-user	/^_add() {$/;"	f
-_check_id	radius-nas	/^_check_id() {$/;"	f
 _cui	radius-install	/^_cui() {$/;"	f
 _database	radius-install	/^_database() {$/;"	f
 _db_layout	radius-log	/^_db_layout() {$/;"	f
@@ -28,6 +27,7 @@ _nas_count	radius-log	/^_nas_count() {$/;"	f
 _password	radius-user	/^_password() {$/;"	f
 _password_generator	radius_library.sh	/^_password_generator() {$/;"	f
 _prompt	radius_library.sh	/^function _prompt {$/;"	f
+_prompt_yes	radius_library.sh	/^_prompt_yes() {$/;"	f
 _radacct	radius-install	/^_radacct() {$/;"	f
 _radcheck	radius-install	/^_radcheck() {$/;"	f
 _radgroupcheck	radius-install	/^_radgroupcheck() {$/;"	f
@@ -36,7 +36,6 @@ _radpostauth	radius-clean	/^_radpostauth() {$/;"	f
 _radpostauth	radius-install	/^_radpostauth() {$/;"	f
 _radreply	radius-install	/^_radreply() {$/;"	f
 _radusergroup	radius-install	/^_radusergroup() {$/;"	f
-_set_values	radius-nas	/^_set_values() {$/;"	f
 _show	radius-nas	/^_show() {$/;"	f
 _show	radius-user	/^_show() {$/;"	f
 _show_expired	radius-guest	/^_show_expired() {$/;"	f
@@ -49,11 +48,12 @@ _usage	radius-import	/^_usage() {$/;"	f
 _usage	radius-install	/^_usage() {$/;"	f
 _usage	radius-log	/^_usage() {$/;"	f
 _usage	radius-nas	/^_usage() {$/;"	f
-_usage	radius-uninstall	/^function _usage {$/;"	f
+_usage	radius-uninstall	/^_usage() {$/;"	f
 _usage	radius-user	/^_usage() {$/;"	f
 _user	radius-install	/^_user() {$/;"	f
 _user_count	radius-log	/^_user_count() {$/;"	f
 _user_log	radius-log	/^_user_log() {$/;"	f
+_value	radius-nas	/^_value() {$/;"	f
 _value	radius-user	/^_value() {$/;"	f
 _wimax	radius-install	/^_wimax() {$/;"	f
 add_group	radius-group	/^function add_group {$/;"	f

@@ -48,7 +48,8 @@ _show() {
       description AS Description
 
       FROM nas
-      $WHERE;
+      $WHERE
+      ;
   "
 }
 
