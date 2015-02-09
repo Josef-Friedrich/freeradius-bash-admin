@@ -2,12 +2,11 @@
 
 . /etc/freeradius-bash-admin.conf
 
-function add_group {
-  prompt_init "Fügen Sie eine neue Gruppe hinzu!"
+_add {
 
-  _prompt "TITLE"        "Titel der Gruppe"         "Test-Gruppe"
-  _prompt "GROUPNAME"    "Kurzname der Gruppe"
-  _prompt "DESCRIPTION"  "Beschreibung der Gruppe"
+  _prompt "TITLE" "Titel der Gruppe"
+  _prompt "GROUPNAME" "Kurzname der Gruppe"
+  _prompt "DESCRIPTION" "Beschreibung der Gruppe"
 
   _mysql "
     INSERT
@@ -15,7 +14,7 @@ function add_group {
       VALUES ('$GROUPNAME','$TITLE','$DESCRIPTION');
   "
 
-  _mysql$MYSQL "
+  _mysql "
     SELECT *
       FROM groups
       WHERE groupname = '$GROUPNAME';
