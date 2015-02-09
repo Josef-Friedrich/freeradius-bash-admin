@@ -2,30 +2,36 @@
 
 . /etc/freeradius-bash-admin.conf
 
+LIB='/var/lib/freeradius-bash-admin/guest-count.txt'
+
+
+_count() {
+  cat "$LIB"
+}
+
 _add() {
-  SUM=50
-  START=100
-  END=$((START + SUM))
+  local SUM=50
+  local START=$(_count)
+  local END=$((START + SUM))
 
   for i in $(seq $START $END); do
     echo $i
 
     local USER_NAME="g$i"
-    local PASS_WORD=$(password weak)
+    local PASS_WORD=$(_password_generator weak)
 
     _mysql "
       INSERT
-        INTO radcheck (username,attribute,op,value)
-        VALUES ('$USER_NAME','Cleartext-Password',':=','$PASS_WORD');
+        INTO radcheck (username, attribute, op, value)
+        VALUES ('$USER_NAME', 'Cleartext-Password', ':=', '$PASS_WORD');
       INSERT
-        INTO user (username,firstname,lastname)
-        VALUES ('$USER_NAME','Gast-Zugang','Nr. $i');
-      INSERT
-        INTO radusergroup (username,groupname,priority)
+        INTO radusergroup (username, groupname, priority)
         VALUES ('$USER_NAME','guests',1);
     "
 
   done
+
+  echo "$i" > "$LIB"
 
 }
 
