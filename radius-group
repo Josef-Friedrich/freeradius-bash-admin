@@ -2,7 +2,7 @@
 
 . /etc/freeradius-bash-admin.conf
 
-_add {
+_add() {
 
   _prompt "TITLE" "Titel der Gruppe"
   _prompt "GROUPNAME" "Kurzname der Gruppe"
@@ -10,14 +10,50 @@ _add {
 
   _mysql "
     INSERT
-      INTO groups (groupname,title,description)
-      VALUES ('$GROUPNAME','$TITLE','$DESCRIPTION');
+      INTO groups 
+        (groupname, title, description)
+      VALUES 
+        ('$GROUPNAME', '$TITLE', '$DESCRIPTION');
   "
+
+}
+
+_show() {
 
   _mysql "
     SELECT *
       FROM groups
       WHERE groupname = '$GROUPNAME';
+  "
+}
+
+_prepopulate() {
+
+  _mysql "
+    INSERT INTO groups
+      (groupname, title)
+    VALUES
+      ('guests45min', 'Gast-Zugang für 45 Minuten.'),
+      ('guests90min', 'Gast-Zugang für 90 Minuten.'),
+      ('guests9hours', 'Gast-Zugang für 9 Stunden.');
+  "
+
+  _mysql "
+    INSERT INTO radgroupcheck
+      (groupname, attribute, op, value)
+    VALUES
+      ('guests45min', 'Access-Period', ':=', 2700),
+      ('guests90min', 'Access-Period', ':=', 5400),
+      ('guests9hours', 'Access-Period', ':=', 32400);
+  "
+
+  _mysql "
+    INSERT INTO radgroupreply
+      (groupname, attribute, op, value)
+    VALUES
+      ('guests45min', 'Reply-Message', ':=', 'Gast-Zugang für 45 Minuten.'),
+      ('guests90min', 'Reply-Message', ':=', 'Gast-Zugang für 90 Minuten.'),
+      ('guests9hours', 'Reply-Message', ':=', 'Gast-Zugang für 9 Stunden.');
   "
 }
 
