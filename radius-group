@@ -10,7 +10,7 @@ _add() {
 
   _mysql "
     INSERT
-      INTO groups 
+      INTO group 
         (groupname, title, description)
       VALUES 
         ('$GROUPNAME', '$TITLE', '$DESCRIPTION');
@@ -19,18 +19,16 @@ _add() {
 }
 
 _show() {
-
   _mysql "
     SELECT *
-      FROM groups
+      FROM group
       WHERE groupname = '$GROUPNAME';
   "
 }
 
 _prepopulate() {
-
   _mysql "
-    INSERT INTO groups
+    INSERT INTO group
       (groupname, title)
     VALUES
       ('guests45min', 'Gast-Zugang für 45 Minuten.'),

@@ -7,12 +7,12 @@ _usage() {
 
 Tables:
 
-  all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+  all    (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
           radreply, radusergroup, radpostauth, cui, ippool, wimax)
-  common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+  common (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
           radreply, radusergroup, radpostauth)
-  user
-  groups
+  infouser
+  infogroup
   nas
   radacct
   radcheck
@@ -28,19 +28,19 @@ Tables:
 
 case "$1" in
   all)
-    TABLES="user, groups, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth, cui, radippool, wimax"
+    TABLES="infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth, cui, radippool, wimax"
   ;;
 
   common)
-    TABLES="user, groups, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth"
+    TABLES="infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply, radreply, radusergroup, radpostauth"
   ;;
 
-  user)
-    TABLES="user"
+  infouser)
+    TABLES="infouser"
   ;;
 
-  groups)
-    TABLES="groups"
+  infogroup)
+    TABLES="infogroup"
   ;;
 
   nas)

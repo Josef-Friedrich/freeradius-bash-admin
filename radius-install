@@ -5,14 +5,14 @@
 #
 # Table structure for table 'user'
 #
-_user() {
+_infouser() {
   _mysql "
 
-    CREATE TABLE user (
+    CREATE TABLE infouser (
 
       id                    int(10)                 NOT NULL auto_increment,
       username              varchar(64)             NOT NULL UNIQUE default '',
-      prename               varchar(128)            NOT NULL default '',
+      firstename            varchar(128)            NOT NULL default '',
       lastname              varchar(128)            NOT NULL default '',
       description           varchar(200)            NOT NULL default '',
 
@@ -27,10 +27,10 @@ _user() {
 #
 # Table structure for table 'groups'
 #
-_groups() {
+_infogroup() {
   _mysql "
 
-    CREATE TABLE groups (
+    CREATE TABLE infogroup (
 
       id                    int(10)                 NOT NULL auto_increment,
       groupname             varchar(64)             NOT NULL UNIQUE default '',
@@ -337,12 +337,12 @@ Options:
 
 Tables:
 
-  all    (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+  all    (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
           radreply, radusergroup, radpostauth, cui, ippool, wimax)
-  common (user, nas, groups, radacct, radcheck, radgroupcheck, radgroupreply,
+  common (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
           radreply, radusergroup, radpostauth)
-  user
-  group
+  infouser
+  infogroup
   nas
   radacct
   radcheck
@@ -365,8 +365,8 @@ fi
 
 case "$1" in
   all)
-    _user
-    _groups
+    _infouser
+    _infogroup
     _nas
     _radacct
     _radcheck
@@ -381,8 +381,8 @@ case "$1" in
   ;;
 
   common)
-    _user
-    _groups
+    _infouser
+    _infogroup
     _nas
     _radacct
     _radcheck
@@ -393,12 +393,12 @@ case "$1" in
     _radpostauth
   ;;
 
-  user)
-    _user
+  infouser)
+    _infouser
   ;;
 
-  groups)
-    _groups
+  infogroup)
+    _infogroup
   ;;
 
   nas)
