@@ -4,7 +4,8 @@
 
 _last_logins() {
   _mysql "
-    SELECT username, authdate, nasip FROM radpostauth
+    SELECT username, authdate, nasip 
+    FROM radpostauth
     WHERE reply = 'Access-Accept'
       AND nasip <> ''
     ORDER BY authdate DESC
@@ -20,15 +21,13 @@ _user_count() {
     INTERVAL="1 WEEK"
   fi
 
-  echo "Interval: $INTERVAL"
-
   _mysql "
     SELECT
       CONCAT_WS(' ', u.firstname, u.lastname) as Name,
       r.username AS Username,
       COUNT(r.username) AS Count
     FROM radpostauth AS r
-    JOIN user AS u
+    JOIN infouser AS u
       ON u.username = r.username
     WHERE r.reply = 'Access-Accept'
       AND r.nasip <> ''

@@ -33,7 +33,7 @@ _add() {
       VALUES ('$USER_NAME','Cleartext-Password',':=','$PASS_WORD');
 
     INSERT
-      INTO user (username, firstname, lastname, description)
+      INTO infouser (username, firstname, lastname, description)
       VALUES ('$USER_NAME','$FIRST_NAME','$LAST_NAME','$DESCRIPTION');
   "
 
@@ -66,7 +66,7 @@ _show() {
       u.description as Description
 
       FROM radcheck AS r
-      JOIN user AS u
+      JOIN infouser AS u
         ON r.username = u.username
       WHERE r.attribute = 'Cleartext-Password'
         $AND
@@ -94,7 +94,7 @@ _update() {
       WHERE username = '$USER_NAME'
         AND attribute = 'Cleartext-Password';
 
-    UPDATE user
+    UPDATE infouser
       SET
         firstname = '$FIRST_NAME',
         lastname = '$LAST_NAME',
@@ -134,7 +134,7 @@ _delete() {
 
   _prompt_yes "Delete user '$USER_NAME'?"
 
-  _mysql "DELETE FROM user WHERE username = '$USER_NAME';"
+  _mysql "DELETE FROM infouser WHERE username = '$USER_NAME';"
   _mysql "DELETE FROM radcheck WHERE username = '$USER_NAME';"
   _mysql "DELETE FROM radusergroup WHERE username = '$USER_NAME';"
 }
