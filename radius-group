@@ -55,4 +55,36 @@ _prepopulate() {
   "
 }
 
+_usage() {
+  echo "Usage: radius-group <option>
+
+Options:
+
+  add
+  prepopulate
+
+"
+}
+
+case "$1" in
+
+  add)
+    shift 1
+    _add $@
+    ;;
+
+  prepopulate)
+    _prepopulate
+    ;;
+
+  help)
+    _usage
+    ;;
+
+  *)
+    _usage
+    ;;
+
+esac
+
 # vim: set ts=2 sw=2 sts=2 et :
