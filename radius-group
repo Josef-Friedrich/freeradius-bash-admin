@@ -2,33 +2,58 @@
 
 . /etc/freeradius-bash-admin.conf
 
-_add() {
+_value() {
+  local COLUMN="$1"
 
-  _prompt "TITLE" "Titel der Gruppe"
-  _prompt "GROUPNAME" "Kurzname der Gruppe"
-  _prompt "DESCRIPTION" "Beschreibung der Gruppe"
+  _mysql_silent "
+    SELECT
+      $COLUMN
+      FROM infogroup
+      WHERE groupname = '$GROUP_NAME';
+  "
+}
+
+_add() {
+  _prompt GROUP_NAME 'Group name'
+  _prompt TITLE 'Title'
+  _prompt DESCRIPTION 'Description'
 
   _mysql "
     INSERT
-      INTO group 
+      INTO infogroup 
         (groupname, title, description)
       VALUES 
-        ('$GROUPNAME', '$TITLE', '$DESCRIPTION');
+        ('$GROUP_NAME', '$TITLE', '$DESCRIPTION');
   "
 
+  _show "$GROUP_NAME"
 }
 
 _show() {
+  local GROUP_NAME="$1"
+
+  if [ -z $GROUP_NAME ]; then
+    echo "Usage: radius-group show <groupname> or <all>"
+    exit 1
+  fi
+
+  if [ "$GROUP_NAME" != 'all' ]; then
+    local WHERE="WHERE groupname ='$GROUP_NAME'"
+  fi
+
   _mysql "
-    SELECT *
-      FROM group
-      WHERE groupname = '$GROUPNAME';
+    SELECT 
+      groupname as 'Group name',
+      title as Title,
+      description as Description
+      FROM infogroup
+      $WHERE;
   "
 }
 
 _prepopulate() {
   _mysql "
-    INSERT INTO group
+    INSERT INTO infogroup
       (groupname, title)
     VALUES
       ('guests45min', 'Gast-Zugang für 45 Minuten.'),
@@ -55,6 +80,41 @@ _prepopulate() {
   "
 }
 
+_update() {
+  local GROUP_NAME="$1"
+
+  if [ -z "$GROUP_NAME" ] ; then
+     echo "Usage: radius-group update <groupname>"
+     exit 1
+  fi
+
+  _prompt TITLE 'Titel der Gruppe' "$(_value 'title')"
+  _prompt DESCRIPTION 'Beschreibung der Gruppe' "$(_value 'description')"
+
+  _mysql "
+    UPDATE infogroup
+      SET
+        title = '$TITLE',
+        description = '$DESCRIPTION'
+      WHERE groupname = '$GROUP_NAME';
+  "
+
+  _show "$GROUP_NAME"
+}
+
+_delete() {
+  local GROUP_NAME="$1"
+
+  if [ -z "$GROUP_NAME" ]; then
+    echo "Usage: radius-group delete <groupname>"
+    exit 1
+  fi
+
+  _prompt_yes "Delete group '$GROUP_NAME'?"
+
+  _mysql "DELETE FROM infogroup WHERE groupname = '$GROUP_NAME';"
+}
+
 _usage() {
   echo "Usage: radius-group <option>
 
@@ -62,7 +122,9 @@ Options:
 
   add
   prepopulate
-
+  show <groupname> or <all>
+  update <groupname>
+  delete <groupname>
 "
 }
 
@@ -73,8 +135,23 @@ case "$1" in
     _add $@
     ;;
 
+  show)
+    shift 1
+    _show $@
+    ;;
+
   prepopulate)
     _prepopulate
+    ;;
+
+  update)
+    shift 1
+    _update $@
+    ;;
+
+  delete)
+    shift 1
+    _delete $@
     ;;
 
   help)

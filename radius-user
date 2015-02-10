@@ -82,9 +82,9 @@ _update() {
      exit 1
   fi
 
-  _prompt FIRST_NAME "First name" "$(_value 'user' 'firstname')"
-  _prompt LAST_NAME "Last name" "$(_value 'user' 'lastname')"
-  _prompt DESCRIPTION "Description" "$(_value 'user' 'description')"
+  _prompt FIRST_NAME "First name" "$(_value 'infouser' 'firstname')"
+  _prompt LAST_NAME "Last name" "$(_value 'infouser' 'lastname')"
+  _prompt DESCRIPTION "Description" "$(_value 'infouser' 'description')"
   _prompt PASS_WORD "Password" "$(_password_generator)"
 
   _mysql "
@@ -135,8 +135,7 @@ _delete() {
   _prompt_yes "Delete user '$USER_NAME'?"
 
   _mysql "DELETE FROM infouser WHERE username = '$USER_NAME';"
-  _mysql "DELETE FROM radcheck WHERE username = '$USER_NAME';"
-  _mysql "DELETE FROM radusergroup WHERE username = '$USER_NAME';"
+
 }
 
 _usage() {
