@@ -1,7 +1,7 @@
 # Freeradius bash admin
 -----------------------
 
-A collection of bash scripts to admin the MySQL database backend for the freeradius server. 
+A collection of bash scripts to admin the MySQL database backend of the freeradius server. 
 
 # Commands
 
@@ -22,7 +22,7 @@ Options:
   help                      : Display help topics.
 ```
 
-### radius-nas
+## radius-nas
 
 ```
 Usage: radius-nas <options>
