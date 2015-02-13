@@ -10,14 +10,63 @@ A collection of bash scripts to admin the MySQL database backend for the freerad
 ```
 Usage: radius-user <options>
 
+-> Admin the user databases.
+
 Options:
 
-  add                       : Add user.
-  show <username> or <all>  : Show user.
-  update <username>         : Update user.
-  password <username>       : Update password.
-  delete <username>         : Delete user.
+  add                       : Add a user.
+  show <username> or <all>  : Show a user.
+  update <username>         : Update a user.
+  password <username>       : Update the users' password.
+  delete <username>         : Delete a user.
   help                      : Display help topics.
+```
+
+### radius-nas
+
+```
+Usage: radius-nas <options>
+
+-> Admin network access server (Access points).
+
+Options:
+
+  add                 : Add a NAS.
+  show <id> or <all>  : Show a NAS.
+  update <id>         : Update a NAS.
+  delete <id>         : Delete NAS by ID.
+  help                : Display help topics.
+```
+
+## radius-export
+
+```
+Usage: radius-export <path> <file-name> or <options>
+
+-> Export a MySQL dump file. By default the dump file is saved to '$EXPORT_DIRECTORY'.
+
+Options:
+
+  help
+```
+
+## radius-import
+```
+Usage: radius-import <dump-file.sql.gz>
+
+-> Import a MySQL dump file. 
+```
+
+## radius-clean
+
+```
+Usage: radius-clean <options>
+
+-> Clean some MySQL-Tables.
+
+Options:
+
+  radpostauth    : Clean 'radpostauth' table.
 ```
 
 # Table layout

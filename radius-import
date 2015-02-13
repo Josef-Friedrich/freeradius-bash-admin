@@ -3,7 +3,10 @@
 . /etc/freeradius-bash-admin.conf
 
 _usage() {
-  echo "Usage: radius-import <dump-file.sql.gz>"
+  echo "Usage: radius-import <dump-file.sql.gz>
+
+-> Import a MySQL dump file.  
+"
 }
 
 FILE="$1"

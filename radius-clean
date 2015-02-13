@@ -14,9 +14,11 @@ _radpostauth() {
 _usage() {
   echo "Usage: radius-clean <options>
 
+-> Clean some MySQL-Tables.
+
 Options:
 
-  radpostauth
+  radpostauth    : Clean 'radpostauth' table. 
 "
 }
 

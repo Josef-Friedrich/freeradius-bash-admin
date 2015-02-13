@@ -98,12 +98,14 @@ _delete() {
 _usage() {
   echo "Usage: radius-nas <options>
 
+-> Admin network access server (Access points).
+
 Options:
 
-  add                 : Add nas.
-  show <id> or <all>  : Show nas.
-  update <id>         : Update nas.
-  delete <id>         : Delete nas by ID.
+  add                 : Add a NAS.
+  show <id> or <all>  : Show a NAS.
+  update <id>         : Update a NAS.
+  delete <id>         : Delete NAS by ID.
   help                : Display help topics.
 "
 }
