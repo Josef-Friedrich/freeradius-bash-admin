@@ -10,12 +10,12 @@ A collection of bash scripts to admin the MySQL database backend of the freeradi
 ```
 Usage: radius-user <options>
 
--> Manage the user.
+-> Manage the freeradius users.
 
 Options:
 
   add                       : Add a user.
-  show <username> or <all>  : Show a user.
+  show <username> or <all>  : Show a specific user or all users.
   update <username>         : Update a user.
   password <username>       : Update the users' password.
   delete <username>         : Delete a user.

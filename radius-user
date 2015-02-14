@@ -85,7 +85,7 @@ _update() {
   _prompt FIRST_NAME "First name" "$(_value 'infouser' 'firstname')"
   _prompt LAST_NAME "Last name" "$(_value 'infouser' 'lastname')"
   _prompt DESCRIPTION "Description" "$(_value 'infouser' 'description')"
-  _prompt PASS_WORD "Password" "$(_password_generator)"
+  _prompt PASS_WORD "Password" "$(_value 'radcheck' 'value')"
 
   _mysql "
     UPDATE radcheck
@@ -141,12 +141,12 @@ _delete() {
 _usage() {
   echo "Usage: radius-user <options>
 
--> Manage the user.
+-> Manage the freeradius users.
 
 Options:
 
   add                       : Add a user.
-  show <username> or <all>  : Show a user.
+  show <username> or <all>  : Show a specific user or all users.
   update <username>         : Update a user.
   password <username>       : Update the users' password.
   delete <username>         : Delete a user.
