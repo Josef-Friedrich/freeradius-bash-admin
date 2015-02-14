@@ -331,6 +331,8 @@ _database() {
 _usage() {
   echo "Usage: radius-install [-d] <table>
 
+-> Install the MySQL tables.
+
 Options:
 
   -d : Drop all existing tables.

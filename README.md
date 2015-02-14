@@ -87,6 +87,66 @@ Options:
   radpostauth    : Clean 'radpostauth' table.
 ```
 
+## radius-install
+
+```
+Usage: radius-install [-d] <table>
+
+-> Install the MySQL tables.
+
+Options:
+
+  -d : Drop all existing tables.
+
+Tables:
+
+  all    (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth, cui, ippool, wimax)
+  common (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth)
+  infouser
+  infogroup
+  nas
+  radacct
+  radcheck
+  radgroupcheck
+  radgroupreply
+  radreply
+  radusergroup
+  radpostauth
+  cui
+  ippool
+  wimax
+```
+
+## radius-uninstall
+
+```
+Usage: radius-uninstall <table>
+
+-> Uninstall specific or all MySQL tables.
+
+Tables:
+
+  all    (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth, cui, ippool, wimax)
+  common (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
+          radreply, radusergroup, radpostauth)
+  infouser
+  infogroup
+  nas
+  radacct
+  radcheck
+  radgroupcheck
+  radgroupreply
+  radreply
+  radusergroup
+  radpostauth
+  cui
+  ippool
+  wimax
+```
+
 # Table layout
 
 ## Default freeradius tables.

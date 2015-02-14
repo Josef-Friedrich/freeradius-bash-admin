@@ -5,6 +5,8 @@
 _usage() {
   echo "Usage: radius-uninstall <table>
 
+-> Uninstall specific or all MySQL tables.
+
 Tables:
 
   all    (infouser, infogroup, nas, radacct, radcheck, radgroupcheck, radgroupreply,
