@@ -141,7 +141,7 @@ _delete() {
 _usage() {
   echo "Usage: radius-user <options>
 
--> Admin the user databases.
+-> Manage the user.
 
 Options:
 
@@ -150,7 +150,7 @@ Options:
   update <username>         : Update a user.
   password <username>       : Update the users' password.
   delete <username>         : Delete a user.
-  help                      : Display help topics.
+  help                      : Show this help message.
 "
 }
 

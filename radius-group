@@ -118,13 +118,16 @@ _delete() {
 _usage() {
   echo "Usage: radius-group <option>
 
+-> Manage the groups.
+
 Options:
 
-  add
-  prepopulate
-  show <groupname> or <all>
-  update <groupname>
-  delete <groupname>
+  add                        : Add a group.
+  prepopulate                : Prepopulate the group table.
+  show <groupname> or <all>  : Show a specific group or all groups.
+  update <groupname>         : Update a group.
+  delete <groupname>         : Delete a group.
+  help                       : Show this help message.
 "
 }
 

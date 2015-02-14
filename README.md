@@ -10,7 +10,7 @@ A collection of bash scripts to admin the MySQL database backend of the freeradi
 ```
 Usage: radius-user <options>
 
--> Admin the user databases.
+-> Manage the user.
 
 Options:
 
@@ -19,7 +19,7 @@ Options:
   update <username>         : Update a user.
   password <username>       : Update the users' password.
   delete <username>         : Delete a user.
-  help                      : Display help topics.
+  help                      : Show this help message.
 ```
 
 ## radius-nas
@@ -27,15 +27,33 @@ Options:
 ```
 Usage: radius-nas <options>
 
--> Admin network access server (Access points).
+-> Manage the network access server (Access points).
 
 Options:
 
   add                 : Add a NAS.
   show <id> or <all>  : Show a NAS.
   update <id>         : Update a NAS.
-  delete <id>         : Delete NAS by ID.
-  help                : Display help topics.
+  delete <id>         : Delete a NAS by ID.
+  help                : Show this help topic.
+```
+
+## radius-group
+
+```
+Usage: radius-group <option>
+
+-> Manage the groups.
+
+Options:
+
+  add                        : Add a group.
+  prepopulate                : Prepopulate the group table.
+  show <groupname> or <all>  : Show a specific group or all groups.
+  update <groupname>         : Update a group.
+  delete <groupname>         : Delete a group.
+  help                       : Show this help message.
+
 ```
 
 ## radius-export
@@ -70,8 +88,10 @@ Options:
 ```
 
 # Table layout
+
+## Default freeradius tables.
   
-## Table 'nas'
+### Table 'nas'
 
 ```
 +-------------+--------------+------+-----+---------+----------------+
@@ -89,7 +109,7 @@ Options:
 +-------------+--------------+------+-----+---------+----------------+
 ```
   
-## Table 'radacct'
+### Table 'radacct'
 
 ```
 +----------------------+-------------+------+-----+---------+----------------+
@@ -124,7 +144,7 @@ Options:
 +----------------------+-------------+------+-----+---------+----------------+
 ```
   
-## Table 'radcheck'
+### Table 'radcheck'
 
 ```
 +-----------+------------------+------+-----+---------+----------------+
@@ -138,7 +158,7 @@ Options:
 +-----------+------------------+------+-----+---------+----------------+
 ```
   
-## Table 'radgroupcheck'
+### Table 'radgroupcheck'
 
 ```
 +-----------+------------------+------+-----+---------+----------------+
@@ -152,7 +172,7 @@ Options:
 +-----------+------------------+------+-----+---------+----------------+
 ```
   
-## Table 'radgroupreply'
+### Table 'radgroupreply'
 
 ```
 +-----------+------------------+------+-----+---------+----------------+
@@ -166,7 +186,7 @@ Options:
 +-----------+------------------+------+-----+---------+----------------+
 ```
   
-## Table 'radpostauth'
+### Table 'radpostauth'
 
 ```
 +----------+-------------+------+-----+-------------------+-----------------------------+
@@ -181,7 +201,7 @@ Options:
 +----------+-------------+------+-----+-------------------+-----------------------------+
 ```
   
-## Table 'radreply'
+### Table 'radreply'
 
 ```
 +-----------+------------------+------+-----+---------+----------------+
@@ -195,7 +215,7 @@ Options:
 +-----------+------------------+------+-----+---------+----------------+
 ```
   
-## Table 'radusergroup'
+### Table 'radusergroup'
 
 ```
 +-----------+-------------+------+-----+---------+-------+
@@ -205,4 +225,33 @@ Options:
 | groupname | varchar(64) | NO   |     |         |       |
 | priority  | int(11)     | NO   |     | 1       |       |
 +-----------+-------------+------+-----+---------+-------+
+```
+
+## Custom tables
+
+### Table 'infouser'
+
+```
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
+| firstname   | varchar(128) | YES  |     | NULL    |                |
+| lastname    | varchar(128) | YES  |     | NULL    |                |
+| description | longtext     | YES  |     | NULL    |                |
+| username    | varchar(128) | YES  | UNI | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+```
+
+### Table 'infogroup'
+
+```
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int(10)      | NO   | PRI | NULL    | auto_increment |
+| groupname   | varchar(64)  | NO   | UNI |         |                |
+| title       | varchar(128) | NO   |     |         |                |
+| description | varchar(200) | NO   |     |         |                |
++-------------+--------------+------+-----+---------+----------------+
 ```

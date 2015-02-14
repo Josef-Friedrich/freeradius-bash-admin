@@ -26,7 +26,7 @@ _add() {
         VALUES ('$USER_NAME', 'Cleartext-Password', ':=', '$PASS_WORD');
       INSERT
         INTO radusergroup (username, groupname, priority)
-        VALUES ('$USER_NAME','guests',1);
+        VALUES ('$USER_NAME', 'guests45min', 1);
     "
 
   done
