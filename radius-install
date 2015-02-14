@@ -7,6 +7,7 @@
 #
 _infouser() {
   _mysql "
+    DROP TABLE IF EXISTS infouser;
 
     CREATE TABLE infouser (
 
@@ -29,6 +30,7 @@ _infouser() {
 #
 _infogroup() {
   _mysql "
+    DROP TABLE IF EXISTS infogroup;
 
     CREATE TABLE infogroup (
 
@@ -36,6 +38,7 @@ _infogroup() {
       groupname             varchar(64)             NOT NULL UNIQUE default '',
       title                 varchar(128)            NOT NULL default '',
       description           varchar(200)            NOT NULL default '',
+      weight                int(10)                 NOT NULL,
 
       PRIMARY KEY (id),
       KEY groupname_key (groupname)
@@ -50,6 +53,7 @@ _infogroup() {
 #
 _nas() {
   _mysql "
+    DROP TABLE IF EXISTS nas;
 
     CREATE TABLE nas (
 
@@ -77,6 +81,7 @@ _nas() {
 #
 _radacct() {
   _mysql "
+    DROP TABLE IF EXISTS radacct;
 
     CREATE TABLE radacct (
 
@@ -126,6 +131,7 @@ _radacct() {
 #
 _radcheck() {
   _mysql "
+    DROP TABLE IF EXISTS radcheck;
 
     CREATE TABLE radcheck (
 
@@ -147,6 +153,7 @@ _radcheck() {
 #
 _radgroupcheck() {
   _mysql "
+    DROP TABLE IF EXISTS radgroupcheck;
 
     CREATE TABLE radgroupcheck (
 
@@ -168,6 +175,7 @@ _radgroupcheck() {
 #
 _radgroupreply() {
   _mysql "
+    DROP TABLE IF EXISTS radgroupreply;
 
     CREATE TABLE radgroupreply (
 
@@ -190,6 +198,7 @@ _radgroupreply() {
 #
 _radreply() {
   _mysql "
+    DROP TABLE IF EXISTS radreply;
 
     CREATE TABLE radreply (
 
@@ -212,6 +221,7 @@ _radreply() {
 #
 _radusergroup() {
   _mysql "
+    DROP TABLE IF EXISTS radusergroup;
 
     CREATE TABLE radusergroup (
 
@@ -230,6 +240,7 @@ _radusergroup() {
 #
 _radpostauth() {
   _mysql "
+    DROP TABLE IF EXISTS radpostauth;
 
     CREATE TABLE radpostauth (
 
@@ -252,6 +263,7 @@ _radpostauth() {
 #
 _cui() {
   _mysql "
+    DROP TABLE IF EXISTS cui;
 
     CREATE TABLE cui (
 
@@ -273,6 +285,7 @@ _cui() {
 #
 _ippool() {
   _mysql "
+    DROP TABLE IF EXISTS radippool;
 
     CREATE TABLE radippool (
 
@@ -301,6 +314,7 @@ _ippool() {
 #
 _wimax() {
   _mysql "
+    DROP TABLE IF EXISTS wimax;
 
     CREATE TABLE wimax (
 
@@ -357,6 +371,8 @@ Tables:
   ippool
   wimax"
 }
+
+_prompt_yes "Install tables? You could lose data!"
 
 DELETE="$1"
 

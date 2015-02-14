@@ -17,13 +17,14 @@ _add() {
   _prompt GROUP_NAME 'Group name'
   _prompt TITLE 'Title'
   _prompt DESCRIPTION 'Description'
+  _prompt WEIGHT 'Weight'
 
   _mysql "
     INSERT
       INTO infogroup 
-        (groupname, title, description)
+        (groupname, title, description, weight)
       VALUES 
-        ('$GROUP_NAME', '$TITLE', '$DESCRIPTION');
+        ('$GROUP_NAME', '$TITLE', '$DESCRIPTION', '$WEIGHT');
   "
 
   _show "$GROUP_NAME"
@@ -45,8 +46,9 @@ _show() {
     SELECT 
       groupname as 'Group name',
       title as Title,
-      description as Description
-      FROM infogroup
+      description as Description,
+      weight as Weight
+    FROM infogroup
       $WHERE;
   "
 }
@@ -54,29 +56,25 @@ _show() {
 _prepopulate() {
   _mysql "
     INSERT INTO infogroup
-      (groupname, title)
+      (groupname, title, description, weight)
     VALUES
-      ('guests45min', 'Gast-Zugang für 45 Minuten.'),
-      ('guests90min', 'Gast-Zugang für 90 Minuten.'),
-      ('guests9hours', 'Gast-Zugang für 9 Stunden.');
-  "
-
-  _mysql "
+      ('guests_45m', 'Gast 45 Min.', 'Gast-Zugang für 45 Minuten.', 3),
+      ('guests_90m', 'Gast 90 Min.', 'Gast-Zugang für 90 Minuten.', 2),
+      ('guests_9h', 'Gast 9 Std.', 'Gast-Zugang für 9 Stunden.', 1);
+    
     INSERT INTO radgroupcheck
       (groupname, attribute, op, value)
     VALUES
-      ('guests45min', 'Access-Period', ':=', 2700),
-      ('guests90min', 'Access-Period', ':=', 5400),
-      ('guests9hours', 'Access-Period', ':=', 32400);
-  "
-
-  _mysql "
+      ('guests_45m', 'Access-Period', ':=', 2700),
+      ('guests_90m', 'Access-Period', ':=', 5400),
+      ('guests_9h', 'Access-Period', ':=', 32400);
+    
     INSERT INTO radgroupreply
       (groupname, attribute, op, value)
     VALUES
-      ('guests45min', 'Reply-Message', ':=', 'Gast-Zugang für 45 Minuten.'),
-      ('guests90min', 'Reply-Message', ':=', 'Gast-Zugang für 90 Minuten.'),
-      ('guests9hours', 'Reply-Message', ':=', 'Gast-Zugang für 9 Stunden.');
+      ('guests_45m', 'Reply-Message', ':=', 'Gast-Zugang für 45 Minuten.'),
+      ('guests_90m', 'Reply-Message', ':=', 'Gast-Zugang für 90 Minuten.'),
+      ('guests_9h', 'Reply-Message', ':=', 'Gast-Zugang für 9 Stunden.');
   "
 }
 
@@ -88,14 +86,16 @@ _update() {
      exit 1
   fi
 
-  _prompt TITLE 'Titel der Gruppe' "$(_value 'title')"
-  _prompt DESCRIPTION 'Beschreibung der Gruppe' "$(_value 'description')"
+  _prompt TITLE 'Title' "$(_value 'title')"
+  _prompt DESCRIPTION 'Description' "$(_value 'description')"
+  _prompt WEIGHT 'Weight' "$(_value 'weight')"
 
   _mysql "
     UPDATE infogroup
       SET
         title = '$TITLE',
-        description = '$DESCRIPTION'
+        description = '$DESCRIPTION',
+        weight = '$WEIGHT'
       WHERE groupname = '$GROUP_NAME';
   "
 
