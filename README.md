@@ -245,22 +245,7 @@ Tables:
 | value     | varchar(253)     | NO   |     |         |                |
 +-----------+------------------+------+-----+---------+----------------+
 ```
-  
-### Table 'radpostauth'
 
-```
-+----------+-------------+------+-----+-------------------+-----------------------------+
-| Field    | Type        | Null | Key | Default           | Extra                       |
-+----------+-------------+------+-----+-------------------+-----------------------------+
-| id       | int(11)     | NO   | PRI | NULL              | auto_increment              |
-| username | varchar(64) | NO   |     |                   |                             |
-| pass     | varchar(64) | NO   |     |                   |                             |
-| reply    | varchar(32) | NO   |     |                   |                             |
-| authdate | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
-| nasip    | varchar(45) | YES  |     | NULL              |                             |
-+----------+-------------+------+-----+-------------------+-----------------------------+
-```
-  
 ### Table 'radreply'
 
 ```
@@ -285,6 +270,69 @@ Tables:
 | groupname | varchar(64) | NO   |     |         |       |
 | priority  | int(11)     | NO   |     | 1       |       |
 +-----------+-------------+------+-----+---------+-------+
+```
+
+### Table 'radpostauth'
+
+```
++----------+-------------+------+-----+-------------------+-----------------------------+
+| Field    | Type        | Null | Key | Default           | Extra                       |
++----------+-------------+------+-----+-------------------+-----------------------------+
+| id       | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| username | varchar(64) | NO   |     |                   |                             |
+| pass     | varchar(64) | NO   |     |                   |                             |
+| reply    | varchar(32) | NO   |     |                   |                             |
+| authdate | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| nasip    | varchar(45) | YES  |     | NULL              |                             |
++----------+-------------+------+-----+-------------------+-----------------------------+
+```
+
+### Table 'cui'
+
+```
++------------------+-------------+------+-----+---------------------+-------+
+| Field            | Type        | Null | Key | Default             | Extra |
++------------------+-------------+------+-----+---------------------+-------+
+| clientipaddress  | varchar(15) | NO   | PRI |                     |       |
+| callingstationid | varchar(50) | NO   | PRI |                     |       |
+| username         | varchar(64) | NO   | PRI |                     |       |
+| cui              | varchar(32) | NO   |     |                     |       |
+| creationdate     | timestamp   | NO   |     | CURRENT_TIMESTAMP   |       |
+| lastaccounting   | timestamp   | NO   |     | 0000-00-00 00:00:00 |       |
++------------------+-------------+------+-----+---------------------+-------+
+```
+
+### Table 'ippool'
+
+```
++------------------+------------------+------+-----+---------+----------------+
+| Field            | Type             | Null | Key | Default | Extra          |
++------------------+------------------+------+-----+---------+----------------+
+| id               | int(11) unsigned | NO   | PRI | NULL    | auto_increment |
+| pool_name        | varchar(30)      | NO   | MUL | NULL    |                |
+| framedipaddress  | varchar(15)      | NO   | MUL |         |                |
+| nasipaddress     | varchar(15)      | NO   | MUL |         |                |
+| calledstationid  | varchar(30)      | NO   |     | NULL    |                |
+| callingstationid | varchar(30)      | NO   |     | NULL    |                |
+| expiry_time      | datetime         | YES  |     | NULL    |                |
+| username         | varchar(64)      | NO   |     |         |                |
+| pool_key         | varchar(30)      | NO   |     | NULL    |                |
++------------------+------------------+------+-----+---------+----------------+
+```
+
+### Table 'wimax'
+
+```
++----------+--------------+------+-----+-------------------+-----------------------------+
+| Field    | Type         | Null | Key | Default           | Extra                       |
++----------+--------------+------+-----+-------------------+-----------------------------+
+| id       | int(11)      | NO   | PRI | NULL              | auto_increment              |
+| username | varchar(64)  | NO   | MUL |                   |                             |
+| authdate | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+| spi      | varchar(16)  | NO   | MUL |                   |                             |
+| mipkey   | varchar(400) | NO   |     |                   |                             |
+| lifetime | int(12)      | YES  |     | NULL              |                             |
++----------+--------------+------+-----+-------------------+-----------------------------+
 ```
 
 ## Custom tables
@@ -313,5 +361,6 @@ Tables:
 | groupname   | varchar(64)  | NO   | UNI |         |                |
 | title       | varchar(128) | NO   |     |         |                |
 | description | varchar(200) | NO   |     |         |                |
+| weight      | int(10)      | NO   |     | NULL    |                |
 +-------------+--------------+------+-----+---------+----------------+
 ```

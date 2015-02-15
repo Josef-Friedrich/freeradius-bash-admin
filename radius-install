@@ -281,13 +281,13 @@ _cui() {
 }
 
 #
-# Table structure for table 'radippool'
+# Table structure for table 'ippool'
 #
 _ippool() {
   _mysql "
-    DROP TABLE IF EXISTS radippool;
+    DROP TABLE IF EXISTS ippool;
 
-    CREATE TABLE radippool (
+    CREATE TABLE ippool (
 
       id                    int(11)                 unsigned NOT NULL auto_increment,
       pool_name             varchar(30)             NOT NULL,
@@ -372,7 +372,9 @@ Tables:
   wimax"
 }
 
-_prompt_yes "Install tables? You could lose data!"
+_yes() {
+  _prompt_yes "Install tables? You could lose data!"
+}
 
 DELETE="$1"
 
@@ -383,6 +385,7 @@ fi
 
 case "$1" in
   all)
+    _yes
     _infouser
     _infogroup
     _nas
@@ -399,6 +402,7 @@ case "$1" in
   ;;
 
   common)
+    _yes
     _infouser
     _infogroup
     _nas
@@ -412,54 +416,67 @@ case "$1" in
   ;;
 
   infouser)
+    _yes
     _infouser
   ;;
 
   infogroup)
+    _yes
     _infogroup
   ;;
 
   nas)
+    _yes
     _nas
   ;;
 
   radacct)
+    _yes
     _radacct
   ;;
 
   radcheck)
+    _yes
     _radcheck
   ;;
 
   radgroupcheck)
+    _yes
     _radgroupcheck
   ;;
 
   radgroupreply)
+    _yes
     _radgroupreply
   ;;
 
   radreply)
+    _yes
     _radreply
   ;;
 
   radusergroup)
+    _yes
     _radusergroup
   ;;
 
   radpostauth)
+    _yes
     _radpostauth
   ;;
 
   cui)
+    _yes
     _cui
   ;;
 
   ippool)
+    _yes
     _ippool
   ;;
 
   wimax)
+    _yes
     _wimax
   ;;
 
