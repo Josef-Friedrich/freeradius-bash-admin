@@ -4,9 +4,28 @@
 
 _get_username() {
   _mysql_silent "
-    SELECT username 
+    SELECT 
+      username 
     FROM radcheck 
     WHERE username LIKE '$1%'
+  "
+}
+
+_get_groupname() {
+  _mysql_silent "
+    SELECT 
+      groupname 
+    FROM radgroupcheck 
+    WHERE groupname LIKE '$1%'
+  "
+}
+
+_get_nasname() {
+  _mysql_silent "
+    SELECT 
+      nasname 
+    FROM nas 
+    WHERE nasname LIKE '$1%'
   "
 }
 
@@ -22,20 +41,12 @@ _radius_level1() {
       OPTS="radpostauth"
       ;;
 
-    radius-export)
-      OPTS=""
-      ;;
-
     radius-group)
       OPTS="add delete help prepopulate show update"
       ;;
 
     radius-guest)
       OPTS="add count delete-expired show-expired"
-      ;;
-
-    radius-import)
-      OPTS=""
       ;;
 
     radius-install)
@@ -65,12 +76,29 @@ _radius_level1() {
     return 0
   fi
 
-#  if [[ ${prev} == "show" ]]; then
- #   COMPREPLY=( $(compgen -W "$(_get_username ${cur})" ${cur}) )
-#      return 0
-#  fi
 }
 
-complete -F _radius_level1 radius-log radius-user radius-group
+_radius_user() {
+  local CUR PREV OPTS
+  COMPREPLY=()
+  CUR="${COMP_WORDS[COMP_CWORD]}"
+  PREV="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$PREV" in
+    radius-user)
+      OPTS="add delete help password show update"
+      COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+    show|update|delete)
+      COMPREPLY=( $(compgen -W "$(_get_username $CUR)" $CUR) )
+      return 0
+      ;;
+
+  esac
+}
+
+complete -F _radius_user radius-user
 
 # vim: set ts=2 sw=2 sts=2 et :
