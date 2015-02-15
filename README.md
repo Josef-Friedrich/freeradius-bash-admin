@@ -56,6 +56,39 @@ Options:
 
 ```
 
+## radius-guest
+
+```
+Usage: radius-guest <options>
+
+-> Manage the guest accounts.
+
+Options:
+
+  add            : Add new guest accounts
+  count          : Show the number of guest accounts generated.
+  show-expired   : Show expired guest accounts.
+  delete-expired : Delete expired guest accounts.
+```
+
+## radius-log
+
+```
+Usage: radius-log <options>
+
+-> Show log informations.
+
+Options:
+
+  last-logins               : Show last user logins.
+  user-count <interval>     : E. g.:  "1 week" or "2 month"
+  user-log                  : Show user log.
+  nas-count                 : Show NAS count.
+  db-values <table>         : Show database values.
+  db-layout <table>         : Show database table layout.
+  log-file                  : Show log file.
+```
+
 ## radius-export
 
 ```

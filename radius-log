@@ -97,15 +97,17 @@ _log_file() {
 _usage() {
   echo "Usage: radius-log <options>
 
+-> Show log informations.
+
 Options:
 
-  last-logins
-  user-count <interval> e.g.: \"1 week\" or \"2 month\"
-  user-log
-  nas-count
-  db-values <table>
-  db-layout <table>
-  log-file
+  last-logins               : Show last user logins.
+  user-count <interval>     : E. g.:  \"1 week\" or \"2 month\"
+  user-log                  : Show user log.
+  nas-count                 : Show NAS count.
+  db-values <table>         : Show database values.
+  db-layout <table>         : Show database table layout.
+  log-file                  : Show log file.
 "
 }
 

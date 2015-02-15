@@ -4,7 +4,6 @@
 
 LIB='/var/lib/freeradius-bash-admin/guest-count.txt'
 
-
 _count() {
   cat "$LIB"
 }
@@ -63,9 +62,12 @@ _delete_expired() {
 _usage() {
   echo "Usage: radius-guest <options>
 
+-> Manage the guest accounts.
+
 Options:
 
-  add            : Add new guest accounts.  
+  add            : Add new guest accounts
+  count          : Show the number of guest accounts generated.
   show-expired   : Show expired guest accounts.
   delete-expired : Delete expired guest accounts.
 "
@@ -78,6 +80,10 @@ case "$1" in
     _add $@
     ;;
 
+  count)
+    _count
+    ;;
+  
   show-expired)
     _show_expired
     ;;
