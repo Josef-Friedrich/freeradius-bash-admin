@@ -68,13 +68,6 @@ _prepopulate() {
       ('guests_45m', 'Access-Period', ':=', 2700),
       ('guests_90m', 'Access-Period', ':=', 5400),
       ('guests_9h', 'Access-Period', ':=', 32400);
-    
-    INSERT INTO radgroupreply
-      (groupname, attribute, op, value)
-    VALUES
-      ('guests_45m', 'Reply-Message', ':=', 'Gast-Zugang für 45 Minuten.'),
-      ('guests_90m', 'Reply-Message', ':=', 'Gast-Zugang für 90 Minuten.'),
-      ('guests_9h', 'Reply-Message', ':=', 'Gast-Zugang für 9 Stunden.');
   "
 }
 
