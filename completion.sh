@@ -29,54 +29,45 @@ _get_nasname() {
   "
 }
 
-_radius_level1() {
+
+#    radius-clean)
+#      OPTS="radpostauth"
+#
+#    radius-group)
+#      OPTS="add delete help prepopulate show update"
+#
+#    radius-guest)
+#      OPTS="add count delete-expired show-expired"
+#
+#    radius-install)
+#      OPTS="all common infouser infogroup nas radacct radcheck radgroupcheck radgroupreply radreply radusergroup radpostauth cui ippool wimax"
+#
+#    radius-log)
+#      OPTS=""
+#
+#    radius-nas)
+#      OPTS="add show update delete help"
+#
+#    radius-uninstall)
+#      OPTS="all common infouser infogroup nas radacct radcheck radgroupcheck radgroupreply radreply radusergroup radpostauth cui ippool wimax"
+
+_radius_log() {
   local CUR PREV OPTS
   COMPREPLY=()
   CUR="${COMP_WORDS[COMP_CWORD]}"
   PREV="${COMP_WORDS[COMP_CWORD-1]}"
 
   case "$PREV" in
-
-    radius-clean)
-      OPTS="radpostauth"
-      ;;
-
-    radius-group)
-      OPTS="add delete help prepopulate show update"
-      ;;
-
-    radius-guest)
-      OPTS="add count delete-expired show-expired"
-      ;;
-
-    radius-install)
-      OPTS="all common infouser infogroup nas radacct radcheck radgroupcheck radgroupreply radreply radusergroup radpostauth cui ippool wimax"
-      ;;
-
     radius-log)
       OPTS="last-logins user-count user-log nas-count db-values db-layout log-file"
-      ;;
-
-    radius-nas)
-      OPTS="add show update delete help"
-      ;;
-
-    radius-uninstall)
-      OPTS="all common infouser infogroup nas radacct radcheck radgroupcheck radgroupreply radreply radusergroup radpostauth cui ippool wimax"
-      ;;
-
-    radius-user)
-      OPTS="add delete help password show update"
+      COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
       ;;
 
   esac
-  
-  if [ -n "$OPTS" ]; then
-    COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
-    return 0
-  fi
-
 }
+
+complete -F _radius_log radius-log
 
 _radius_user() {
   local CUR PREV OPTS
