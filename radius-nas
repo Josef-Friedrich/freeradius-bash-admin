@@ -9,15 +9,15 @@ _value() {
     SELECT
       $COLUMN
       FROM nas
-      WHERE id = '$ID';
+      WHERE shortname = '$SHORT_NAME';
   "
 }
 
 _add() {
-  _prompt IP "IP address"
   _prompt SHORT_NAME "Short name"
-  _prompt DESCRIPTION "Description"
   _prompt SECRET "Secret" $(_password_generator)
+  _prompt IP "IP address"
+  _prompt DESCRIPTION "Description"
   
   _mysql "
     INSERT
@@ -27,21 +27,20 @@ _add() {
 }
 
 _show() {
-  local ID="$1"
+  local SHORT_NAME="$1"
 
-  if [ -z $ID ]; then
-    echo "Usage: radius-nas show <id> or <all>"
+  if [ -z $SHORT_NAME ]; then
+    echo "Usage: radius-nas show <shortname> or <all>"
     exit 1
   fi
 
-  if [ "$ID" != 'all' ]; then
-    local WHERE="WHERE id = '$ID'"    
+  if [ "$SHORT_NAME" != 'all' ]; then
+    local WHERE="WHERE shortname = '$SHORT_NAME'"    
   fi
 
   _mysql "
     SELECT 
 
-      id as ID, 
       shortname as Shortname, 
       secret AS Secret, 
       nasname AS 'IP address',
@@ -54,13 +53,13 @@ _show() {
 }
 
 _update() {
-  local ID="$1"
+  local SHORT_NAME="$1"
 
-  if [ -z "$ID" ] ; then
-     echo "Usage: radius-nas update <id>"
+  if [ -z "$SHORT_NAME" ] ; then
+     echo "Usage: radius-nas update <shortname>"
      exit 1
   fi
-  _prompt SHORT_NAME "Short name" "$(_value shortname)"
+  _prompt SHORT_NAME_UPDATE "Short name" "$(_value shortname)"
   _prompt SECRET "Secret" "$(_value secret)"
   _prompt IP "IP address" "$(_value nasname)"
   _prompt DESCRIPTION "Description" "$(_value description)"
@@ -69,29 +68,29 @@ _update() {
     UPDATE nas
       SET 
         nasname = '$IP',
-        shortname = '$SHORT_NAME',
+        shortname = '$SHORT_NAME_UPDATE',
         secret = '$SECRET',
         description = '$DESCRIPTION'
-      WHERE id = '$ID';
+      WHERE shortname = '$SHORT_NAME';
   "
 
-  _show "$ID"
+  _show "$SHORT_NAME_UPDATE"
 }
 
 _delete() {
-  local ID="$1"
+  local SHORT_NAME="$1"
 
-  if [ -z "$ID" ]; then
-    echo "Usage: radius-nas delete <id>"
+  if [ -z "$SHORT_NAME" ]; then
+    echo "Usage: radius-nas delete <shortname>"
     exit 1
   fi
 
-  _prompt_yes "Delete nas (id: '$ID')?"
+  _prompt_yes "Delete nas (shortname: '$SHORT_NAME')?"
 
   _mysql "
     DELETE
       FROM nas
-      WHERE id = '$ID';
+      WHERE shortname = '$SHORT_NAME';
   "
 }
 
@@ -102,11 +101,11 @@ _usage() {
 
 Options:
 
-  add                 : Add a NAS.
-  show <id> or <all>  : Show a NAS.
-  update <id>         : Update a NAS.
-  delete <id>         : Delete a NAS by ID.
-  help                : Show this help topic.
+  add                       : Add a NAS.
+  show <shortname> or <all> : Show a NAS.
+  update <shortname>        : Update a NAS.
+  delete <shortname>        : Delete a NAS by shortname.
+  help                      : Show this help topic.
 "
 }
 
