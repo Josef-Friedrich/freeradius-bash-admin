@@ -29,27 +29,95 @@ _get_nasname() {
   "
 }
 
+_radius_group() {
+  local CUR PREV OPTS
+  COMPREPLY=()
+  CUR="${COMP_WORDS[COMP_CWORD]}"
+  PREV="${COMP_WORDS[COMP_CWORD-1]}"
 
-#    radius-clean)
-#      OPTS="radpostauth"
-#
-#    radius-group)
-#      OPTS="add delete help prepopulate show update"
-#
-#    radius-guest)
-#      OPTS="add count delete-expired show-expired"
-#
-#    radius-install)
-#      OPTS="all common infouser infogroup nas radacct radcheck radgroupcheck radgroupreply radreply radusergroup radpostauth cui ippool wimax"
-#
-#    radius-log)
-#      OPTS=""
-#
-#    radius-nas)
-#      OPTS="add show update delete help"
-#
-#    radius-uninstall)
-#      OPTS="all common infouser infogroup nas radacct radcheck radgroupcheck radgroupreply radreply radusergroup radpostauth cui ippool wimax"
+  case "$PREV" in
+    radius-group)
+      OPTS="add delete help prepopulate show update"
+      COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+  esac
+}
+
+complete -F _radius_group radius-group
+
+_radius_guest() {
+  local CUR PREV OPTS
+  COMPREPLY=()
+  CUR="${COMP_WORDS[COMP_CWORD]}"
+  PREV="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$PREV" in
+    radius-guest)
+      OPTS="add count delete-expired show-expired"
+      COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+  esac
+}
+
+complete -F _radius_guest radius-guest
+
+_radius_nas() {
+  local CUR PREV OPTS
+  COMPREPLY=()
+  CUR="${COMP_WORDS[COMP_CWORD]}"
+  PREV="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$PREV" in
+    radius-nas)
+      OPTS="add show update delete help"
+      COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+  esac
+}
+
+complete -F _radius_nas radius-nas
+
+_radius_clean() {
+  local CUR PREV OPTS
+  COMPREPLY=()
+  CUR="${COMP_WORDS[COMP_CWORD]}"
+  PREV="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$PREV" in
+    radius-clean)
+      OPTS="radpostauth"
+      COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+  esac
+}
+
+complete -F _radius_clean radius-clean
+
+_radius_install_uninstall() {
+  local CUR PREV OPTS
+  COMPREPLY=()
+  CUR="${COMP_WORDS[COMP_CWORD]}"
+  PREV="${COMP_WORDS[COMP_CWORD-1]}"
+
+  case "$PREV" in
+    radius-install|radius-uninstall)
+      OPTS="all common infouser infogroup nas radacct radcheck radgroupcheck radgroupreply radreply radusergroup radpostauth cui ippool wimax"
+      COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+  esac
+}
+
+complete -F _radius_install_uninstall radius-install radius-uninstall
 
 _radius_log() {
   local CUR PREV OPTS
