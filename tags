@@ -17,6 +17,9 @@ _delete	radius-group	/^_delete() {$/;"	f
 _delete	radius-nas	/^_delete() {$/;"	f
 _delete	radius-user	/^_delete() {$/;"	f
 _delete_expired	radius-guest	/^_delete_expired() {$/;"	f
+_get_groupname	completion.sh	/^_get_groupname() {$/;"	f
+_get_nasname	completion.sh	/^_get_nasname() {$/;"	f
+_get_username	completion.sh	/^_get_username() {$/;"	f
 _infogroup	radius-install	/^_infogroup() {$/;"	f
 _infouser	radius-install	/^_infouser() {$/;"	f
 _ippool	radius-install	/^_ippool() {$/;"	f
@@ -37,6 +40,13 @@ _radacct	radius-install	/^_radacct() {$/;"	f
 _radcheck	radius-install	/^_radcheck() {$/;"	f
 _radgroupcheck	radius-install	/^_radgroupcheck() {$/;"	f
 _radgroupreply	radius-install	/^_radgroupreply() {$/;"	f
+_radius_clean	completion.sh	/^_radius_clean() {$/;"	f
+_radius_group	completion.sh	/^_radius_group() {$/;"	f
+_radius_guest	completion.sh	/^_radius_guest() {$/;"	f
+_radius_install_uninstall	completion.sh	/^_radius_install_uninstall() {$/;"	f
+_radius_log	completion.sh	/^_radius_log() {$/;"	f
+_radius_nas	completion.sh	/^_radius_nas() {$/;"	f
+_radius_user	completion.sh	/^_radius_user() {$/;"	f
 _radpostauth	radius-clean	/^_radpostauth() {$/;"	f
 _radpostauth	radius-install	/^_radpostauth() {$/;"	f
 _radreply	radius-install	/^_radreply() {$/;"	f
@@ -64,3 +74,4 @@ _value	radius-group	/^_value() {$/;"	f
 _value	radius-nas	/^_value() {$/;"	f
 _value	radius-user	/^_value() {$/;"	f
 _wimax	radius-install	/^_wimax() {$/;"	f
+_yes	radius-install	/^_yes() {$/;"	f

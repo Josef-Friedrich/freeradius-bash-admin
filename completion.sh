@@ -20,12 +20,12 @@ _get_groupname() {
   "
 }
 
-_get_nasname() {
+_get_nas_shortname() {
   _mysql_silent "
     SELECT 
-      nasname 
+      shortname 
     FROM nas 
-    WHERE nasname LIKE '$1%'
+    WHERE shortname LIKE '$1%'
   "
 }
 
@@ -39,6 +39,11 @@ _radius_group() {
     radius-group)
       OPTS="add delete help prepopulate show update"
       COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+    show|update|delete)
+      COMPREPLY=( $(compgen -W "$(_get_groupname $CUR)" $CUR) )
       return 0
       ;;
 
@@ -75,6 +80,11 @@ _radius_nas() {
     radius-nas)
       OPTS="add show update delete help"
       COMPREPLY=( $(compgen -W "$OPTS" $CUR) )
+      return 0
+      ;;
+
+    show|update|delete)
+      COMPREPLY=( $(compgen -W "$(_get_nas_shortname $CUR)" $CUR) )
       return 0
       ;;
 
