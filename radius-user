@@ -132,6 +132,7 @@ _delete() {
     exit 1
   fi
 
+  _show "$USER_NAME"
   _prompt_yes "Delete user '$USER_NAME'?"
 
   _mysql "

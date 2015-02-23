@@ -69,6 +69,7 @@ _prompt_yes() {
   read YES
 
   if [ "$YES" != "y" ]; then
-    echo "exit"
+    echo "The process was canceled by the user."
+    exit 1
   fi
 }
