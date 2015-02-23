@@ -134,7 +134,10 @@ _delete() {
 
   _prompt_yes "Delete user '$USER_NAME'?"
 
-  _mysql "DELETE FROM infouser WHERE username = '$USER_NAME';"
+  _mysql "
+    DELETE FROM radcheck WHERE username = '$USER_NAME';
+    DELETE FROM infouser WHERE username = '$USER_NAME';
+  "
 
 }
 
