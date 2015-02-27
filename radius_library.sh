@@ -26,8 +26,8 @@ _mysql_silent() {
 }
 
 _password_generator() {
-  local WEAK="6"
-  local STRONG="10"
+  local WEAK="-n 6"
+  local STRONG="-c -n 10"
 
   local APPEND="$STRONG"
 
